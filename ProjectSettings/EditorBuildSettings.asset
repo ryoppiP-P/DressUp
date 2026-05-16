@@ -12,5 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/KisekaeScene.unity
     guid: 606f6f55214ddff49a9ee5b98b7413e1
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 61b73cb83f2326b4d830806432ae59bb, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -10,6 +10,18 @@ public class Character : MonoBehaviour {
 
     [SerializeField] private List<Layer> layers;
 
+    void Start() {
+        // 保存済みの装備があれば復元する
+        if (PlayerEquipManager.Instance != null)
+            ApplyState(PlayerEquipManager.Instance.State);
+    }
+
+    // 保存状態を見た目に反映する
+    public void ApplyState(EquipState state) {
+        foreach (var pair in state.equipped)
+            SetSprite(pair.Key, pair.Value.previewSprite);
+    }
+
     public void Equip(DressUpItem item) {
         // 1. まず本体を着る
         SetSprite(item.category, item.previewSprite);
@@ -17,6 +29,14 @@ public class Character : MonoBehaviour {
         // 2. 競合するカテゴリを脱がす
         foreach (var conflict in GetConflicts(item.category))
             SetSprite(conflict, null);
+
+        // 3. 装備状態を保存（マネージャがあれば）
+        if (PlayerEquipManager.Instance != null) {
+            var state = PlayerEquipManager.Instance.State;
+            state.Set(item.category, item);
+            foreach (var conflict in GetConflicts(item.category))
+                state.Clear(conflict);
+        }
     }
 
     private void SetSprite(CategoryType category, Sprite sprite) {

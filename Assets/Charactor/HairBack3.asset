@@ -16,3 +16,8 @@ MonoBehaviour:
   category: 1
   icon: {fileID: 21300000, guid: aefa62b59df65fa4687d58f9de57326f, type: 3}
   previewSprite: {fileID: 21300000, guid: 7b404f84e143add4a8d6f745349a6774, type: 3}
+  animations:
+  - state: 0
+    frames:
+    - {fileID: 21300000, guid: 7b404f84e143add4a8d6f745349a6774, type: 3}
+  frameRate: 8

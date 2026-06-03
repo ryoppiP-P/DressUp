@@ -10,3 +10,12 @@ public enum CategoryType {
     Shoes,
     Accessory
 }
+
+public enum CharaState {
+    Idle,
+    Walk,
+    Sit,
+    Stady,
+    Reading,
+    Jump,
+}

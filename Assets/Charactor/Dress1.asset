@@ -16,3 +16,37 @@ MonoBehaviour:
   category: 7
   icon: {fileID: 21300000, guid: caed8d19e7e19a241ba286e50a798f75, type: 3}
   previewSprite: {fileID: 21300000, guid: 0bc1fada8b42e04418ab1d98240195d5, type: 3}
+  animations:
+  - state: 0
+    frames:
+    - {fileID: 232945200702703319, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 387493824, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 49998215, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 210716955, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 339028601, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 428116302, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 231107007, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -839252054, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1244261266, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1833155822, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -785876207, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1663675766, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -938118302, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 1970480227, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 277041379, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1917367060, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -835179543, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -472807435, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 189177275, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1537430630, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 644883899, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 1211046938, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1495449754, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 136951564, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -2003849912, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -62476469, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1775951745, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -955361100, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -664992063, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: -1691158278, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+  frameRate: 8

@@ -1,9 +1,9 @@
 ﻿/*
 * ファイル名 CharacterManager.cs
 * タイトル   キャラクターマネージャー
-* 作成者   　久保木幹太
-* 作成日   　5月15日
-* 更新日   　5月15日
+* 作成者     久保木幹太
+* 作成日     5月15日
+* 更新日     6月15日（enum対応）
 */
 
 using System;
@@ -11,12 +11,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum CharaAttributeType
+{
+    [InspectorName("知性")] Intelligence,
+    [InspectorName("優しさ")] Kindness,
+    [InspectorName("活発")] Active,
+    [InspectorName("社交性")] Sociability,
+    [InspectorName("内向的")] Introverted,
+    [InspectorName("わがまま")] Selfish,
+}
+
 // キャラクターの構成要素
 [Serializable]
 public struct CharaData
 {
-    public string Name;   // 特徴の名前
-    [Range(0, 100)] public int Parameter; // 特徴のパラメーター
+    public CharaAttributeType AttributeType; // 列挙型の特徴
+    [Range(0, 100)] public int Parameter;   // 特徴の値
 }
 
 public class CharacterManager : MonoBehaviour
@@ -62,8 +72,8 @@ public class CharacterManager : MonoBehaviour
     {
         if (targetBuilding == null) return;
 
-        // MapManagerに最短ルートを計算してもらう！ // 加筆しました
-        currentRoute = MapManager.Instance.CalculateShortestPath(transform.position, targetBuilding.DestinationPosition); // 加筆しました
+        // MapManagerに最短ルートを計算してもらう！
+        currentRoute = MapManager.Instance.CalculateShortestPath(transform.position, targetBuilding.DestinationPosition);
 
         if (currentRoute != null && currentRoute.Count > 0)
         {
@@ -98,22 +108,24 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    public int GetData(string name)
+    // 特徴を受け取る
+    public int GetData(CharaAttributeType type)
     {
         foreach (var pair in dataList)
         {
-            if (pair.Name == name) return pair.Parameter;
+            if (pair.AttributeType == type) return pair.Parameter;
         }
-        Debug.LogWarning($"{name} というステータスは見つかりませんでした");
+        Debug.LogWarning($"{type} というステータスは見つかりませんでした");
 
         return 0;
     }
 
-    public void SetData(string name, int newValue)
+    // 特徴の値をセットする
+    public void SetData(CharaAttributeType type, int newValue)
     {
         for (int i = 0; i < dataList.Count; i++)
         {
-            if (dataList[i].Name == name)
+            if (dataList[i].AttributeType == type)
             {
                 // 構造体の値を更新してリストに戻す
                 CharaData updatedPair = dataList[i];
@@ -122,14 +134,15 @@ public class CharacterManager : MonoBehaviour
                 return;
             }
         }
-        Debug.LogWarning($"{name} が見つからないため更新できませんでした");
+        Debug.LogWarning($"{type} が見つからないため更新できませんでした");
     }
 
-    public void AddData(string name, int addValue)
+    // 特徴を加算(減算)
+    public void AddData(CharaAttributeType type, int addValue)
     {
         for (int i = 0; i < dataList.Count; i++)
         {
-            if (dataList[i].Name == name)
+            if (dataList[i].AttributeType == type)
             {
                 CharaData updatedPair = dataList[i];
                 updatedPair.Parameter += addValue;
@@ -137,6 +150,6 @@ public class CharacterManager : MonoBehaviour
                 return;
             }
         }
-        Debug.LogWarning($"{name} が見つからないため更新できませんでした");
+        Debug.LogWarning($"{type} が見つからないため更新できませんでした");
     }
 }

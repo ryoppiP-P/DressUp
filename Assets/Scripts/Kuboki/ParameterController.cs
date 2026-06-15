@@ -13,19 +13,19 @@ public class ParameterController : MonoBehaviour
 {
     public CharacterManager CM;
 
-    [SerializeField] private string Name;
+    [SerializeField] private CharaAttributeType CAtype;
     [SerializeField] private int Value;
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            CM.AddData(Name, Value);
+            CM.AddData(CAtype, Value);
         }
 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            CM.AddData(Name, -Value);
+            CM.AddData(CAtype, -Value);
         }
     }
 }

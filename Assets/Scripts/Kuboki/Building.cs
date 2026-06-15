@@ -42,7 +42,7 @@ public class Building : MonoBehaviour
     [System.Serializable]
     public struct ParameterChange
     {
-        public string targetParamName; // 変動させたい特徴の名前
+        public CharaAttributeType targetParamName; // 変動させたい特徴の名前
         public int changeValue;        // 変動値
     }
 

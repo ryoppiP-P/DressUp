@@ -59,4 +59,15 @@ public class Character : MonoBehaviour {
                 return System.Array.Empty<CategoryType>();
         }
     }
+
+    // リセット用全脱ぎ
+    public void UnequipAll() {
+        // 全レイヤーのスプライトを消す
+        foreach (var layer in layers)
+            layer.renderer.sprite = null;
+
+        // 保存状態も空にする
+        if (PlayerEquipManager.Instance != null)
+            PlayerEquipManager.Instance.State.ClearAll();
+    }
 }

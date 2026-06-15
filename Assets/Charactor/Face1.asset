@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Face1
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemName: Face1
-  category: 3
+  category: 13
+  rarity: 2
   icon: {fileID: 21300000, guid: 03f463cb74bb0194a873d94680c3377f, type: 3}
   previewSprite: {fileID: 21300000, guid: 296ddad619cd51d43a55a26321441823, type: 3}
+  releaseYear: 2026
+  colors: 05000000
   animations:
   - state: 0
     frames:

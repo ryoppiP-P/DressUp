@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Tops1
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemName: Tops1
-  category: 6
+  category: 5
+  rarity: 0
   icon: {fileID: 21300000, guid: 3fce55af2f029444a8ef9a6899a2aee5, type: 3}
   previewSprite: {fileID: 21300000, guid: 4a9a078fa35a4a048acf83e8c93734bb, type: 3}
+  releaseYear: 2026
+  colors: 
   animations:
   - state: 0
     frames:

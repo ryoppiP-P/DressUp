@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Shoes1
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemName: Shoes1
-  category: 8
+  category: 9
+  rarity: 0
   icon: {fileID: 21300000, guid: 2d72fe1c58d11114687b5eb61d549ec7, type: 3}
   previewSprite: {fileID: 21300000, guid: 439f136c5da908a4a99c75320fb4dcdd, type: 3}
+  releaseYear: 2026
+  colors: 
   animations:
   - state: 0
     frames:

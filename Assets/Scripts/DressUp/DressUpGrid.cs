@@ -10,25 +10,69 @@ public class DressupGrid : MonoBehaviour {
 
     private readonly List<ItemButton> _spawned = new();
 
-    void Start() {
-        ShowCategory(null); // 最初は ALL を表示
+    // 大分類 + 絞り込み種別 + (必要なら)小分類 で表示
+    public void Show(CategoryGroup group, FilterKind kind, CategoryType category = default) {
+        var groupCats = CategoryMap.GetCategories(group);
+
+        IEnumerable<DressUpItem> filtered = kind switch {
+            FilterKind.Equipped => items.Where(IsEquipped),
+            FilterKind.Category => items.Where(i => i.category == category),
+            _ => items.Where(i => groupCats.Contains(i.category)), // All
+        };
+
+        Rebuild(filtered);
     }
 
-    public void ShowCategory(CategoryType? category) {
-        // 既存のボタンを片付ける
+    // 名前検索
+    public void ShowByName(string keyword) {
+        var filtered = string.IsNullOrEmpty(keyword)
+            ? items
+            : items.Where(i => i.itemName.Contains(keyword));
+        Rebuild(filtered);
+    }
+
+    private bool IsEquipped(DressUpItem item) {
+        if (PlayerEquipManager.Instance == null) return false;
+        return PlayerEquipManager.Instance.State.equipped.ContainsValue(item);
+    }
+
+    private void Rebuild(IEnumerable<DressUpItem> filtered) {
         foreach (var b in _spawned) Destroy(b.gameObject);
         _spawned.Clear();
 
-        // 表示対象を絞り込む
-        var filtered = (category == null)
-            ? items
-            : items.Where(i => i.category == category.Value).ToList();
-
-        // 並べる
         foreach (var item in filtered) {
             var btn = Instantiate(itemButtonPrefab, gridContent);
             btn.Setup(item, character);
             _spawned.Add(btn);
         }
     }
+
+    public void ApplyFilter(FilterCondition cond) {
+        IEnumerable<DressUpItem> q = items;
+
+        // 絞り込み
+        if (!string.IsNullOrEmpty(cond.nameKeyword))
+            q = q.Where(i => i.itemName.Contains(cond.nameKeyword));
+        if (cond.rarities.Count > 0)
+            q = q.Where(i => cond.rarities.Contains(i.rarity));
+        if (cond.colors.Count > 0)
+            q = q.Where(i => i.colors.Any(c => cond.colors.Contains(c)));
+        if (cond.releaseYears.Count > 0)
+            q = q.Where(i => cond.releaseYears.Contains(i.releaseYear));
+
+        // 並べ替え（6択）
+        q = cond.sort switch {
+            SortOption.ReleaseNew => q.OrderByDescending(i => i.releaseYear),
+            SortOption.ReleaseOld => q.OrderBy(i => i.releaseYear),
+            SortOption.RarityHigh => q.OrderByDescending(i => i.rarity),
+            SortOption.RarityLow => q.OrderBy(i => i.rarity),
+            SortOption.AcquiredNew => q, // 入手データと繋いでから（仮）
+            SortOption.AcquiredOld => q, // 同上
+            _ => q,
+        };
+
+        Rebuild(q);
+    }
+
+
 }

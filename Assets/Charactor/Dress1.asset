@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Dress1
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemName: Dress1
-  category: 7
+  category: 6
+  rarity: 0
   icon: {fileID: 21300000, guid: caed8d19e7e19a241ba286e50a798f75, type: 3}
   previewSprite: {fileID: 21300000, guid: 0bc1fada8b42e04418ab1d98240195d5, type: 3}
+  releaseYear: 2026
+  colors: 04000000
   animations:
   - state: 0
     frames:

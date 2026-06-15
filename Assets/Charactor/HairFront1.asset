@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: HairFront1
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
-  itemName: HairFront1
-  category: 4
+  itemName: "\u9AEA\u306E\u6BDB"
+  category: 3
+  rarity: 2
   icon: {fileID: 21300000, guid: 352814d85f37414468ebeb56ed5b98ce, type: 3}
   previewSprite: {fileID: 21300000, guid: 3ead2e6343c3b6740a79f67a8c6f3951, type: 3}
+  releaseYear: 2026
+  colors: 00000000
   animations:
   - state: 0
     frames:

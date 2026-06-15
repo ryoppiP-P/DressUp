@@ -10,4 +10,8 @@ public class EquipState {
     public void Clear(CategoryType category) {
         equipped.Remove(category);
     }
+
+    public void ClearAll() {
+        equipped.Clear();
+    }
 }

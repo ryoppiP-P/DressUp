@@ -37,6 +37,13 @@ public class TapEffectManager : MonoBehaviour {
         float interval = 1f / Mathf.Max(1f, frameRate);
         for (int i = _playing.Count - 1; i >= 0; i--) {
             var p = _playing[i];
+
+            // “f‚«Ï‚İ‚È‚çœŠO
+            if (p.sr == null) {
+                _playing.RemoveAt(i);
+                continue;
+            }
+
             p.timer += Time.deltaTime;
             if (p.timer < interval) continue;
 

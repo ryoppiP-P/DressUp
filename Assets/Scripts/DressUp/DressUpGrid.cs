@@ -32,8 +32,8 @@ public class DressupGrid : MonoBehaviour {
     }
 
     private bool IsEquipped(DressUpItem item) {
-        if (PlayerEquipManager.Instance == null) return false;
-        return PlayerEquipManager.Instance.State.equipped.ContainsValue(item);
+        if (SaveManager.Instance == null) return false;
+        return SaveManager.Instance.EquipState.equipped.ContainsValue(item);
     }
 
     private void Rebuild(IEnumerable<DressUpItem> filtered) {

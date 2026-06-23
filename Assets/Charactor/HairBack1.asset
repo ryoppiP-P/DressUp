@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: HairBack1
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
-  itemName: "\u9AEA\u306E\u6BDB"
+  itemName: "\u9AEA\u306E\u6BDBB1"
   category: 4
   rarity: 1
   icon: {fileID: 21300000, guid: 8bb022a3b2184bc46a2204164cb10767, type: 3}

@@ -22,7 +22,7 @@ MonoBehaviour:
   animations:
   - state: 0
     frames:
-    - {fileID: 232945200702703319, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
+    - {fileID: 21300000, guid: caed8d19e7e19a241ba286e50a798f75, type: 3}
     - {fileID: 387493824, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
     - {fileID: 49998215, guid: 43be542e68c8e734db54223479f3cef3, type: 3}
     - {fileID: 210716955, guid: 43be542e68c8e734db54223479f3cef3, type: 3}

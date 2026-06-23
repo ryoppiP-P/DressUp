@@ -9,10 +9,13 @@ public class ItemButton : MonoBehaviour {
 
     public void Setup(DressUpItem item, Character character) {
         iconImage.sprite = item.icon;
-        button.onClick.AddListener(() => character.Equip(item));
+        if (button != null) {
+            button.onClick.RemoveAllListeners(); // “ñd“o˜^–h~
+            button.onClick.AddListener(() => character.Equip(item));
+        }
 
         // ƒŒƒAƒŠƒeƒB‰æ‘œ‚ğo‚·
-        var sprite = rarityTable.GetIcon(item.rarity);
+        Sprite sprite = (rarityTable != null) ? rarityTable.GetIcon(item.rarity) : null;
         if (sprite != null) {
             rarityImage.sprite = sprite;
             rarityImage.enabled = true;

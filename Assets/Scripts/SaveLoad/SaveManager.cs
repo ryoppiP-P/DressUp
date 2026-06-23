@@ -14,6 +14,8 @@ using UnityEngine;
 public class SaveManager : MonoBehaviour {
     public static SaveManager Instance { get; private set; }
 
+    public EquipState EquipState { get; private set; } = new EquipState();
+
     [Header("Debug")]
     [SerializeField] private bool useEncryption = true;
     [SerializeField] private bool verboseLog = false;
@@ -87,19 +89,7 @@ public class SaveManager : MonoBehaviour {
     }
 
     // ===== 便利メソッド（よく使う操作のショートカット） =====
-
-    public void SetStageCleared(string stageId) => Current.stageProgress.SetCleared(stageId);
-    public bool IsStageCleared(string stageId) => Current.stageProgress.IsCleared(stageId);
-
-    public void SetStarCollected(string stageId, int starIndex) => Current.stageProgress.SetStarCollected(stageId, starIndex);
-    public bool IsStarCollected(string stageId, int starIndex) => Current.stageProgress.IsStarCollected(stageId, starIndex);
-    public int GetStarCount(string stageId) => Current.stageProgress.GetStarCount(stageId);
-
-
     public void AddCoins(int amount) => Current.playerData.coinCount += amount;
     public int GetCoins() => Current.playerData.coinCount;
     public void SetCoins(int amount) => Current.playerData.coinCount = amount;
-
-    public bool IsSkinUnlocked(string colorId) => Current.companionCustom.IsSkinUnlocked(colorId);
-    public void UnlockSkin(string colorId) => Current.companionCustom.UnlockSkin(colorId);
 }

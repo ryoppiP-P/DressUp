@@ -32,7 +32,7 @@ public enum CharaState {
     Idle,
     Walk,
     Sit,
-    Stady,
+    Study,
     Reading,
     Jump,
 }

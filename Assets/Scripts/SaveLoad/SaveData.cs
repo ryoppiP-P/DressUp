@@ -8,6 +8,7 @@
 //==============================================================================
 using System;
 using System.Collections.Generic;
+using static Character;
 
 [Serializable]
 public class SaveData {
@@ -37,8 +38,40 @@ public class SettingsData {
 // 着せ替え関連のセーブデータ
 [Serializable]
 public class DressUpSaveData {
-    public List<EquippedEntry> equipped = new List<EquippedEntry>();    // 現在装備
-    public List<SavedOutfitData> savedOutfits = new List<SavedOutfitData>();    // 保存コーデ
+    public List<CharacterDressData> characters = new List<CharacterDressData>();
+
+    // ID から取得（無ければ作る）
+    public CharacterDressData GetOrCreate(string characterId) {
+        var c = characters.Find(x => x.characterId == characterId);
+        if (c == null) {
+            c = new CharacterDressData { characterId = characterId };
+            characters.Add(c);
+        }
+        return c;
+    }
+}
+
+[Serializable]
+public class CharacterDressData {
+    public string characterId;
+    public List<EquippedEntry> equipped = new List<EquippedEntry>();
+    public List<SavedOutfitData> savedOutfits = new List<SavedOutfitData>();
+    public BirthDate birthDate = new BirthDate();
+}
+
+[System.Serializable]
+public class BirthDate {
+    public int year;
+    public int month;
+    public int day;
+
+    public BirthDate() { }
+    public BirthDate(int y, int m, int d) { year = y; month = m; day = d; }
+
+    // DateTime に変換（無効値なら null）
+    public System.DateTime? ToDateTime() {
+        try { return new System.DateTime(year, month, day); } catch { return null; }
+    }
 }
 
 [Serializable]

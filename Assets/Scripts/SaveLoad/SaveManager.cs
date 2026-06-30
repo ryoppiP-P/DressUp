@@ -8,13 +8,14 @@
 //  セーブデータの初期適応は SaveApplier に任せる。
 //==============================================================================
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 public class SaveManager : MonoBehaviour {
     public static SaveManager Instance { get; private set; }
 
-    public EquipState EquipState { get; private set; } = new EquipState();
+    private readonly Dictionary<string, EquipState> _equipStates = new();
 
     [Header("Debug")]
     [SerializeField] private bool useEncryption = true;
@@ -92,4 +93,13 @@ public class SaveManager : MonoBehaviour {
     public void AddCoins(int amount) => Current.playerData.coinCount += amount;
     public int GetCoins() => Current.playerData.coinCount;
     public void SetCoins(int amount) => Current.playerData.coinCount = amount;
+
+    // キャラIDごとの現在装備を取得（無ければ作る）
+    public EquipState GetEquipState(string characterId) {
+        if (!_equipStates.TryGetValue(characterId, out var state)) {
+            state = new EquipState();
+            _equipStates[characterId] = state;
+        }
+        return state;
+    }
 }

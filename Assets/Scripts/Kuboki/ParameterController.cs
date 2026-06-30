@@ -13,7 +13,7 @@ public class ParameterController : MonoBehaviour
 {
     public CharacterManager CM;
 
-    [SerializeField] private CharaAttributeType CAtype;
+    [SerializeField] private PersonalityAxis CAtype;
     [SerializeField] private int Value;
 
     private void Update()

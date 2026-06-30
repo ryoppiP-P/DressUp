@@ -11,21 +11,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum CharaAttributeType
-{
-    [InspectorName("知性")] Intelligence,
-    [InspectorName("優しさ")] Kindness,
-    [InspectorName("活発")] Active,
-    [InspectorName("社交性")] Sociability,
-    [InspectorName("内向的")] Introverted,
-    [InspectorName("わがまま")] Selfish,
-}
-
 // キャラクターの構成要素
 [Serializable]
 public struct CharaData
 {
-    public CharaAttributeType AttributeType; // 列挙型の特徴
+    public PersonalityAxis AttributeType; // 列挙型の特徴
     [Range(0, 100)] public int Parameter;   // 特徴の値
 }
 
@@ -109,7 +99,7 @@ public class CharacterManager : MonoBehaviour
     }
 
     // 特徴を受け取る
-    public int GetData(CharaAttributeType type)
+    public int GetData(PersonalityAxis type)
     {
         foreach (var pair in dataList)
         {
@@ -121,7 +111,7 @@ public class CharacterManager : MonoBehaviour
     }
 
     // 特徴の値をセットする
-    public void SetData(CharaAttributeType type, int newValue)
+    public void SetData(PersonalityAxis type, int newValue)
     {
         for (int i = 0; i < dataList.Count; i++)
         {
@@ -138,7 +128,7 @@ public class CharacterManager : MonoBehaviour
     }
 
     // 特徴を加算(減算)
-    public void AddData(CharaAttributeType type, int addValue)
+    public void AddData(PersonalityAxis type, int addValue)
     {
         for (int i = 0; i < dataList.Count; i++)
         {

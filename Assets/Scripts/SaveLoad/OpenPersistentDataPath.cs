@@ -1,4 +1,5 @@
 // セーブデータ入ってる場所を開くショートカット
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -20,3 +21,4 @@ public static class OpenPersistentDataPath {
         }
     }
 }
+#endif

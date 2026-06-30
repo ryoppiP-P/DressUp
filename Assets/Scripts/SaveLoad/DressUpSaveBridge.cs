@@ -7,22 +7,19 @@ public static class DressUpSaveBridge {
     //==========================================================================
 
     // 現在の装備を永続化
-    public static void SaveEquipped() {
+    public static void SaveEquipped(string characterId) {
         if (SaveManager.Instance == null) return;
-
-        var data = SaveManager.Instance.Current.dressUp;
-        data.equipped = ToEntries(SaveManager.Instance.EquipState.equipped);
+        var data = SaveManager.Instance.Current.dressUp.GetOrCreate(characterId);
+        data.equipped = ToEntries(SaveManager.Instance.GetEquipState(characterId).equipped);
         SaveManager.Instance.SaveAuto();
     }
 
     // 永続データを State に復元
-    public static void LoadIntoState(ItemDatabase db) {
+    public static void LoadIntoState(string characterId, ItemDatabase db) {
         if (SaveManager.Instance == null || db == null) return;
-
-        var data = SaveManager.Instance.Current.dressUp;
-        var state = SaveManager.Instance.EquipState;
+        var data = SaveManager.Instance.Current.dressUp.GetOrCreate(characterId);
+        var state = SaveManager.Instance.GetEquipState(characterId);
         state.ClearAll();
-
         foreach (var pair in ToDict(data.equipped, db))
             state.Set(pair.Key, pair.Value);
     }
@@ -32,36 +29,29 @@ public static class DressUpSaveBridge {
     //==========================================================================
 
     // SavedOutfit 1件を末尾に追加して永続化
-    public static void AddSavedOutfit(SavedOutfit outfit) {
+    public static void AddSavedOutfit(string characterId, SavedOutfit outfit) {
         if (SaveManager.Instance == null) return;
-
-        var data = SaveManager.Instance.Current.dressUp;
-        data.savedOutfits.Add(new SavedOutfitData {
-            items = ToEntries(outfit.items)
-        });
+        var data = SaveManager.Instance.Current.dressUp.GetOrCreate(characterId);
+        data.savedOutfits.Add(new SavedOutfitData { items = ToEntries(outfit.items) });
         SaveManager.Instance.SaveAuto();
     }
 
     // 指定インデックスの保存コーデを削除して永続化
-    public static void RemoveSavedOutfit(int index) {
+    public static void RemoveSavedOutfit(string characterId, int index) {
         if (SaveManager.Instance == null) return;
-
-        var data = SaveManager.Instance.Current.dressUp;
+        var data = SaveManager.Instance.Current.dressUp.GetOrCreate(characterId);
         if (index < 0 || index >= data.savedOutfits.Count) return;
         data.savedOutfits.RemoveAt(index);
         SaveManager.Instance.SaveAuto();
     }
 
     // 保存コーデを全部 SavedOutfit のリストに復元して返す
-    public static List<SavedOutfit> LoadSavedOutfits(ItemDatabase db) {
+    public static List<SavedOutfit> LoadSavedOutfits(string characterId, ItemDatabase db) {
         var result = new List<SavedOutfit>();
         if (SaveManager.Instance == null || db == null) return result;
-
-        var data = SaveManager.Instance.Current.dressUp;
-        foreach (var od in data.savedOutfits) {
-            var outfit = new SavedOutfit { items = ToDict(od.items, db) };
-            result.Add(outfit);
-        }
+        var data = SaveManager.Instance.Current.dressUp.GetOrCreate(characterId);
+        foreach (var od in data.savedOutfits)
+            result.Add(new SavedOutfit { items = ToDict(od.items, db) });
         return result;
     }
 

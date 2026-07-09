@@ -16,7 +16,7 @@ public class OutfitSlots : MonoBehaviour {
 
     // 起動時：保存済みコーデをスロットへ復元
     void RestoreFromSave() {
-        var outfits = DressUpSaveBridge.LoadSavedOutfits(character.CharacterId, itemDatabase);
+        var outfits = DressUpSaveBridge.LoadSavedOutfits(itemDatabase);
         for (int i = 0; i < slots.Count; i++) {
             if (i < outfits.Count) {
                 int dataIndex = i; // この slot が savedOutfits の何番目か
@@ -37,7 +37,7 @@ public class OutfitSlots : MonoBehaviour {
         var outfit = new SavedOutfit();
         outfit.Capture(SaveManager.Instance.GetEquipState(character.CharacterId));
 
-        DressUpSaveBridge.AddSavedOutfit(character.CharacterId, outfit);
+        DressUpSaveBridge.AddSavedOutfit(outfit);
         RestoreFromSave();
     }
 
@@ -70,7 +70,7 @@ public class OutfitSlots : MonoBehaviour {
     }
 
     void DeleteOutfit(int dataIndex) {
-        DressUpSaveBridge.RemoveSavedOutfit(character.CharacterId, dataIndex);
+        DressUpSaveBridge.RemoveSavedOutfit(dataIndex);
         RestoreFromSave(); // 削除後に詰め直して再表示
     }
 }

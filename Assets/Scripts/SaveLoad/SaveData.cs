@@ -40,6 +40,9 @@ public class SettingsData {
 public class DressUpSaveData {
     public List<CharacterDressData> characters = new List<CharacterDressData>();
 
+    // コーデ保存
+    public List<SavedOutfitData> savedOutfits = new List<SavedOutfitData>();
+
     // ID から取得（無ければ作る）
     public CharacterDressData GetOrCreate(string characterId) {
         var c = characters.Find(x => x.characterId == characterId);
@@ -55,7 +58,6 @@ public class DressUpSaveData {
 public class CharacterDressData {
     public string characterId;
     public List<EquippedEntry> equipped = new List<EquippedEntry>();
-    public List<SavedOutfitData> savedOutfits = new List<SavedOutfitData>();
     public BirthDate birthDate = new BirthDate();
 }
 

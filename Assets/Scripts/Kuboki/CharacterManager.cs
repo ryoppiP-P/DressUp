@@ -37,9 +37,21 @@ public class CharacterManager : MonoBehaviour
     [Header("移動速度")]
     [SerializeField] private float moveSpeed = 3.0f;
 
-    private void Awake()
-    {
-    }
+    [Header("交流設定")]
+    [SerializeField] private float interactRange = 1.0f;      // この距離以内で交流
+    [SerializeField] private float interactCooldown = 3.0f;   // 同じ相手と再交流するまでの間隔
+
+    [Header("交流でのパラメータ変化")]
+    [SerializeField] private int interactDelta = 2; // 1回の交流で動かす量
+
+    // 相手ごとの「次に交流できる時刻」
+    private readonly Dictionary<CharacterManager, float> _nextInteractTime = new();
+
+    // 全キャラを探すための静的リスト（登録/解除で管理）
+    private static readonly List<CharacterManager> _all = new();
+
+    private void OnEnable() { _all.Add(this); }
+    private void OnDisable() { _all.Remove(this); }
 
     private void Update()
     {
@@ -55,6 +67,7 @@ public class CharacterManager : MonoBehaviour
 
             CheckRouteProgress();
         }
+        CheckInteractions();
     }
 
     // 建物から歩行ルートを取得して最初の中継地点へ向けて移動開始する
@@ -95,6 +108,57 @@ public class CharacterManager : MonoBehaviour
                 isFollowingRoute = false;
                 currentRoute.Clear();
             }
+        }
+    }
+
+    // 近くのキャラと交流する
+    private void CheckInteractions() {
+        foreach (var other in _all) {
+            if (other == this) continue;
+
+            float dist = Vector2.Distance(transform.position, other.transform.position);
+            if (dist > interactRange) continue;
+
+            // クールダウン中ならスキップ
+            if (_nextInteractTime.TryGetValue(other, out float next) && Time.time < next)
+                continue;
+
+            Interact(other);
+
+            // 双方にクールダウンを設定（二重発生を防ぐ）
+            _nextInteractTime[other] = Time.time + interactCooldown;
+            other._nextInteractTime[this] = Time.time + interactCooldown;
+        }
+    }
+
+    private void Interact(CharacterManager other) {
+        Debug.Log($"--- {name} が {other.name} と交流 ---");
+        // 例：全軸について、相手の値に少し近づく（影響を受ける）
+        foreach (PersonalityAxis axis in Enum.GetValues(typeof(PersonalityAxis))) {
+            int mine = GetData(axis);
+            int yours = other.GetData(axis);
+
+            int delta = 0;
+            if (yours > mine) delta = +interactDelta;
+            else if (yours < mine) delta = -interactDelta;
+
+            if (delta != 0) {
+                AddData(axis, delta);
+                // 変化があった軸だけ、変化前 → 変化後 を出す
+                int after = Mathf.Clamp(GetData(axis), 0, 100);
+                Debug.Log($"  {axis}: {mine} → {after} (相手 {yours}, {(delta > 0 ? "+" : "")}{delta})");
+            }
+        }
+
+        ClampAll(); // 0-100 に収める
+    }
+
+    // 全パラメータを 0-100 に収める
+    private void ClampAll() {
+        for (int i = 0; i < dataList.Count; i++) {
+            var d = dataList[i];
+            d.Parameter = Mathf.Clamp(d.Parameter, 0, 100);
+            dataList[i] = d;
         }
     }
 

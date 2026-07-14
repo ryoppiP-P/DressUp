@@ -3,12 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class DressupGrid : MonoBehaviour {
-    [SerializeField] private Character character;
     [SerializeField] private Transform gridContent;     // Grid Layout Group の Content
     [SerializeField] private ItemButton itemButtonPrefab;
     [SerializeField] private List<DressUpItem> items;   // 表示したいアイテムを並べる
 
     private readonly List<ItemButton> _spawned = new();
+
+    // 今の対象キャラは DressUpTarget から取る
+    private Character character => DressUpTarget.Instance != null
+        ? DressUpTarget.Instance.Current : null;
+
+    void OnEnable() {
+        if (DressUpTarget.Instance != null)
+            DressUpTarget.Instance.OnTargetChanged += OnTargetChanged;
+        OnTargetChanged(character); // 開いた時点の対象で一度描画
+    }
+
+    void OnDisable() {
+        if (DressUpTarget.Instance != null)
+            DressUpTarget.Instance.OnTargetChanged -= OnTargetChanged;
+    }
+
+    // 対象が変わったら作り直す（引数は使わないが Action<Character> に合わせる）
+    void OnTargetChanged(Character _) {
+        Rebuild(items);
+    }
 
     // 大分類 + 絞り込み種別 + (必要なら)小分類 で表示
     public void Show(CategoryGroup group, FilterKind kind, CategoryType category = default) {
@@ -39,6 +58,8 @@ public class DressupGrid : MonoBehaviour {
     private void Rebuild(IEnumerable<DressUpItem> filtered) {
         foreach (var b in _spawned) Destroy(b.gameObject);
         _spawned.Clear();
+
+        if (character == null) return;
 
         foreach (var item in filtered) {
             var btn = Instantiate(itemButtonPrefab, gridContent);
@@ -73,6 +94,4 @@ public class DressupGrid : MonoBehaviour {
 
         Rebuild(q);
     }
-
-
 }

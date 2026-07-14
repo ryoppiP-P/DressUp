@@ -466,7 +466,9 @@ MonoBehaviour:
   frameRate: 8
   freezeState: 0
   itemDatabase: {fileID: 11400000, guid: 717b676e552a1904da01bfe93fab13e1, type: 2}
-  defaultBody: {fileID: 0}
+  characterId: chara_01
+  displayName: "\u307F\u307F"
+  defaultBody: {fileID: 11400000, guid: f2dea2bd3838ab24382a1864ca83a1ec, type: 2}
 --- !u!114 &7963597322337252418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,17 +483,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterManager
   dataList:
   - AttributeType: 0
-    Parameter: 50
+    Parameter: 79
   - AttributeType: 1
-    Parameter: 50
+    Parameter: 64
   - AttributeType: 2
-    Parameter: 50
+    Parameter: 76
   - AttributeType: 3
-    Parameter: 50
+    Parameter: 73
   - AttributeType: 4
-    Parameter: 50
+    Parameter: 87
   - AttributeType: 5
-    Parameter: 50
+    Parameter: 79
   arrivalDistance: 0.2
   moveSpeed: 3
 --- !u!1 &5284281669969093683

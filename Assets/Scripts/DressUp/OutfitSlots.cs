@@ -1,16 +1,33 @@
+// 保存したコーデのリスト
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class OutfitSlots : MonoBehaviour {
-    [SerializeField] private Character character;
     [SerializeField] private Button saveButton;
     [SerializeField] private List<OutfitSlot> slots;
     [SerializeField] private OutfitCapture capture;
     [SerializeField] private ItemDatabase itemDatabase;
 
+    private Character character => DressUpTarget.Instance != null
+        ? DressUpTarget.Instance.Current : null;
+
+    void OnEnable() {
+        if (DressUpTarget.Instance != null)
+            DressUpTarget.Instance.OnTargetChanged += OnTargetChanged;
+    }
+
+    void OnDisable() {
+        if (DressUpTarget.Instance != null)
+            DressUpTarget.Instance.OnTargetChanged -= OnTargetChanged;
+    }
+
     void Start() {
         saveButton.onClick.AddListener(SaveCurrent);
+        if (character != null) RestoreFromSave();
+    }
+
+    void OnTargetChanged(Character _) {
         RestoreFromSave();
     }
 
@@ -30,7 +47,7 @@ public class OutfitSlots : MonoBehaviour {
     }
 
     void SaveCurrent() {
-        if (SaveManager.Instance == null) return;
+        if (SaveManager.Instance == null || character == null) return;
         int index = slots.FindIndex(s => s.IsEmpty);
         if (index < 0) return;
 
@@ -42,6 +59,7 @@ public class OutfitSlots : MonoBehaviour {
     }
 
     void Load(SavedOutfit outfit) {
+        if (character == null) return;
         character.UnequipAll();
         foreach (var pair in outfit.items)
             character.Equip(pair.Value);
@@ -49,7 +67,8 @@ public class OutfitSlots : MonoBehaviour {
 
     // 保存コーデから一時的にキャラを着せ替えて撮影し、元に戻す
     Sprite BuildThumbnail(SavedOutfit outfit) {
-        if (capture == null || SaveManager.Instance == null) return null;
+        if (capture == null || SaveManager.Instance == null || character == null)
+            return null;
 
         // 現在装備を退避
         var backup = new SavedOutfit();

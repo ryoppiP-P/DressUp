@@ -28,10 +28,14 @@ public class Character : MonoBehaviour {
     [SerializeField] private ItemDatabase itemDatabase;
 
     [Header("Identity")]
-    [SerializeField] private string characterId = "chara_01"; // セーブのキー（不変）
+    [SerializeField] private string characterId = "charaID_0001"; // セーブのキー（不変）
     [SerializeField] private string displayName = "みみ";      // 表示用（変更可）
     public string CharacterId => characterId;
     public string DisplayName => displayName;
+
+    public void SetCharacterId(string id) {
+        characterId = id;
+    }
 
     [Header("Default")]
     [SerializeField] private DressUpItem defaultBody; // 常に着る素体
@@ -171,5 +175,15 @@ public class Character : MonoBehaviour {
             default:
                 return System.Array.Empty<CategoryType>();
         }
+    }
+
+    public void ReloadForId() {
+        if (SaveManager.Instance != null && itemDatabase != null)
+            DressUpSaveBridge.LoadIntoState(characterId, itemDatabase);
+
+        EnsureBody();
+
+        if (SaveManager.Instance != null)
+            ApplyState(SaveManager.Instance.GetEquipState(characterId));
     }
 }

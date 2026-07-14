@@ -24,7 +24,12 @@ public class SaveData {
 // プレイヤー全体（コイン等）
 [Serializable]
 public class PlayerData {
-    public int coinCount;
+    public int nutCurrency = 0;    // 木の実通貨（仮）
+    public int honeyCurrency = 0;  // はちみつ通貨（仮）
+}
+public enum CurrencyType {
+    Nut,    // 木の実
+    Honey,  // はちみつ
 }
 
 // 設定

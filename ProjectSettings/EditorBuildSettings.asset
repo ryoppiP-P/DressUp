@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestSceneKuboki.unity
     guid: 237c99bd0752f9d4e8c724a3aad75850
+  - enabled: 1
+    path: Assets/Scenes/TestCharaSelect.unity
+    guid: 26235adbbc9cad6498396c78d119f382
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 61b73cb83f2326b4d830806432ae59bb, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

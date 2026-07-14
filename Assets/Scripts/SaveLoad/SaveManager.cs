@@ -27,6 +27,9 @@ public class SaveManager : MonoBehaviour {
     // 現在メモリ上のデータ（アクセス用）
     public SaveData Current { get; private set; }
 
+    // セーブデータの変更を通知するイベント（コイン等の変化をUIに反映させるために使う）
+    public event Action OnCurrencyChanged;
+
     private void Awake() {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
@@ -89,17 +92,45 @@ public class SaveManager : MonoBehaviour {
         if (verboseLog) Debug.Log($"[SaveManager] Saved to {SavePath}");
     }
 
+
     // ===== 便利メソッド（よく使う操作のショートカット） =====
-    public void AddCoins(int amount) => Current.playerData.coinCount += amount;
-    public int GetCoins() => Current.playerData.coinCount;
-    public void SetCoins(int amount) => Current.playerData.coinCount = amount;
 
     // キャラIDごとの現在装備を取得（無ければ作る）
     public EquipState GetEquipState(string characterId) {
-        if (!_equipStates.TryGetValue(characterId, out var state)) {
+        if (!_equipStates.TryGetValue(characterId, out var state) || state == null) {
             state = new EquipState();
             _equipStates[characterId] = state;
         }
         return state;
+    }
+
+    // ===== 通貨 =====
+    public int GetCurrency(CurrencyType type) {
+        if (Current == null) return 0;
+        var p = Current.playerData;
+        return type switch {
+            CurrencyType.Nut => p.nutCurrency,
+            CurrencyType.Honey => p.honeyCurrency,
+            _ => 0,
+        };
+    }
+
+    // 加算（マイナスを渡せば減算にも使える）
+    public void AddCurrency(CurrencyType type, int amount) {
+        if (Current == null) Current = new SaveData();
+        var p = Current.playerData;
+        switch (type) {
+            case CurrencyType.Nut: p.nutCurrency = Mathf.Max(0, p.nutCurrency + amount); break;
+            case CurrencyType.Honey: p.honeyCurrency = Mathf.Max(0, p.honeyCurrency + amount); break;
+        }
+        SaveAuto();                  // 変更を保存（オートセーブ扱い）
+        OnCurrencyChanged?.Invoke(); // UIへ通知
+    }
+
+    // 支払い（足りれば減らして true、足りなければ false）
+    public bool TrySpendCurrency(CurrencyType type, int cost) {
+        if (GetCurrency(type) < cost) return false;
+        AddCurrency(type, -cost);
+        return true;
     }
 }

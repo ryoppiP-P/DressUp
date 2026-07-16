@@ -133,4 +133,18 @@ public class SaveManager : MonoBehaviour {
         AddCurrency(type, -cost);
         return true;
     }
+
+
+    // ===== ƒLƒƒƒ‰–¼ =====
+
+    public string GetCharacterName(string characterId) {
+        if (Current == null) return "";
+        return Current.dressUp.GetOrCreate(characterId).characterName;
+    }
+
+    public void SetCharacterName(string characterId, string name) {
+        if (Current == null) Current = new SaveData();
+        Current.dressUp.GetOrCreate(characterId).characterName = name;
+        SaveAuto();
+    }
 }

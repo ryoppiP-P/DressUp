@@ -52,6 +52,8 @@ public class Character : MonoBehaviour {
 
         if (SaveManager.Instance != null)
             ApplyState(SaveManager.Instance.GetEquipState(characterId));
+
+        LoadDisplayName();
     }
 
     private void EnsureBody() {
@@ -185,5 +187,21 @@ public class Character : MonoBehaviour {
 
         if (SaveManager.Instance != null)
             ApplyState(SaveManager.Instance.GetEquipState(characterId));
+
+        LoadDisplayName();
+    }
+
+    public void SetDisplayName(string name) {
+        displayName = name;
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SetCharacterName(characterId, name);
+    }
+
+    // セーブに名前があれば displayName に反映（無ければInspectorの初期名のまま）
+    private void LoadDisplayName() {
+        if (SaveManager.Instance == null) return;
+        string saved = SaveManager.Instance.GetCharacterName(characterId);
+        if (!string.IsNullOrEmpty(saved))
+            displayName = saved;
     }
 }

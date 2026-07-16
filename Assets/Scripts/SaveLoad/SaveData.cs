@@ -62,6 +62,7 @@ public class DressUpSaveData {
 [Serializable]
 public class CharacterDressData {
     public string characterId;
+    public string characterName = "";   // ƒLƒƒƒ‰‚Ì–¼‘O
     public List<EquippedEntry> equipped = new List<EquippedEntry>();
     public BirthDate birthDate = new BirthDate();
 }

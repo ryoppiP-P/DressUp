@@ -47,57 +47,31 @@ public class CameraController : MonoBehaviour
     // ==================================
     // PC操作
     // ==================================
-    void HandleMouse()
-    {
-        // 左クリック押しながらドラッグ
-        if (Mouse.current.leftButton.isPressed)
-        {
-            Vector2 currentMousePosition = Mouse.current.position.ReadValue();
-
-            Vector2 delta = currentMousePosition - lastMousePosition;
-
-            // 横か縦の大きい方だけ動かす
-            if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
-            {
-                transform.Translate(
-                    -delta.x * panSpeed,
-                    0,
-                    0
-                );
-            }
-            else
-            {
-                transform.Translate(
-                    0,
-                    -delta.y * panSpeed,
-                    0
-                );
-            }
-
-            lastMousePosition = currentMousePosition;
-        }
-
-        // クリック開始時
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
+    void HandleMouse() {
+        // --- 押した瞬間：先に初期化する（これが最重要）---
+        if (Mouse.current.leftButton.wasPressedThisFrame) {
             lastMousePosition = Mouse.current.position.ReadValue();
 
-            // ダブルクリック
+            // ダブルクリック判定
             if (Time.time - lastClickTime < doubleClickTime)
-            {
                 ResetCamera();
-            }
-
             lastClickTime = Time.time;
         }
 
-        // ホイールズーム
-        float scroll = Mouse.current.scroll.ReadValue().y;
+        // --- 押している間：ドラッグ ---
+        if (Mouse.current.leftButton.isPressed) {
+            Vector2 current = Mouse.current.position.ReadValue();
+            Vector2 delta = current - lastMousePosition;
 
-        if (scroll != 0)
-        {
-            Zoom(-scroll * zoomSpeed * 0.01f);
+            transform.Translate(-delta.x * panSpeed, -delta.y * panSpeed, 0);
+
+            lastMousePosition = current; // 毎フレーム更新
         }
+
+        // --- ホイールズーム ---
+        float scroll = Mouse.current.scroll.ReadValue().y;
+        if (scroll != 0)
+            Zoom(-scroll * zoomSpeed * 0.01f);
     }
 
     // ==================================

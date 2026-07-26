@@ -33,6 +33,9 @@ public class Character : MonoBehaviour {
     public string CharacterId => characterId;
     public string DisplayName => displayName;
 
+    [Header("Scale")]
+    [SerializeField] private float referenceHeight = 500f; // 素体の高さpxに合わせる
+
     public void SetCharacterId(string id) {
         characterId = id;
     }
@@ -61,6 +64,15 @@ public class Character : MonoBehaviour {
         var state = SaveManager.Instance.GetEquipState(characterId);
         if (!state.equipped.ContainsKey(CategoryType.Body))
             state.Set(CategoryType.Body, defaultBody);
+    }
+
+    // 画像サイズを500x500に揃える（素体の高さpxに合わせる）
+    private void FitScale(SpriteRenderer sr, Sprite sprite) {
+        if (sr == null || sprite == null) return;
+        float spriteHeight = sprite.rect.height;
+        if (spriteHeight <= 0f) return;
+        float scale = referenceHeight / spriteHeight;
+        sr.transform.localScale = new Vector3(scale, scale, 1f);
     }
 
     //--------------------------------------------------------------------------
@@ -154,11 +166,15 @@ public class Character : MonoBehaviour {
                 layer.renderer.sprite = null;
                 continue;
             }
+            Sprite chosen;
             var frames = layer.item.GetFrames(state);
             if (frames != null && frames.Length > 0)
-                layer.renderer.sprite = frames[frameIndex % frames.Length];
+                chosen = frames[frameIndex % frames.Length];
             else
-                layer.renderer.sprite = layer.item.previewSprite;
+                chosen = layer.item.previewSprite;
+
+            layer.renderer.sprite = chosen;
+            FitScale(layer.renderer, chosen);   // ← セット直後にスケール補正
         }
     }
 

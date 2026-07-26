@@ -5,9 +5,15 @@ using System.Linq;
 public class DressupGrid : MonoBehaviour {
     [SerializeField] private Transform gridContent;     // Grid Layout Group の Content
     [SerializeField] private ItemButton itemButtonPrefab;
-    [SerializeField] private List<DressUpItem> items;   // 表示したいアイテムを並べる
+    [SerializeField] private ItemDatabase database;     // ScriptableObject で作ったアイテムデータベース
 
     private readonly List<ItemButton> _spawned = new();
+
+    // 全アイテムはDBから取る（nullや空はここで吸収）
+    private IEnumerable<DressUpItem> AllItems =>
+        (database != null && database.allItems != null)
+            ? database.allItems.Where(i => i != null)
+            : Enumerable.Empty<DressUpItem>();
 
     // 今の対象キャラは DressUpTarget から取る
     private Character character => DressUpTarget.Instance != null
@@ -26,7 +32,7 @@ public class DressupGrid : MonoBehaviour {
 
     // 対象が変わったら作り直す（引数は使わないが Action<Character> に合わせる）
     void OnTargetChanged(Character _) {
-        Rebuild(items);
+        Rebuild(AllItems);
     }
 
     // 大分類 + 絞り込み種別 + (必要なら)小分類 で表示
@@ -34,9 +40,9 @@ public class DressupGrid : MonoBehaviour {
         var groupCats = CategoryMap.GetCategories(group);
 
         IEnumerable<DressUpItem> filtered = kind switch {
-            FilterKind.Equipped => items.Where(IsEquipped),
-            FilterKind.Category => items.Where(i => i.category == category),
-            _ => items.Where(i => groupCats.Contains(i.category)), // All
+            FilterKind.Equipped => AllItems.Where(IsEquipped),
+            FilterKind.Category => AllItems.Where(i => i.category == category),
+            _ => AllItems.Where(i => groupCats.Contains(i.category)), // All
         };
 
         Rebuild(filtered);
@@ -45,8 +51,8 @@ public class DressupGrid : MonoBehaviour {
     // 名前検索
     public void ShowByName(string keyword) {
         var filtered = string.IsNullOrEmpty(keyword)
-            ? items
-            : items.Where(i => i.itemName.Contains(keyword));
+            ? AllItems
+            : AllItems.Where(i => i.itemName.Contains(keyword));
         Rebuild(filtered);
     }
 
@@ -58,10 +64,10 @@ public class DressupGrid : MonoBehaviour {
     private void Rebuild(IEnumerable<DressUpItem> filtered) {
         foreach (var b in _spawned) Destroy(b.gameObject);
         _spawned.Clear();
-
         if (character == null) return;
 
         foreach (var item in filtered) {
+            if (item == null) continue;   // null はスキップ（クラッシュ防止）
             var btn = Instantiate(itemButtonPrefab, gridContent);
             btn.Setup(item, character);
             _spawned.Add(btn);
@@ -69,7 +75,7 @@ public class DressupGrid : MonoBehaviour {
     }
 
     public void ApplyFilter(FilterCondition cond) {
-        IEnumerable<DressUpItem> q = items;
+        IEnumerable<DressUpItem> q = AllItems;
 
         // 絞り込み
         if (!string.IsNullOrEmpty(cond.nameKeyword))

@@ -15881,19 +15881,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DressupGrid
   gridContent: {fileID: 1107023019}
   itemButtonPrefab: {fileID: 7660760687558546663, guid: 2f948674d9251c9429c3b3b131453d2f, type: 3}
-  items:
-  - {fileID: 11400000, guid: d2d2d0f0ab818e54fa49cd726025fc0d, type: 2}
-  - {fileID: 11400000, guid: 2201ff0a6f79b5c43936bfb5d17cc696, type: 2}
-  - {fileID: 11400000, guid: 4a880bbd14710e343b9f08656188e5be, type: 2}
-  - {fileID: 11400000, guid: 60ed8a958db6cc14f9cbe62efb556982, type: 2}
-  - {fileID: 11400000, guid: c0ca86438ca391445ba0d7c9ece7e34c, type: 2}
-  - {fileID: 11400000, guid: a4a9d43359b6424468fbda1902e89d93, type: 2}
-  - {fileID: 11400000, guid: 9fed55107ecfb014db8b3365af08a7e2, type: 2}
-  - {fileID: 11400000, guid: d58b1fa8c6ac40b47955037e24fe39f4, type: 2}
-  - {fileID: 11400000, guid: 07ab56d8b8f96d34d9fedd76e505a140, type: 2}
-  - {fileID: 11400000, guid: a8d1cb8ba470750468fcad64df8cce35, type: 2}
-  - {fileID: 11400000, guid: 7ac4a1bd4f20e18438fbe40192f4f1a6, type: 2}
-  - {fileID: 11400000, guid: 38fde7fe8a70c14459989205b192bd92, type: 2}
+  database: {fileID: 11400000, guid: 717b676e552a1904da01bfe93fab13e1, type: 2}
 --- !u!4 &1503710006
 Transform:
   m_ObjectHideFlags: 0
@@ -22082,14 +22070,18 @@ PrefabInstance:
     - target: {fileID: 383718401641633493, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: defaultBody
       value: 
-      objectReference: {fileID: 11400000, guid: f2dea2bd3838ab24382a1864ca83a1ec, type: 2}
+      objectReference: {fileID: 11400000, guid: c35ccb36d62a449458ff295cc96cdcfd, type: 2}
+    - target: {fileID: 442228420589564060, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1081918101893521298, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.183
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 1081918101893521298, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 1081918101893521298, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -22123,9 +22115,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3625502680127239173, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4448683156133536378, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_Size.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4448683156133536378, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_Size.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4448683156133536378, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d296790494361b44c8c0a7bcd3df4f29, type: 3}
+    - target: {fileID: 4448683156133536378, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4875607527561515974, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 4914196261549469962, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7963597322337252418, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: dataList.Array.data[0].Parameter

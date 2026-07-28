@@ -30,7 +30,7 @@ public class DressUpItem : ScriptableObject {
     public Sprite icon;           // グリッドに表示するアイコン
     public Sprite previewSprite;  // キャラのレイヤーに差し込むスプライト
 
-    public int releaseYear;          // リリース年（絞り込み・並べ替え用）
+    public int releaseYear = 2026;          // リリース年（絞り込み・並べ替え用）
     public ItemColor[] colors;       // このアイテムが持つ色（複数可）
 
     [System.Serializable]

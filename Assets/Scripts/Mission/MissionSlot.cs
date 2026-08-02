@@ -12,8 +12,10 @@ using TMPro;
 
 public class MissionSlot : MonoBehaviour {
     [Header("報酬表示")]
-    [SerializeField] private Image rewardIcon;       // どんぐり/はちみつのアイコン
-    [SerializeField] private TMP_Text rewardAmount;  // ×20 など
+    [SerializeField] private GameObject nutRewardObj;    // どんぐりアイコン
+    [SerializeField] private TMP_Text nutRewardText;
+    [SerializeField] private GameObject honeyRewardObj;  // はちみつアイコン
+    [SerializeField] private TMP_Text honeyRewardText;
 
     [Header("内容")]
     [SerializeField] private TMP_Text description;   // ミッション内容
@@ -42,13 +44,20 @@ public class MissionSlot : MonoBehaviour {
         _data = data;
         description.text = data.description;
 
-        // 報酬アイコンは、どんぐり優先で1つ表示（両方ある場合の扱いは後述）
-        if (data.rewardNut > 0) {
-            rewardIcon.sprite = nutSprite;
-            rewardAmount.text = $"×{data.rewardNut}";
-        } else if (data.rewardHoney > 0) {
-            rewardIcon.sprite = honeySprite;
-            rewardAmount.text = $"×{data.rewardHoney}";
+        // どんぐり報酬（0なら非表示）
+        if (nutRewardObj != null) {
+            bool hasNut = data.rewardNut > 0;
+            nutRewardObj.SetActive(hasNut);
+            if (hasNut && nutRewardText != null)
+                nutRewardText.text = $"×{data.rewardNut}";
+        }
+
+        // はちみつ報酬（0なら非表示）
+        if (honeyRewardObj != null) {
+            bool hasHoney = data.rewardHoney > 0;
+            honeyRewardObj.SetActive(hasHoney);
+            if (hasHoney && honeyRewardText != null)
+                honeyRewardText.text = $"×{data.rewardHoney}";
         }
 
         Refresh();

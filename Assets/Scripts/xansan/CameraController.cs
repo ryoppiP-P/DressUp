@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -48,6 +49,10 @@ public class CameraController : MonoBehaviour
     // PC操作
     // ==================================
     void HandleMouse() {
+        // UIの上を操作しているならカメラは動かさない
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+
         // --- 押した瞬間：先に初期化する（これが最重要）---
         if (Mouse.current.leftButton.wasPressedThisFrame) {
             lastMousePosition = Mouse.current.position.ReadValue();
@@ -79,7 +84,12 @@ public class CameraController : MonoBehaviour
     // ==================================
     void HandleTouch()
     {
-        if (Touchscreen.current == null)
+        if (Touchscreen.current == null) return;
+
+        // 1本目の指がUIの上なら操作しない
+        if (EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject(
+                Touchscreen.current.touches[0].touchId.ReadValue()))
             return;
 
         // タッチ一覧

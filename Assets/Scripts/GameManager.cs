@@ -47,6 +47,17 @@ public class GameManager : MonoBehaviour
         // リストが空なら何もしない
         if (buttonSettingsList == null) return;
 
+        // 登録されているパネルがあれば、最初はすべて非表示にする
+        HashSet<GameObject> closedPanels = new HashSet<GameObject>();
+        foreach (ButtonSetting setting in buttonSettingsList) {
+            // Open/Close/Toggle 用に登録されたパネルを対象にする
+            if (setting.targetPanel == null) continue;
+            // 同じパネルを二度処理しないように HashSet で管理
+            if (closedPanels.Add(setting.targetPanel)) {
+                setting.targetPanel.SetActive(false);
+            }
+        }
+
         // リストに登録されたすべてのボタンに対して、クリック時のイベントを登録する
         foreach (ButtonSetting setting in buttonSettingsList) {
             if (setting.buttonObject == null) continue;

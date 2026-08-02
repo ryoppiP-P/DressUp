@@ -1,0 +1,100 @@
+//==============================================================================
+//  File   : MissionPanel.cs
+//  Brief  : ミッションUIの全体表示（タブ切り替え・スクロールビュー）
+//
+//  Author : Ryoto Kikuchi
+//  Date   : 2026/6/18
+//------------------------------------------------------------------------------
+//==============================================================================
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class MissionPanel : MonoBehaviour {
+    [Header("行の生成")]
+    [SerializeField] private MissionSlot slotPrefab;
+    [SerializeField] private Transform contentParent; // ScrollView の Content
+
+    [Header("タブ")]
+    [SerializeField] private Button dailyTab;
+    [SerializeField] private Button weeklyTab;
+    [SerializeField] private Button challengeTab;
+
+    [Header("下部ボタン")]
+    [SerializeField] private Button backButton;
+    [SerializeField] private Button claimAllButton;
+
+    [Header("この画面自体（戻るで閉じる対象）")]
+    [SerializeField] private GameObject panelRoot;
+
+    private readonly List<MissionSlot> _spawned = new();
+    private MissionCategory _current = MissionCategory.Daily;
+
+    void OnEnable() {
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionChanged += RefreshAll;
+    }
+
+    void OnDisable() {
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.OnMissionChanged -= RefreshAll;
+    }
+
+    void Start() {
+        // タブ
+        if (dailyTab) dailyTab.onClick.AddListener(() => ShowCategory(MissionCategory.Daily));
+        if (weeklyTab) weeklyTab.onClick.AddListener(() => ShowCategory(MissionCategory.Weekly));
+        if (challengeTab) challengeTab.onClick.AddListener(() => ShowCategory(MissionCategory.Challenge));
+
+        // 下部ボタン
+        if (backButton) backButton.onClick.AddListener(Close);
+        if (claimAllButton) claimAllButton.onClick.AddListener(OnClickClaimAll);
+
+        // 初期表示はデイリー
+        ShowCategory(MissionCategory.Daily);
+    }
+
+    // カテゴリを表示（タブ切り替え）
+    public void ShowCategory(MissionCategory category) {
+        _current = category;
+        Rebuild();
+    }
+
+    // 行を作り直す
+    private void Rebuild() {
+        // 既存を消す
+        foreach (var s in _spawned) Destroy(s.gameObject);
+        _spawned.Clear();
+
+        if (MissionManager.Instance == null) return;
+
+        var missions = MissionManager.Instance.GetMissions(_current);
+        foreach (var m in missions) {
+            var slot = Instantiate(slotPrefab, contentParent);
+            slot.Setup(m);
+            _spawned.Add(slot);
+        }
+    }
+
+    // 進捗が変わったとき：作り直さず各行を更新（軽い）
+    private void RefreshAll() {
+        foreach (var s in _spawned) s.Refresh();
+    }
+
+    private void OnClickClaimAll() {
+        if (MissionManager.Instance == null) return;
+        MissionManager.Instance.ClaimAll(_current);
+        // ClaimAll 内で OnMissionChanged が飛ぶので表示は自動更新される
+    }
+
+    // 画面を開く（外部から呼ぶ用）
+    public void Open() {
+        if (panelRoot) panelRoot.SetActive(true);
+        ShowCategory(MissionCategory.Daily);
+    }
+
+    // 画面を閉じる（戻る）
+    public void Close() {
+        if (panelRoot) panelRoot.SetActive(false);
+    }
+}

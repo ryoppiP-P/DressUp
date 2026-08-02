@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b5bb80cd66672f499b4b1d2c91bb046, type: 3}
+  m_Name: Challenge4
+  m_EditorClassIdentifier: Assembly-CSharp::MissionData
+  missionId: challenge4
+  category: 2
+  type: 7
+  description: "\u5996\u7CBE\u3092\u8A95\u751F\u3055\u305B\u3088\u3046"
+  targetCount: 2
+  rewardNut: 0
+  rewardHoney: 400

@@ -40,7 +40,6 @@ public class DressUpItem : ScriptableObject {
     }
 
     public List<StateAnim> animations; // ó‘Ô‚²‚Æ‚ÌƒRƒ}
-    public float frameRate = 8f;
 
     public Sprite[] GetFrames(CharaState state) {
         var a = animations.Find(x => x.state == state);

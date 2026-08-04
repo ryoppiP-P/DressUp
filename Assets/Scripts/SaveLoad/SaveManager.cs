@@ -159,6 +159,13 @@ public class SaveManager : MonoBehaviour {
         return Current.itemData.ownedItemIds.Contains(itemId);
     }
 
+    /// <summary>そのアイテムを所持しているか（初期所持アイテムは常に true）</summary>
+    public bool IsItemOwned(GameItem item) {
+        if (item == null) return false;
+        if (item.ownedByDefault) return true;
+        return IsItemOwned(item.itemId);
+    }
+
     /// <summary>アイテムを所持リストに追加する（既に持っていれば何もしない）</summary>
     public void AddOwnedItem(string itemId) {
         if (string.IsNullOrEmpty(itemId)) return;

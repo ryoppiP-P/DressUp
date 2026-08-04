@@ -24,4 +24,10 @@ public abstract class GameItem : ScriptableObject {
     public Sprite icon;
     public Rarity rarity;
     [TextArea] public string description;
+
+    [Header("所持")]
+    // 最初から持っているアイテムか。
+    // ガチャやショップで手に入れなくても最初から使えるもの(初期衣装など)は ON にする。
+    // ON のアイテムはセーブに記録しなくても所持済みとして扱われる。
+    public bool ownedByDefault;
 }

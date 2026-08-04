@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 466eee4f17b4145458b94a3504daef2f, type: 3}
   m_Name: ShopDatabase
   m_EditorClassIdentifier: Assembly-CSharp::ShopDatabase
-  allItems: []
+  listings:
+  - {fileID: 11400000, guid: b068e9619bd9939499bd4786c83364e8, type: 2}
+  - {fileID: 11400000, guid: 9f0de8465bc19334aa0eeff8af8470bc, type: 2}
+  - {fileID: 11400000, guid: c6d11f54623b9eb4da20d6f5f6793ceb, type: 2}
+  - {fileID: 11400000, guid: ca36ee6fd217c8f42a1ed1762f22d8e9, type: 2}
+  - {fileID: 11400000, guid: d0b7f229066567f47b40c85f7d9fb332, type: 2}
+  - {fileID: 11400000, guid: 6fa4017a43b0e874ca9540304b2c3eb0, type: 2}

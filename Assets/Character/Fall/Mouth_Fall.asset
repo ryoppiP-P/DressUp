@@ -17,6 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: a46a31e3ed522d04e829b6e639cc7431, type: 3}
   rarity: 0
   description: 
+  ownedByDefault: 1
   category: 14
   previewSprite: {fileID: 21300000, guid: b960e484dd53cf545af4b8d0d558e1aa, type: 3}
   releaseYear: 2026

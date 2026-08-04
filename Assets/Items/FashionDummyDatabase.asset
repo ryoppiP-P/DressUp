@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61b54b8700427414383127497c45d24f, type: 3}
+  m_Name: FashionDummyDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::GameItemDatabase
+  allItems:
+  - {fileID: 11400000, guid: c32e3e5c5db05364185dd2d74dd539de, type: 2}
+  - {fileID: 11400000, guid: fcacbd13363df6545b9daf0af24f723a, type: 2}
+  - {fileID: 11400000, guid: b37652b0a2127044f8f2998a697837fa, type: 2}
+  - {fileID: 11400000, guid: bfa0b20b9ddcd4a49baf7561bc65b1b0, type: 2}
+  - {fileID: 11400000, guid: 0e1400f27e0d7a646b260226051eb90b, type: 2}
+  - {fileID: 11400000, guid: 017e631c2e9af6048b632025f1a7c428, type: 2}

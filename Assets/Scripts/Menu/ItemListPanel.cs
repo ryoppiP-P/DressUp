@@ -37,6 +37,8 @@ public class ItemListPanel : MonoBehaviour {
 
     [Header("データソース")]
     [SerializeField] private ItemDatabase fashionDatabase;          // 着せ替え(DressUpItem)
+    [Tooltip("着せ替え画面のDBには入れたくないファッションアイテム(ガチャ限定・ダミー等)")]
+    [SerializeField] private GameItemDatabase fashionExtraDatabase; // 上記に合流させる追加分
     [SerializeField] private GameItemDatabase decorationDatabase;   // 街クリエイト(TownCreateItem)
     [SerializeField] private GameItemDatabase otherDatabase;        // その他(OtherItem)
 
@@ -98,17 +100,25 @@ public class ItemListPanel : MonoBehaviour {
     // 所持フィルタ。showOnlyOwned が OFF なら常に表示する
     private bool IsVisible(GameItem item) {
         if (!showOnlyOwned) return true;
+        if (item.ownedByDefault) return true;              // 初期所持アイテムはセーブに無くても表示する
         if (SaveManager.Instance == null) return false;
-        return SaveManager.Instance.IsItemOwned(item.itemId);
+        return SaveManager.Instance.IsItemOwned(item);
     }
 
     // タブごとの表示候補アイテムを取得する
     private IEnumerable<GameItem> GetItemsForTab(ItemListTab tab) {
         switch (tab) {
-            case ItemListTab.Fashion:
-                // 着せ替えアイテムは全カテゴリ(髪/トップス/アクセサリー/目・口 等)をまとめて表示する
-                if (fashionDatabase == null || fashionDatabase.allItems == null) break;
-                return fashionDatabase.allItems;
+            case ItemListTab.Fashion: {
+                // 着せ替えアイテムは全カテゴリ(髪/トップス/アクセサリー/目・口 等)をまとめて表示する。
+                // 着せ替え画面のDBに入れていない追加分(ガチャ限定など)もここで合流させる。
+                IEnumerable<GameItem> baseItems = (fashionDatabase != null && fashionDatabase.allItems != null)
+                    ? fashionDatabase.allItems
+                    : Enumerable.Empty<GameItem>();
+                IEnumerable<GameItem> extraItems = (fashionExtraDatabase != null && fashionExtraDatabase.allItems != null)
+                    ? fashionExtraDatabase.allItems
+                    : Enumerable.Empty<GameItem>();
+                return baseItems.Concat(extraItems);
+            }
 
             case ItemListTab.Accessory:
                 if (decorationDatabase == null || decorationDatabase.allItems == null) break;

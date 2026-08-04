@@ -64,7 +64,14 @@ public class ShopPurchaseDialog : MonoBehaviour {
         if (_listing == null || SaveManager.Instance == null) { Close(); return; }
 
         bool bought = SaveManager.Instance.TrySpendCurrency(_listing.currencyType, _listing.price);
-        if (!bought) Debug.Log($"[Shop] 通貨が足りません: {(_listing.item != null ? _listing.item.itemName : _listing.name)}");
+        if (!bought) {
+            Debug.Log($"[Shop] 通貨が足りません: {(_listing.item != null ? _listing.item.itemName : _listing.name)}");
+            Close();
+            return;
+        }
+
+        // 購入できたら所持アイテムとして記録する(アイテム一覧画面に出るようになる)
+        if (_listing.item != null) SaveManager.Instance.AddOwnedItem(_listing.item.itemId);
 
         Close();
     }

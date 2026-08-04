@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: Shoes_Fall
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
+  itemId: Shoes_Fall
   itemName: Shoes_Fall
-  category: 9
-  rarity: 0
   icon: {fileID: 21300000, guid: 718c0c05ec765c847a5abb891ceab2bd, type: 3}
+  rarity: 0
+  description: 
+  category: 9
   previewSprite: {fileID: 21300000, guid: 39c632fdac0b5b34ab62c7341caa13dc, type: 3}
   releaseYear: 2026
   colors: 010000000900000008000000
   animations: []
-  frameRate: 8

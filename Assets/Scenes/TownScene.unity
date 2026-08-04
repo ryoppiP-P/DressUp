@@ -8431,7 +8431,7 @@ GameObject:
   - component: {fileID: 838079446}
   - component: {fileID: 838079445}
   m_Layer: 5
-  m_Name: ComingSoonLabel
+  m_Name: EmptyLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8476,7 +8476,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6E96\u5099\u4E2D(\u30C7\u30FC\u30BF\u672A\u5B9F\u88C5)"
+  m_text: "\u307E\u3060\u6301\u3063\u3066\u3044\u307E\u305B\u3093"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7c5624f6d9c3de040bcd67fb50380c09, type: 2}
   m_sharedMaterial: {fileID: -8144432201463399560, guid: 7c5624f6d9c3de040bcd67fb50380c09, type: 2}
@@ -18360,8 +18360,11 @@ MonoBehaviour:
   otherTab: {fileID: 192715457}
   slotPrefab: {fileID: 6498518816879315076, guid: 0c50ae828efa4c34988ba0959ffa3170, type: 3}
   contentParent: {fileID: 1085257957}
-  itemDatabase: {fileID: 11400000, guid: 717b676e552a1904da01bfe93fab13e1, type: 2}
-  comingSoonLabel: {fileID: 838079443}
+  fashionDatabase: {fileID: 11400000, guid: 717b676e552a1904da01bfe93fab13e1, type: 2}
+  decorationDatabase: {fileID: 11400000, guid: bbee3bc756398b14a8400907b68d103f, type: 2}
+  otherDatabase: {fileID: 11400000, guid: 1fe33e70f2817f8408ed0607fc5d1269, type: 2}
+  showOnlyOwned: 1
+  emptyLabel: {fileID: 838079443}
   backButton: {fileID: 1622671770}
 --- !u!224 &1941752271
 RectTransform:

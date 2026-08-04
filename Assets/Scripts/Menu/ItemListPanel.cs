@@ -5,10 +5,14 @@
 //  Author : Ryoto Kikuchi
 //  Date   : 2026/8/2
 //------------------------------------------------------------------------------
-//  タブ構成: ファッション / 装飾 / その他(時短アイテム)
-//  ・ファッションタブ … 既存の DressUpItem / ItemDatabase をそのまま表示する
-//  ・装飾 / その他タブ … 専用データがまだ無いため、枠(タブ切り替えと空表示)だけ用意。
-//                        専用の ScriptableObject ができたら GetItemsForTab に差し込む。
+//  タブ構成: ファッション / 装飾 / その他
+//  ・ファッション … 既存の ItemDatabase(DressUpItem)を全カテゴリまとめて表示
+//  ・装飾         … TownCreateItem を入れた GameItemDatabase
+//  ・その他       … OtherItem を入れた GameItemDatabase
+//
+//  showOnlyOwned が true の場合は SaveManager の所持リスト(itemId)で絞り込み、
+//  設計書どおり「今まで集めたアイテム」だけを表示する。
+//  false にすると所持に関係なく全件表示するので、UI の見た目確認に使える。
 //==============================================================================
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +36,16 @@ public class ItemListPanel : MonoBehaviour {
     [SerializeField] private Transform contentParent; // ScrollView の Content
 
     [Header("データソース")]
-    [SerializeField] private ItemDatabase itemDatabase; // ファッションタブで使用(DressUp と共通)
+    [SerializeField] private ItemDatabase fashionDatabase;          // 着せ替え(DressUpItem)
+    [SerializeField] private GameItemDatabase decorationDatabase;   // 街クリエイト(TownCreateItem)
+    [SerializeField] private GameItemDatabase otherDatabase;        // その他(OtherItem)
 
-    [Header("未実装タブの案内表示")]
-    [SerializeField] private GameObject comingSoonLabel; // 装飾/その他タブ選択時に表示
+    [Header("表示設定")]
+    [Tooltip("ONで所持しているアイテムだけ表示する(設計書どおりの挙動)。OFFで全件表示")]
+    [SerializeField] private bool showOnlyOwned = true;
+
+    [Header("空のときの案内表示")]
+    [SerializeField] private GameObject emptyLabel; // 表示するアイテムが1件も無いときに出す
 
     [Header("戻るボタン")]
     [SerializeField] private Button backButton;
@@ -70,39 +80,45 @@ public class ItemListPanel : MonoBehaviour {
         foreach (var slot in _spawned) Destroy(slot.gameObject);
         _spawned.Clear();
 
-        var items = GetItemsForTab(_current);
+        var items = GetItemsForTab(_current)
+            .Where(i => i != null)          // 欠損参照はスキップ(クラッシュ防止)
+            .Where(IsVisible)
+            .ToList();
 
-        // データソース未実装のタブは案内テキストだけ出して終わる
-        if (comingSoonLabel) comingSoonLabel.SetActive(items == null);
-        if (items == null) return;
+        // 1件も無ければ案内テキストだけ出して終わる
+        if (emptyLabel) emptyLabel.SetActive(items.Count == 0);
 
         foreach (var item in items) {
-            if (item == null) continue; // 欠損参照はスキップ(クラッシュ防止)
             var slot = Instantiate(slotPrefab, contentParent);
             slot.Setup(item);
             _spawned.Add(slot);
         }
     }
 
-    // タブごとの表示アイテムを取得する。null を返したタブは「未実装(枠のみ)」扱い。
-    private IEnumerable<DressUpItem> GetItemsForTab(ItemListTab tab) {
+    // 所持フィルタ。showOnlyOwned が OFF なら常に表示する
+    private bool IsVisible(GameItem item) {
+        if (!showOnlyOwned) return true;
+        if (SaveManager.Instance == null) return false;
+        return SaveManager.Instance.IsItemOwned(item.itemId);
+    }
+
+    // タブごとの表示候補アイテムを取得する
+    private IEnumerable<GameItem> GetItemsForTab(ItemListTab tab) {
         switch (tab) {
             case ItemListTab.Fashion:
                 // 着せ替えアイテムは全カテゴリ(髪/トップス/アクセサリー/目・口 等)をまとめて表示する
-                if (itemDatabase == null || itemDatabase.allItems == null) return Enumerable.Empty<DressUpItem>();
-                return itemDatabase.allItems.Where(i => i != null);
+                if (fashionDatabase == null || fashionDatabase.allItems == null) break;
+                return fashionDatabase.allItems;
 
             case ItemListTab.Accessory:
-                // TODO: 装飾アイテム用の ScriptableObject / データベースができたらここに差し込む
-                return null;
+                if (decorationDatabase == null || decorationDatabase.allItems == null) break;
+                return decorationDatabase.allItems;
 
             case ItemListTab.Other:
-                // TODO: その他(時短アイテム)用の ScriptableObject / データベースができたらここに差し込む
-                return null;
-
-            default:
-                return Enumerable.Empty<DressUpItem>();
+                if (otherDatabase == null || otherDatabase.allItems == null) break;
+                return otherDatabase.allItems;
         }
+        return Enumerable.Empty<GameItem>();
     }
 
     private void OnClickBack() {

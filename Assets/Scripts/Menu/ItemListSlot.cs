@@ -14,7 +14,7 @@ public class ItemListSlot : MonoBehaviour {
     [SerializeField] private Image iconImage;
 
     /// <summary>アイテムのアイコンを表示する</summary>
-    public void Setup(DressUpItem item) {
+    public void Setup(GameItem item) {
         if (item == null) return;
         if (iconImage == null) {
             Debug.LogWarning("[ItemListSlot] iconImage が未割り当てです。プレハブの Inspector を確認してください", this);

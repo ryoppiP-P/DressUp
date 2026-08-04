@@ -13,6 +13,12 @@
 using UnityEngine;
 
 public abstract class GameItem : ScriptableObject {
+    [Header("識別")]
+    // セーブデータ上のキー。所持アイテムはこの文字列で記録されるため、
+    // 一度決めたら変更しないこと(変更すると所持済み判定が外れる)。
+    // Mission 側の missionId と同じ扱い。
+    public string itemId;
+
     [Header("基本情報(全アイテム共通)")]
     public string itemName;
     public Sprite icon;

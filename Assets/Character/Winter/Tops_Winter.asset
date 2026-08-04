@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: Tops_Winter
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
+  itemId: Tops_Winter
   itemName: Tops_Winter
-  category: 5
-  rarity: 0
   icon: {fileID: 21300000, guid: c82f097bf22117f42b10305dac4125b1, type: 3}
+  rarity: 0
+  description: 
+  category: 5
   previewSprite: {fileID: 21300000, guid: f33847fde72af01448dc8f3823dbf26b, type: 3}
   releaseYear: 2026
   colors: 06000000
@@ -23,4 +25,3 @@ MonoBehaviour:
   - state: 0
     frames:
     - {fileID: 21300000, guid: f33847fde72af01448dc8f3823dbf26b, type: 3}
-  frameRate: 8

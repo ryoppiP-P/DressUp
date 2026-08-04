@@ -98,6 +98,13 @@ public class GachaPanel : MonoBehaviour {
         }
 
         List<GachaEntry> results = count == 1 ? DrawSingle() : DrawTen();
+
+        // 引いたアイテムを所持アイテムとして記録する(アイテム一覧画面に出るようになる)
+        foreach (var entry in results) {
+            if (entry != null && entry.item != null)
+                SaveManager.Instance.AddOwnedItem(entry.item.itemId);
+        }
+
         if (resultPopup) resultPopup.Show(results);
     }
 

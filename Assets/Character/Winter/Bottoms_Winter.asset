@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: Bottoms_Winter
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
+  itemId: Bottoms_Winter
   itemName: Bottoms_Winter
-  category: 7
-  rarity: 0
   icon: {fileID: 21300000, guid: e5b963a87fa115f48a3d7da73957549f, type: 3}
+  rarity: 0
+  description: 
+  category: 7
   previewSprite: {fileID: 21300000, guid: 028fef192f01cfa40a132e5de62e0e71, type: 3}
   releaseYear: 2026
   colors: 0200000006000000
@@ -23,4 +25,3 @@ MonoBehaviour:
   - state: 0
     frames:
     - {fileID: 21300000, guid: 028fef192f01cfa40a132e5de62e0e71, type: 3}
-  frameRate: 8

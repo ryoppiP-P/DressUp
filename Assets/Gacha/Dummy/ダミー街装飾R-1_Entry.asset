@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 135f82d620ab8b6479e245f23faa8f33, type: 3}
   m_Name: "\u30C0\u30DF\u30FC\u8857\u88C5\u98FER-1_Entry"
   m_EditorClassIdentifier: Assembly-CSharp::GachaEntry
-  item: {fileID: 11400000, guid: ae40013f70663da418ac080d654abe19, type: 2}
+  item: {fileID: 11400000, guid: 8bfd9a6ed7aa9484c8567cdfec520871, type: 2}
   category: 0

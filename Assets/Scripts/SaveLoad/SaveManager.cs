@@ -147,4 +147,25 @@ public class SaveManager : MonoBehaviour {
         Current.dressUp.GetOrCreate(characterId).characterName = name;
         SaveAuto();
     }
+
+
+    // ===== 所持アイテム =====
+    // ガチャの排出やショップの購入で手に入れたアイテムを itemId で記録する。
+    // アイテム一覧画面はこの記録を見て「今まで集めたアイテム」を表示する。
+
+    /// <summary>そのアイテムを所持しているか</summary>
+    public bool IsItemOwned(string itemId) {
+        if (Current == null || string.IsNullOrEmpty(itemId)) return false;
+        return Current.itemData.ownedItemIds.Contains(itemId);
+    }
+
+    /// <summary>アイテムを所持リストに追加する（既に持っていれば何もしない）</summary>
+    public void AddOwnedItem(string itemId) {
+        if (string.IsNullOrEmpty(itemId)) return;
+        if (Current == null) Current = new SaveData();
+        if (Current.itemData.ownedItemIds.Contains(itemId)) return;
+
+        Current.itemData.ownedItemIds.Add(itemId);
+        SaveAuto();
+    }
 }

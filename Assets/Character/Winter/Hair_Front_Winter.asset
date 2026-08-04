@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: Hair_Front_Winter
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
+  itemId: Hair_Front_Winter
   itemName: Hair_Front_Winter
-  category: 3
-  rarity: 0
   icon: {fileID: 21300000, guid: 1102ad3b81dc18041924536de9864143, type: 3}
+  rarity: 0
+  description: 
+  ownedByDefault: 1
+  category: 3
   previewSprite: {fileID: 21300000, guid: 138de92e77eefd844abb82009ca2ce88, type: 3}
   releaseYear: 2026
   colors: 0900000006000000
@@ -23,4 +26,3 @@ MonoBehaviour:
   - state: 0
     frames:
     - {fileID: 21300000, guid: 138de92e77eefd844abb82009ca2ce88, type: 3}
-  frameRate: 8

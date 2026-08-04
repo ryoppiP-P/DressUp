@@ -23,11 +23,8 @@ public enum ItemColor {
 }
 
 [CreateAssetMenu(menuName = "DressUp/Item")]
-public class DressUpItem : ScriptableObject {
-    public string itemName;
-    public CategoryType category;
-    public Rarity rarity;
-    public Sprite icon;           // グリッドに表示するアイコン
+public class DressUpItem : GameItem {
+    public CategoryType category; // 着用カテゴリ(ヘア/トップ等)
     public Sprite previewSprite;  // キャラのレイヤーに差し込むスプライト
 
     public int releaseYear = 2026;          // リリース年（絞り込み・並べ替え用）

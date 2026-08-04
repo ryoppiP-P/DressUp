@@ -1,29 +1,38 @@
 //==============================================================================
 //  File   : SaveApplier.cs
-//  Brief  : SaveManager ‚Ìƒf[ƒ^‚ðŠeƒVƒXƒeƒ€‚É“K—p‚·‚é
+//  Brief  : SaveManager ã®ãƒ‡ãƒ¼ã‚¿ã‚’å„ã‚·ã‚¹ãƒ†ãƒ ã«é©ç”¨ã™ã‚‹
 //
 //  Author : Ryoto Kikuchi
 //  Date   : 2026/6/18
 //------------------------------------------------------------------------------
-//  ƒQ[ƒ€‹N“®Žž‚É SaveManager ‚Ìƒf[ƒ^‚ð“Ç‚ñ‚ÅAAudio / Screen “™‚É”½‰f‚·‚éB
-//  ‘S‚Ä‚Ìƒ[ƒh->“K—p‚ð‚±‚±‚Ås‚¤B
-//  Ý’è•ÏXŽž‚Ì•Û‘¶iSaveŒnj‚ðW–ñB
+//  ã‚²ãƒ¼ãƒ èµ·å‹•æ™‚ã« SaveManager ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã‚“ã§ã€Audio / Screen ç­‰ã«åæ˜ ã™ã‚‹ã€‚
+//  å…¨ã¦ã®ãƒ­ãƒ¼ãƒ‰->é©ç”¨ã‚’ã“ã“ã§è¡Œã†ã€‚
+//  è¨­å®šå¤‰æ›´æ™‚ã®ä¿å­˜ï¼ˆSaveç³»ï¼‰ã‚’é›†ç´„ã€‚
 //==============================================================================
 using UnityEngine;
 
 public static class SaveApplier {
     //--------------------------------------------------------------------------
-    // ‘SÝ’è‚ðˆêŠ‡“K—p
+    // å…¨è¨­å®šã‚’ä¸€æ‹¬é©ç”¨
     //--------------------------------------------------------------------------
     public static void ApplyAll() {
         if (SaveManager.Instance == null) return;
 
-        //ApplyAudio();
+        ApplyAudio();
         //ApplyScreen();
     }
 
+    // ãƒžã‚¹ã‚¿ãƒ¼éŸ³é‡ã¯ AudioListener.volume ã«ç›´æŽ¥åæ˜ ã™ã‚‹(å°‚ç”¨ã® AudioManager ã¯ã¾ã ç„¡ã„ãŸã‚)ã€‚
+    // BGM / SE ã¯ AudioMixer ç­‰ã‚’å°Žå…¥ã—ãŸéš›ã«ã“ã“ã¸ãƒã‚¹éŸ³é‡ã®åæ˜ ã‚’è¿½åŠ ã™ã‚‹ã€‚
+    public static void ApplyAudio() {
+        if (SaveManager.Instance == null) return;
+
+        var s = SaveManager.Instance.Current.settings;
+        AudioListener.volume = Mathf.Clamp01(s.masterVolume / 100f);
+    }
+
     ////==========================================================================
-    //// Audio - “K—p
+    //// Audio - ä¿å­˜
     ////==========================================================================
     //public static void ApplyAudio() {
     //    if (AudioManager.Instance == null) return;
@@ -36,7 +45,7 @@ public static class SaveApplier {
     //}
 
     ////==========================================================================
-    //// Audio - •Û‘¶
+    //// Audio - é©ç”¨
     ////==========================================================================
 
     //public static void SaveAudio() {
@@ -45,31 +54,6 @@ public static class SaveApplier {
     //    s.masterVolume = AudioManager.Instance.GetMasterVolume();
     //    s.bgmVolume = AudioManager.Instance.GetBGMVolume();
     //    s.seVolume = AudioManager.Instance.GetSEVolume();
-    //    SaveManager.Instance.SaveAuto();
-    //}
-
-    ////==========================================================================
-    //// Screen - “K—p
-    ////==========================================================================
-    //public static void ApplyScreen() {
-    //    if (SaveManager.Instance == null) return;
-
-    //    int index = SaveManager.Instance.Current.settings.screenMode;
-    //    FullScreenMode mode = index switch {
-    //        0 => FullScreenMode.ExclusiveFullScreen,
-    //        1 => FullScreenMode.FullScreenWindow,
-    //        2 => FullScreenMode.Windowed,
-    //        _ => FullScreenMode.FullScreenWindow,
-    //    };
-
-    //    Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, mode);
-    //}
-
-    ////==========================================================================
-    //// Screen - •Û‘¶
-    ////==========================================================================
-    //public static void SaveScreen(int dropdownValue) {
-    //    SaveManager.Instance.Current.settings.screenMode = dropdownValue;
     //    SaveManager.Instance.SaveAuto();
     //}
 }

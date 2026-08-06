@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3ff27f0ff0d600d49874df65e300ee8e
+guid: fb1e4d3431ab73242a04553431d0156b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7217386583786287946
-    second: plantPot 1_0
+      213: 5027946569022094460
+    second: Sprout_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: plantPot 1_0
+      name: Sprout_0
       rect:
         serializedVersion: 2
-        x: 45
-        y: 39
-        width: 610
-        height: 702
+        x: 68
+        y: 2
+        width: 266
+        height: 374
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6bc8fb23421b6db90800000000000000
-      internalID: -7217386583786287946
+      spriteID: c7cb43ce3cad6c540800000000000000
+      internalID: 5027946569022094460
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      plantPot 1_0: -7217386583786287946
+      Sprout_0: 5027946569022094460
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

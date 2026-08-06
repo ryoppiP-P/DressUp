@@ -18,12 +18,21 @@ public static class SaveApplier {
     public static void ApplyAll() {
         if (SaveManager.Instance == null) return;
 
-        //ApplyAudio();
+        ApplyAudio();
         //ApplyScreen();
     }
 
+    // マスター音量は AudioListener.volume に直接反映する(専用の AudioManager はまだ無いため)。
+    // BGM / SE は AudioMixer 等を導入した際にここへバス音量の反映を追加する。
+    public static void ApplyAudio() {
+        if (SaveManager.Instance == null) return;
+
+        var s = SaveManager.Instance.Current.settings;
+        AudioListener.volume = Mathf.Clamp01(s.masterVolume / 100f);
+    }
+
     ////==========================================================================
-    //// Audio - 適用
+    //// Audio - 保存
     ////==========================================================================
     //public static void ApplyAudio() {
     //    if (AudioManager.Instance == null) return;
@@ -36,7 +45,7 @@ public static class SaveApplier {
     //}
 
     ////==========================================================================
-    //// Audio - 保存
+    //// Audio - 適用
     ////==========================================================================
 
     //public static void SaveAudio() {
@@ -45,31 +54,6 @@ public static class SaveApplier {
     //    s.masterVolume = AudioManager.Instance.GetMasterVolume();
     //    s.bgmVolume = AudioManager.Instance.GetBGMVolume();
     //    s.seVolume = AudioManager.Instance.GetSEVolume();
-    //    SaveManager.Instance.SaveAuto();
-    //}
-
-    ////==========================================================================
-    //// Screen - 適用
-    ////==========================================================================
-    //public static void ApplyScreen() {
-    //    if (SaveManager.Instance == null) return;
-
-    //    int index = SaveManager.Instance.Current.settings.screenMode;
-    //    FullScreenMode mode = index switch {
-    //        0 => FullScreenMode.ExclusiveFullScreen,
-    //        1 => FullScreenMode.FullScreenWindow,
-    //        2 => FullScreenMode.Windowed,
-    //        _ => FullScreenMode.FullScreenWindow,
-    //    };
-
-    //    Screen.SetResolution(Screen.currentResolution.width, Screen.currentResolution.height, mode);
-    //}
-
-    ////==========================================================================
-    //// Screen - 保存
-    ////==========================================================================
-    //public static void SaveScreen(int dropdownValue) {
-    //    SaveManager.Instance.Current.settings.screenMode = dropdownValue;
     //    SaveManager.Instance.SaveAuto();
     //}
 }

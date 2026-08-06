@@ -12,12 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4344834bbf6506a4ca31706fc6cdc8d2, type: 3}
   m_Name: Hair_Back_Fall
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
+  itemId: Hair_Back_Fall
   itemName: Hair_Back_Fall
-  category: 4
-  rarity: 0
   icon: {fileID: 21300000, guid: 87b1470cc5fcb564e98daff31e113221, type: 3}
+  rarity: 0
+  description: 
+  ownedByDefault: 1
+  category: 4
   previewSprite: {fileID: 21300000, guid: 735075fbbd155884581b4b7b6b5167aa, type: 3}
   releaseYear: 2026
   colors: 01000000
-  animations: []
-  frameRate: 8
+  animations:
+  - state: 0
+    frames:
+    - {fileID: 21300000, guid: 672addbc567b3f54997b831385e4133e, type: 3}
+    - {fileID: 21300000, guid: 3faf655e5bac8964e9ab38d968597e8b, type: 3}
+    - {fileID: 21300000, guid: f2e7983dd8b695f49a4d0157684e0dfc, type: 3}
+    - {fileID: 21300000, guid: 7e725d2d2f8d972449950a9b168c96fb, type: 3}
+    - {fileID: 21300000, guid: 0ab3de53d8342864ca2bb8a5f024e952, type: 3}
+    - {fileID: 21300000, guid: c6b6b4c5c04b36e47b713787516f6913, type: 3}
+    - {fileID: 21300000, guid: 8afed617bf39ee84ba759b697686a73f, type: 3}
+    - {fileID: 21300000, guid: 663ed69e63e40844e92fe14beb6eb96f, type: 3}
+    - {fileID: 21300000, guid: e8567236ecd1fbb4dbfd9212ad592558, type: 3}
+    - {fileID: 21300000, guid: 72fd2f83fca85864f84e7d27cc5a6d5f, type: 3}
+    - {fileID: 21300000, guid: ce418bb6db3a0d84ba34d854048c60d8, type: 3}
+    - {fileID: 21300000, guid: 734fcf9f75153ad44b7bb4f13b6a6e44, type: 3}
+    - {fileID: 21300000, guid: 164ef94f823e90542804e707d04006fc, type: 3}
+    - {fileID: 21300000, guid: deba2ac476fffdb47a7f5828dc62658e, type: 3}
+    - {fileID: 21300000, guid: 6185f321557f68d4eb994a46ba367e1d, type: 3}
+    - {fileID: 21300000, guid: a8a3af9a087309c4e900f27cf164725e, type: 3}
+    - {fileID: 21300000, guid: e758c2c81c0216b45b5b9e1f467ce8f2, type: 3}
+    - {fileID: 21300000, guid: 68a668d9d52156e42af3984d7b35eb7c, type: 3}
+    - {fileID: 21300000, guid: c4aee0a31a52ba3409ef6c433d2be38e, type: 3}
+    - {fileID: 21300000, guid: 1f9bb1e43f72a74448220245b90acf7c, type: 3}
+    - {fileID: 21300000, guid: 8a2c8126eba73264dbd8b2bce372b40a, type: 3}
+    - {fileID: 21300000, guid: f29fb187d297b394594dd60855959274, type: 3}
+    - {fileID: 21300000, guid: 302c3ae6940f87746999d2b6f73dbf87, type: 3}
+    - {fileID: 21300000, guid: b39cadba9dc2c6042a69768e9e6db4e3, type: 3}

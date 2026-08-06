@@ -19,6 +19,8 @@ public class SaveData {
     public PlayerData playerData = new PlayerData();
     public SettingsData settings = new SettingsData();
     public DressUpSaveData dressUp = new DressUpSaveData();
+    public MissionSaveData missionData = new MissionSaveData();
+    public ItemSaveData itemData = new ItemSaveData();
 }
 
 // プレイヤー全体（コイン等）
@@ -91,4 +93,26 @@ public class EquippedEntry {
 [Serializable]
 public class SavedOutfitData {
     public List<EquippedEntry> items = new List<EquippedEntry>();
+}
+
+// ミッション単体のセーブデータ
+[System.Serializable]
+public class MissionSaveEntry {
+    public string missionId;
+    public int progress;      // 現在の進捗数
+    public bool claimed;      // 受取済みか
+}
+// ミッション全体のセーブデータ
+[System.Serializable]
+public class MissionSaveData {
+    public List<MissionSaveEntry> entries = new();
+    public string lastDailyReset;   // 最終デイリーリセット日時(ISO文字列)
+    public string lastWeeklyReset;  // 最終ウィークリーリセット日時(ISO文字列)
+}
+
+// 所持アイテムのセーブデータ
+[System.Serializable]
+public class ItemSaveData {
+    // 所持しているアイテムの itemId 一覧（GameItem.itemId と対応）
+    public List<string> ownedItemIds = new List<string>();
 }

@@ -85,7 +85,7 @@ public class ToggleSlotManager : MonoBehaviour
         ToggleUI.SetActive(true); // Toggleƒpƒlƒ‹‚ð•\Ž¦
     }
 
-    void ResetSelectedToggles()
+    public void ResetSelectedToggles()
     {
         isResetting = true;
 

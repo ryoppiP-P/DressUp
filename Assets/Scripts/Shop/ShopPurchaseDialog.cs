@@ -8,7 +8,6 @@
 //  「はい」で SaveManager.TrySpendCurrency を呼んで購入を確定する。
 //  所持・在庫の仕組みは無いため、購入は何度でも可能(通貨を消費するのみ)。
 //==============================================================================
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;

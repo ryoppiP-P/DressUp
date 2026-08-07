@@ -20,6 +20,7 @@ public class SeedAnimation : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private GameObject prefabObjects;
     [SerializeField] private int effectCount;
+    [SerializeField] private GameObject[] hyoujiObject;
     private bool isMove = false;
     private Vector3 startPosition;
 
@@ -74,6 +75,20 @@ public class SeedAnimation : MonoBehaviour
                 count++;
             }
             seedObject.gameObject.transform.position = startPosition; // 元の位置に戻す
+
+            // 種を表示する
+            foreach (var obj in hyoujiObject)
+            {
+                if (obj != null)
+                {
+                    if (obj.activeSelf) continue; // すでに表示されている場合はスキップ
+
+                    obj.SetActive(true);
+
+                    break;
+                }
+            }
+
             StartCoroutine(ButtonReset(2.0f));
         }
     }

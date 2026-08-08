@@ -20,6 +20,7 @@ public class SaveData {
     public DressUpSaveData dressUp = new DressUpSaveData();
     public MissionSaveData missionData = new MissionSaveData();
     public ItemSaveData itemData = new ItemSaveData();
+    public IntimacySaveData intimacyData = new IntimacySaveData();
 }
 
 // プレイヤー全体（コイン等）
@@ -114,4 +115,16 @@ public class MissionSaveData {
 public class ItemSaveData {
     // 所持しているアイテムの itemId 一覧（GameItem.itemId と対応）
     public List<string> ownedItemIds = new List<string>();
+}
+
+// キャラクター同士の親密度のセーブデータ(2人1組)
+[System.Serializable]
+public class IntimacyEntry {
+    public string charaIdA;
+    public string charaIdB;
+    public int value; // 0-100
+}
+[System.Serializable]
+public class IntimacySaveData {
+    public List<IntimacyEntry> entries = new List<IntimacyEntry>();
 }

@@ -175,4 +175,45 @@ public class SaveManager : MonoBehaviour {
         Current.itemData.ownedItemIds.Add(itemId);
         SaveAuto();
     }
+
+    // ===== 親密度 =====
+    // 2人1組で管理する。どちらを先に渡しても同じ組として扱う。
+
+    private IntimacyEntry FindIntimacyEntry(string idA, string idB) {
+        if (Current == null) return null;
+        foreach (var e in Current.intimacyData.entries) {
+            if ((e.charaIdA == idA && e.charaIdB == idB) || (e.charaIdA == idB && e.charaIdB == idA))
+                return e;
+        }
+        return null;
+    }
+
+    /// <summary>2人の間の親密度を取得する(未記録なら0)</summary>
+    public int GetIntimacy(string idA, string idB) {
+        var e = FindIntimacyEntry(idA, idB);
+        return e != null ? e.value : 0;
+    }
+
+    /// <summary>
+    /// 2人の間の親密度を加算する(0-100にクランプ)。
+    /// immediateSave を false にすると、値はメモリ上だけ更新してディスクへは書き込まない。
+    /// (同じ建物に一緒にいる間など、毎フレーム呼ぶような加算で毎回書き込むと重いため)
+    /// </summary>
+    public void AddIntimacy(string idA, string idB, int delta, bool immediateSave = true) {
+        if (Current == null || string.IsNullOrEmpty(idA) || string.IsNullOrEmpty(idB) || idA == idB) return;
+
+        var e = FindIntimacyEntry(idA, idB);
+        if (e == null) {
+            e = new IntimacyEntry { charaIdA = idA, charaIdB = idB, value = 0 };
+            Current.intimacyData.entries.Add(e);
+        }
+        e.value = Mathf.Clamp(e.value + delta, 0, 100);
+
+        if (immediateSave) SaveAuto();
+    }
+
+    /// <summary>AddIntimacy(immediateSave: false)でメモリ上に貯まった変更をまとめてディスクへ保存する</summary>
+    public void FlushIntimacySave() {
+        SaveAuto();
+    }
 }

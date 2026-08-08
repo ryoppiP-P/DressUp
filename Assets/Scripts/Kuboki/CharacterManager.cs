@@ -3,7 +3,7 @@
 * タイトル   キャラクターマネージャー
 * 作成者     久保木幹太
 * 作成日     5月15日
-* 更新日     6月15日（enum対応）
+* 更新日     8月4日（Ryoto Kikuchi：CharaId・すれ違い判定を追加）
 */
 
 using System;
@@ -19,10 +19,22 @@ public struct CharaData
     [Range(0, 100)] public int Parameter;   // 特徴の値
 }
 
+// 親密度のInspector表示用。
+// ここを直接書き換えても保存はされない。実データはSaveManager側(SaveData.intimacyData)にある。
+[Serializable]
+public struct IntimacyDisplay
+{
+    public string otherCharaId;      // 相手のcharaId
+    [Range(0, 100)] public int Value; // 現在の親密度
+}
+
 public class CharacterManager : MonoBehaviour
 {
     [Header("特徴データ")]
     public List<CharaData> dataList = new List<CharaData>();
+
+    [Header("親密度(表示専用。ここを編集しても保存されません)")]
+    [SerializeField] private List<IntimacyDisplay> intimacyList = new List<IntimacyDisplay>();
 
     private NavMeshAgent agent;
 
@@ -47,6 +59,28 @@ public class CharacterManager : MonoBehaviour
     // 相手ごとの「次に交流できる時刻」
     private readonly Dictionary<CharacterManager, float> _nextInteractTime = new();
 
+    [Header("すれ違い判定(道で近づいたら止まって親密度アップ)")]
+    [SerializeField] private float passByRange = 0.4f;        // これ以下の距離で「すれ違い」とみなす
+    [SerializeField] private float passByPauseSeconds = 2f;   // 仮：すれ違ったら止まる秒数
+    [SerializeField] private int passByIntimacyGain = 5;      // 仮：すれ違い1回あたりの親密度上昇量
+    [SerializeField] private float passByCooldown = 5f;       // 同じ相手と連続ですれ違い判定しないための猶予
+
+    // 一時停止の残り秒数(0より大きい間は移動しない)
+    private float _pauseTimer = 0f;
+    // 相手ごとの「次にすれ違い判定できる時刻」
+    private readonly Dictionary<CharacterManager, float> _nextPassByTime = new();
+
+    // 現在ルート移動中かどうか(到着したかの判定に外部から使う)
+    public bool IsFollowingRoute => isFollowingRoute;
+
+    // このキャラクターのセーブキー(同じGameObjectのCharacterコンポーネントから取得)
+    public string CharaId {
+        get {
+            var c = GetComponent<Character>();
+            return c != null ? c.CharacterId : null;
+        }
+    }
+
     // 全キャラを探すための静的リスト（登録/解除で管理）
     private static readonly List<CharacterManager> _all = new();
 
@@ -55,7 +89,12 @@ public class CharacterManager : MonoBehaviour
 
     private void Update()
     {
-        if (isFollowingRoute)
+        if (_pauseTimer > 0f)
+        {
+            // すれ違いで一時停止中は移動しない
+            _pauseTimer -= Time.deltaTime;
+        }
+        else if (isFollowingRoute)
         {
             if (currentRoute == null || currentRoute.Count == 0) return;
 
@@ -68,6 +107,29 @@ public class CharacterManager : MonoBehaviour
             CheckRouteProgress();
         }
         CheckInteractions();
+        CheckPassBy();
+        RefreshIntimacyDisplay();
+    }
+
+    // 親密度のInspector表示(intimacyList)を、SaveManager側の実データから作り直す
+    private void RefreshIntimacyDisplay() {
+        if (SaveManager.Instance == null) return;
+
+        string myId = CharaId;
+        if (string.IsNullOrEmpty(myId)) return;
+
+        intimacyList.Clear();
+        foreach (var other in _all) {
+            if (other == this) continue;
+
+            string otherId = other.CharaId;
+            if (string.IsNullOrEmpty(otherId)) continue;
+
+            intimacyList.Add(new IntimacyDisplay {
+                otherCharaId = otherId,
+                Value = SaveManager.Instance.GetIntimacy(myId, otherId)
+            });
+        }
     }
 
     // 建物から歩行ルートを取得して最初の中継地点へ向けて移動開始する
@@ -128,6 +190,40 @@ public class CharacterManager : MonoBehaviour
             // 双方にクールダウンを設定（二重発生を防ぐ）
             _nextInteractTime[other] = Time.time + interactCooldown;
             other._nextInteractTime[this] = Time.time + interactCooldown;
+        }
+    }
+
+    // 道ですれ違ったキャラクター同士を一時停止させ、親密度を上げる
+    private void CheckPassBy() {
+        if (!isFollowingRoute) return; // 移動中(道の上)でなければ判定しない
+
+        string myId = CharaId;
+        if (string.IsNullOrEmpty(myId)) return;
+
+        foreach (var other in _all) {
+            if (other == this) continue;
+            if (!other.isFollowingRoute) continue;
+
+            string otherId = other.CharaId;
+            if (string.IsNullOrEmpty(otherId) || otherId == myId) continue;
+
+            float dist = Vector2.Distance(transform.position, other.transform.position);
+            if (dist > passByRange) continue;
+
+            // クールダウン中ならスキップ
+            if (_nextPassByTime.TryGetValue(other, out float next) && Time.time < next) continue;
+
+            // すれ違い成立：お互い一時停止させ、親密度を上げる(すれ違いは一発イベントなので即保存)
+            _pauseTimer = passByPauseSeconds;
+            other._pauseTimer = passByPauseSeconds;
+
+            if (SaveManager.Instance != null)
+                SaveManager.Instance.AddIntimacy(myId, otherId, passByIntimacyGain);
+
+            // 停止時間+クールダウン分は再判定しない(双方に設定して二重発生を防ぐ)
+            float cooldownUntil = Time.time + passByPauseSeconds + passByCooldown;
+            _nextPassByTime[other] = cooldownUntil;
+            other._nextPassByTime[this] = cooldownUntil;
         }
     }
 

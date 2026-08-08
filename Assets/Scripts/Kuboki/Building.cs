@@ -3,7 +3,7 @@
 * タイトル　　建物
 * 作成者　　　久保木幹太
 * 作成日     6月2日
-* 更新日     6月2日
+* 更新日     8月4日（Ryoto Kikuchi：滞在タイマー・親密度加算を追加）
 */
 
 using UnityEngine;
@@ -79,6 +79,21 @@ public class Building : MonoBehaviour
 
     [Header("この建物に向かうためのルート")]
     [SerializeField] private List<Vector3> walkRoute = new List<Vector3>();
+
+    [Header("滞在判定(この秒数(仮)滞在したらパラメータ変化を確定する)")]
+    [SerializeField] private float dwellTimeForEffect = 3f;
+
+    [Header("親密度(同じ建物に一緒にいる間、この間隔(仮)で少しずつ上昇)")]
+    [SerializeField] private float intimacyTickInterval = 1f; // 仮：何秒ごとに加算するか
+    [SerializeField] private int intimacyPerTick = 3;          // 仮：1回あたりの加算量
+
+    // 現在この建物にいるキャラクターと、それぞれの滞在経過時間
+    private readonly Dictionary<CharacterManager, float> _dwellTimers = new Dictionary<CharacterManager, float>();
+    // 今回の滞在で既にパラメータ変化を適用済みのキャラクター(再入場したらまた適用できるようリセットする)
+    private readonly HashSet<CharacterManager> _effectApplied = new HashSet<CharacterManager>();
+    // 現在この建物にいるキャラクター一覧(親密度の同室判定に使う)
+    private readonly HashSet<CharacterManager> _occupants = new HashSet<CharacterManager>();
+    private float _intimacyTickTimer = 0f;
 
     // NavMeshAgentから行先として設定する際に参照するプロパティ
     public string BuildingID => buildingID;
@@ -182,31 +197,101 @@ public class Building : MonoBehaviour
     }
 #endif
 
-    // トリガー判定
+    // トリガー判定(入室：滞在タイマーを開始する。パラメータ変化はすぐには適用しない)
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!CanEnter())
             return;
 
-        if (collision.CompareTag(targetTag))
-        {
-            CharacterManager character = collision.GetComponent<CharacterManager>();
+        if (!collision.CompareTag(targetTag))
+            return;
 
-            if (character != null)
-            {
-                OnCharacterEnter(character);
-            }
+        CharacterManager character = collision.GetComponent<CharacterManager>();
+        if (character == null) return;
+
+        _occupants.Add(character);
+        _dwellTimers[character] = 0f;
+        _effectApplied.Remove(character); // 再入場したら次の滞在でまた発動できるようにする
+    }
+
+    // トリガー判定(退室：滞在中の記録を消し、貯まっていた親密度をセーブする)
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        CharacterManager character = collision.GetComponent<CharacterManager>();
+        if (character == null) return;
+
+        if (_occupants.Remove(character))
+        {
+            _dwellTimers.Remove(character);
+            _effectApplied.Remove(character);
+
+            // 一緒にいる間、親密度はメモリ上だけ加算してきたのでここでまとめて保存する
+            if (SaveManager.Instance != null) SaveManager.Instance.FlushIntimacySave();
         }
     }
 
-    // キャラクターが建物に入った時の処理
-    private void OnCharacterEnter(CharacterManager character)
+    private void Update()
     {
-        if (character == null) return;
+        TickDwellAndIntimacy(Time.deltaTime);
+    }
 
+    // 滞在タイマーと同室親密度の加算処理。
+    // dt を外から渡せるようにしてあるので、テストコードから直接秒数を指定して呼ぶこともできる。
+    public void TickDwellAndIntimacy(float dt)
+    {
+        // ---- 滞在タイマー：規定秒数(仮)滞在したらパラメータ変化を確定する ----
+        var occupantsSnapshot = new List<CharacterManager>(_dwellTimers.Keys);
+        foreach (var character in occupantsSnapshot)
+        {
+            if (_effectApplied.Contains(character)) continue;
+
+            _dwellTimers[character] += dt;
+            if (_dwellTimers[character] >= dwellTimeForEffect)
+            {
+                ApplyStatusChangeClamped(character);
+                _effectApplied.Add(character);
+            }
+        }
+
+        // ---- 親密度：一緒にいる間、一定間隔(仮)で少しずつ上昇 ----
+        _intimacyTickTimer += dt;
+        while (_intimacyTickTimer >= intimacyTickInterval)
+        {
+            _intimacyTickTimer -= intimacyTickInterval;
+            TickIntimacyOnce();
+        }
+    }
+
+    // 建物に滞在したことによるパラメータ変化を、0-100にクランプしながら適用する
+    private void ApplyStatusChangeClamped(CharacterManager character)
+    {
         foreach (var status in statusChange)
         {
-            character.AddData(status.targetParamName, status.changeValue);
+            int before = character.GetData(status.targetParamName);
+            int after = Mathf.Clamp(before + status.changeValue, 0, 100);
+            character.SetData(status.targetParamName, after);
+        }
+    }
+
+    // 今この建物にいる、charaIdが異なる全ペアに親密度を1回分加算する
+    private void TickIntimacyOnce()
+    {
+        if (SaveManager.Instance == null) return;
+
+        var occupantsList = new List<CharacterManager>(_occupants);
+        for (int i = 0; i < occupantsList.Count; i++)
+        {
+            string idA = occupantsList[i].CharaId;
+            if (string.IsNullOrEmpty(idA)) continue;
+
+            for (int j = i + 1; j < occupantsList.Count; j++)
+            {
+                string idB = occupantsList[j].CharaId;
+                if (string.IsNullOrEmpty(idB) || idA == idB) continue;
+
+                // 一緒にいる間は毎回ディスクに書き込まず、メモリ上だけ加算する(退室時にまとめて保存)
+                SaveManager.Instance.AddIntimacy(idA, idB, intimacyPerTick, immediateSave: false);
+            }
         }
     }
 

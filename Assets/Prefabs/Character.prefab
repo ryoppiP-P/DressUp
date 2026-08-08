@@ -624,7 +624,7 @@ MonoBehaviour:
   frameRate: 24
   freezeState: 0
   itemDatabase: {fileID: 11400000, guid: 717b676e552a1904da01bfe93fab13e1, type: 2}
-  characterId: chara_0001
+  characterId: charaID_0001
   displayName: "\u307F\u307F"
   referenceHeight: 500
   defaultBody: {fileID: 11400000, guid: c35ccb36d62a449458ff295cc96cdcfd, type: 2}

@@ -22,4 +22,30 @@ MonoBehaviour:
   previewSprite: {fileID: 21300000, guid: d3e44a58ccc13b340908c5337c7185ca, type: 3}
   releaseYear: 2026
   colors: 010000000800000009000000
-  animations: []
+  animations:
+  - state: 0
+    frames:
+    - {fileID: 21300000, guid: b27b2e16390fc604b930e0976be8480a, type: 3}
+    - {fileID: 21300000, guid: 16bef90e5e76c66478a3cbc172f0ced2, type: 3}
+    - {fileID: 21300000, guid: 230b2900153a3a94ca9b725c113337d1, type: 3}
+    - {fileID: 21300000, guid: 8635495ffd2abf244957d965d3449b6f, type: 3}
+    - {fileID: 21300000, guid: 5690bb3934bfe874ab8f88a4d55d7fa9, type: 3}
+    - {fileID: 21300000, guid: ccc89de54b4b22444b7daaac08aa7003, type: 3}
+    - {fileID: 21300000, guid: 00ca815428e7fca4e9d929422a9a1e1f, type: 3}
+    - {fileID: 21300000, guid: c8f95536b6f645f41b7b4c627c316ce0, type: 3}
+    - {fileID: 21300000, guid: 2b27006cf329d454f8779fffe50e38dc, type: 3}
+    - {fileID: 21300000, guid: 9d778e7e85b1b714581f00dcccb084db, type: 3}
+    - {fileID: 21300000, guid: 30c725a2e3c4efc44a08e6c6a44c3827, type: 3}
+    - {fileID: 21300000, guid: 2ed225118bfd35642a4fae454638e781, type: 3}
+    - {fileID: 21300000, guid: 7cfa371546313cc4da5ede4f2d2d6684, type: 3}
+    - {fileID: 21300000, guid: 8b3a28d71e3a1fb4d93365c93435b0f3, type: 3}
+    - {fileID: 21300000, guid: 10fd5a2617a914c4781170097684518d, type: 3}
+    - {fileID: 21300000, guid: bb1d6a672c21f114fa76f29d7b525a00, type: 3}
+    - {fileID: 21300000, guid: fe9f00c94b82d1c4c9ef51a8763fe438, type: 3}
+    - {fileID: 21300000, guid: 054889a7655b5404ea5c4dc9b424a6d6, type: 3}
+    - {fileID: 21300000, guid: 6ee8f14fe34084d44b99ec982c381658, type: 3}
+    - {fileID: 21300000, guid: b6b3073f54a7fa24bbb646167a0fec63, type: 3}
+    - {fileID: 21300000, guid: f315f147f8b80b74fa44f5225459c768, type: 3}
+    - {fileID: 21300000, guid: 8e97ab66811528940a225c510aa8dc2f, type: 3}
+    - {fileID: 21300000, guid: a10aff5b93398a54e85aa52d862b57bc, type: 3}
+    - {fileID: 21300000, guid: 4b7b1e6c44a26ae40badae5d5a6525c8, type: 3}

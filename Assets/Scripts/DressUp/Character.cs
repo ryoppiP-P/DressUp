@@ -22,8 +22,10 @@ public class Character : MonoBehaviour {
 
     [Header("Animation")]
     [SerializeField] private bool animate = true;       // false=フリーズ（着せ替え画面用）
-    [SerializeField] private float frameRate = 8f;
     [SerializeField] private CharaState freezeState = CharaState.Idle; // 止めるときの状態
+    [SerializeField] private CharaState initialState = CharaState.Idle; // 開始時の状態
+    [SerializeField] private int freezeFrame = 0;       // フリーズ時に表示するフレーム番号
+    [SerializeField] private float frameRate = 24f;
 
     [SerializeField] private ItemDatabase itemDatabase;
 
@@ -47,7 +49,13 @@ public class Character : MonoBehaviour {
     private float _timer;
     private int _frame;
 
+    private bool _facingRight = true;
+
+    public CharaState CurrentState => _state;
+
     void Start() {
+        _state = initialState;
+
         if (SaveManager.Instance != null && itemDatabase != null)
             DressUpSaveBridge.LoadIntoState(characterId, itemDatabase);
 
@@ -140,6 +148,29 @@ public class Character : MonoBehaviour {
         RefreshSprites();
     }
 
+    /// <summary>コマ送りの再生/停止（着せ替え画面やパネル表示中に止める用）</summary>
+    public void SetAnimate(bool on) {
+        if (animate == on) return;
+        animate = on;
+        RefreshSprites();
+    }
+
+    /// <summary>フリーズ中に表示する状態を差し替える（着せ替え画面のポーズ変更用）</summary>
+    public void SetFreezeState(CharaState state) {
+        if (freezeState == state) return;
+        freezeState = state;
+        if (!animate) RefreshSprites();
+    }
+
+    /// <summary>向きの反転。ルートのスケールを反転させる（レイヤー側は FitScale が使うため触らない）</summary>
+    public void SetFacing(bool right) {
+        if (_facingRight == right) return;
+        _facingRight = right;
+        var s = transform.localScale;
+        s.x = Mathf.Abs(s.x) * (right ? 1f : -1f);
+        transform.localScale = s;
+    }
+
     void Update() {
         if (!animate) return; // フリーズ中は進めない
 
@@ -157,26 +188,33 @@ public class Character : MonoBehaviour {
 
     // 現在の item / state / frame から全レイヤーのスプライトを決める
     private void RefreshSprites() {
-        // フリーズ中は freezeState の0フレーム目で固定
+        // フリーズ中は freezeState の固定フレームで止める
         CharaState state = animate ? _state : freezeState;
-        int frameIndex = animate ? _frame : 0;
+        int frameIndex = animate ? _frame : freezeFrame;
 
         foreach (var layer in layers) {
+            if (layer.renderer == null) continue;
+
             if (layer.item == null) {
                 layer.renderer.sprite = null;
                 continue;
             }
+
             Sprite chosen;
             var frames = layer.item.GetFrames(state);
-            if (frames != null && frames.Length > 0)
+            if (frames != null && frames.Length > 0) {
                 chosen = frames[frameIndex % frames.Length];
-            else
-                chosen = layer.item.previewSprite;
+            } else {
+                // 指定状態のフレームが無い → Idle にフォールバック
+                var idle = layer.item.GetFrames(CharaState.Idle);
+                chosen = (idle != null && idle.Length > 0) ? idle[0] : layer.item.previewSprite;
+            }
 
             layer.renderer.sprite = chosen;
             FitScale(layer.renderer, chosen);   // ← セット直後にスケール補正
         }
     }
+
 
     private void SetItem(CategoryType category, DressUpItem item) {
         var layer = layers.Find(l => l.category == category);

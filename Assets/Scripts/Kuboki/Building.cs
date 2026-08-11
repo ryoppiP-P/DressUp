@@ -87,12 +87,17 @@ public class Building : MonoBehaviour
     [SerializeField] private float intimacyTickInterval = 1f; // 仮：何秒ごとに加算するか
     [SerializeField] private int intimacyPerTick = 3;          // 仮：1回あたりの加算量
 
+    [Header("同居時の重なり回避(仮、到着済みのキャラを横一列に並べ直す間隔)")]
+    [SerializeField] private float occupantSpacing = 0.6f;
+
     // 現在この建物にいるキャラクターと、それぞれの滞在経過時間
     private readonly Dictionary<CharacterManager, float> _dwellTimers = new Dictionary<CharacterManager, float>();
     // 今回の滞在で既にパラメータ変化を適用済みのキャラクター(再入場したらまた適用できるようリセットする)
     private readonly HashSet<CharacterManager> _effectApplied = new HashSet<CharacterManager>();
     // 現在この建物にいるキャラクター一覧(親密度の同室判定に使う)
     private readonly HashSet<CharacterManager> _occupants = new HashSet<CharacterManager>();
+    // 到着済み(移動が完全に終わった)キャラクターの一覧。重なり回避の並べ直しに使う順序付きリスト
+    private readonly List<CharacterManager> _arrived = new List<CharacterManager>();
     private float _intimacyTickTimer = 0f;
 
     // NavMeshAgentから行先として設定する際に参照するプロパティ
@@ -224,6 +229,8 @@ public class Building : MonoBehaviour
         {
             _dwellTimers.Remove(character);
             _effectApplied.Remove(character);
+            _arrived.Remove(character);
+            RepositionArrived();
 
             // 一緒にいる間、親密度はメモリ上だけ加算してきたのでここでまとめて保存する
             if (SaveManager.Instance != null) SaveManager.Instance.FlushIntimacySave();
@@ -243,6 +250,13 @@ public class Building : MonoBehaviour
         var occupantsSnapshot = new List<CharacterManager>(_dwellTimers.Keys);
         foreach (var character in occupantsSnapshot)
         {
+            // 移動が完全に終わって到着したキャラは、他の同居キャラと重ならないよう並べ直す
+            if (!character.IsFollowingRoute && !_arrived.Contains(character))
+            {
+                _arrived.Add(character);
+                RepositionArrived();
+            }
+
             if (_effectApplied.Contains(character)) continue;
 
             _dwellTimers[character] += dt;
@@ -292,6 +306,27 @@ public class Building : MonoBehaviour
                 // 一緒にいる間は毎回ディスクに書き込まず、メモリ上だけ加算する(退室時にまとめて保存)
                 SaveManager.Instance.AddIntimacy(idA, idB, intimacyPerTick, immediateSave: false);
             }
+        }
+    }
+
+    // 到着済みの同居キャラが重ならないよう、建物の位置を中心に横一列に並べ直す
+    private void RepositionArrived()
+    {
+        int n = _arrived.Count;
+        if (n == 0) return;
+
+        if (n == 1)
+        {
+            _arrived[0].transform.position = transform.position;
+            return;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            float offsetX = (i - (n - 1) / 2f) * occupantSpacing;
+            Vector3 pos = transform.position;
+            pos.x += offsetX;
+            _arrived[i].transform.position = pos;
         }
     }
 

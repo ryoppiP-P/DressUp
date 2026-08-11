@@ -49,7 +49,7 @@ public class Character : MonoBehaviour {
     private float _timer;
     private int _frame;
 
-    private bool _facingRight = true;
+    private bool _facingRight = false;
 
     public CharaState CurrentState => _state;
 
@@ -167,7 +167,7 @@ public class Character : MonoBehaviour {
         if (_facingRight == right) return;
         _facingRight = right;
         var s = transform.localScale;
-        s.x = Mathf.Abs(s.x) * (right ? 1f : -1f);
+        s.x = Mathf.Abs(s.x) * (right ? -1f : 1f);
         transform.localScale = s;
     }
 

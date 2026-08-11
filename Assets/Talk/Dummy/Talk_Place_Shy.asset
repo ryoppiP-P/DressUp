@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8266d3204fb20048bce92aa9164ef2f, type: 3}
+  m_Name: Talk_Place_Shy
+  m_EditorClassIdentifier: Assembly-CSharp::TalkData
+  personality: 2
+  topic: 3
+  lines:
+  - "\u3053\u308C\u304B\u3089{place}\u306B\u884C\u304F\u3093\u3060\u2026{partner}\u3082\u4E00\u7DD2\u306B\u3069\u3046?"
+  - "\u3048\u3001\u3048\u3063\u3068\u2026\u3046\u3093\u3001\u3044\u3044\u3088"

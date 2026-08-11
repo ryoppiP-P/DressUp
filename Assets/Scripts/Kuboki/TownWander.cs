@@ -32,6 +32,9 @@ public class TownWander : MonoBehaviour {
     private bool _isIdling;
     private Vector3 _lastPos;
 
+    // 現在向かっている建物の名前(会話の{place}解決用)。移動中でなければ空文字。
+    public string CurrentDestinationName => _currentTarget != null ? _currentTarget.BuildingName : "";
+
     void Awake() {
         if (character == null) character = GetComponent<CharacterManager>();
         if (view == null) view = GetComponentInChildren<Character>();
@@ -89,6 +92,9 @@ public class TownWander : MonoBehaviour {
 
         float dx = transform.position.x - _lastPos.x;
         _lastPos = transform.position;
+
+        // 会話中などの一時停止中は、テレポート的な位置補正で向きが乱れないよう向き更新をスキップする
+        if (character != null && character.IsPaused) return;
 
         if (Mathf.Abs(dx) < flipThreshold) return;
         view.SetFacing(dx > 0f);

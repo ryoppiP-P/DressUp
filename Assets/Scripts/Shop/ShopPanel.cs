@@ -46,6 +46,12 @@ public class ShopPanel : MonoBehaviour {
         if (backButton) backButton.onClick.AddListener(Close);
     }
 
+    // GameManagerの汎用TogglePanel/SetActiveなど、Open()を経由せずこのGameObjectが
+    // 直接アクティブ化されるルートでもグリッドが必ず作り直されるようにする
+    void OnEnable() {
+        ShowTab(_current);
+    }
+
     /// <summary>ショップ画面を開く(どんぐりショップから開始)</summary>
     public void Open() {
         if (panelRoot) panelRoot.SetActive(true);
@@ -76,6 +82,12 @@ public class ShopPanel : MonoBehaviour {
             slot.Setup(listing, OnClickItem);
             _spawned.Add(slot);
         }
+
+        // パネルを開いた直後(非アクティブ→アクティブの1フレーム目)はレイアウトが未確定で
+        // GridLayoutGroup/ContentSizeFitterの反映が1フレーム遅れることがあるため、即時に確定させる
+        Canvas.ForceUpdateCanvases();
+        if (contentParent is RectTransform contentRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
     }
 
     // アイテムタップ → 購入確認ダイアログを開く

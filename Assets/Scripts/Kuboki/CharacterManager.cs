@@ -73,6 +73,9 @@ public class CharacterManager : MonoBehaviour
     // 現在ルート移動中かどうか(到着したかの判定に外部から使う)
     public bool IsFollowingRoute => isFollowingRoute;
 
+    // すれ違い会話などで一時停止中かどうか(会話中は向き・アニメーションを動かさないための判定に使う)
+    public bool IsPaused => _pauseTimer > 0f;
+
     // このキャラクターのセーブキー(同じGameObjectのCharacterコンポーネントから取得)
     public string CharaId {
         get {
@@ -214,8 +217,11 @@ public class CharacterManager : MonoBehaviour
             if (_nextPassByTime.TryGetValue(other, out float next) && Time.time < next) continue;
 
             // すれ違い成立：お互い一時停止させ、親密度を上げる(すれ違いは一発イベントなので即保存)
-            _pauseTimer = passByPauseSeconds;
-            other._pauseTimer = passByPauseSeconds;
+            // 会話が始まった場合は、その表示が終わるまで停止時間を延長する
+            float talkDuration = TalkManager.Instance != null ? TalkManager.Instance.TryStartConversation(this, other) : 0f;
+            float pauseSeconds = Mathf.Max(passByPauseSeconds, talkDuration);
+            _pauseTimer = pauseSeconds;
+            other._pauseTimer = pauseSeconds;
 
             if (SaveManager.Instance != null)
                 SaveManager.Instance.AddIntimacy(myId, otherId, passByIntimacyGain);

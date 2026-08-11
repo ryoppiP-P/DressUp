@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8266d3204fb20048bce92aa9164ef2f, type: 3}
+  m_Name: Talk_Weather_Mystery
+  m_EditorClassIdentifier: Assembly-CSharp::TalkData
+  personality: 0
+  topic: 1
+  lines:
+  - "\u4ECA\u65E5\u306E\u7A7A\u3001\u306A\u3093\u3060\u304B\u4E0D\u601D\u8B70\u306A\u8272\u3057\u3066\u306A\u3044?"
+  - "\u305F\u3057\u304B\u306B\u2026{partner}\u3068\u4E00\u7DD2\u3060\u3068\u5C11\u3057\u9055\u3063\u3066\u898B\u3048\u308B\u304B\u3082"

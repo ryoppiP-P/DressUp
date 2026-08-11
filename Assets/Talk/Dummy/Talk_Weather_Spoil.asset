@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8266d3204fb20048bce92aa9164ef2f, type: 3}
+  m_Name: Talk_Weather_Spoil
+  m_EditorClassIdentifier: Assembly-CSharp::TalkData
+  personality: 5
+  topic: 1
+  lines:
+  - "\u306F\u3041\u2026\u6691\u304F\u3066\u3084\u308B\u6C17\u51FA\u306A\u3044\u3088\u3001{partner}"
+  - "\u3082\u3046?\u307E\u3060\u5168\u7136\u5E73\u6C17\u3060\u3088"

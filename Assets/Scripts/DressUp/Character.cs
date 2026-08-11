@@ -100,39 +100,44 @@ public class Character : MonoBehaviour {
     }
 
     public void Equip(DressUpItem item) {
-        // 1. 本体を着る
+        // 1. 本体を着る(プレビューのみ。実際に保存されるのはApplyOutfit()が呼ばれた時)
         SetItem(item.category, item);
 
         // 2. 競合カテゴリを脱がす
         foreach (var conflict in GetConflicts(item.category))
             SetItem(conflict, null);
 
-        // 3. 保存状態を更新
-        if (SaveManager.Instance != null) {
-            var state = SaveManager.Instance.GetEquipState(characterId);
-            state.Set(item.category, item);
-            foreach (var conflict in GetConflicts(item.category))
-                state.Clear(conflict);
-        }
-
         RefreshSprites();
-        DressUpSaveBridge.SaveEquipped(characterId);
     }
 
     public void UnequipAll() {
+        // プレビューのみ。保存はApplyOutfit()が呼ばれた時。Body・目・口はリセット対象外
         foreach (var layer in layers) {
-            if (layer.category == CategoryType.Body) continue; // Body は脱がない
+            if (layer.category == CategoryType.Body) continue;
+            if (layer.category == CategoryType.FaceEyes || layer.category == CategoryType.FaceMouth) continue;
             layer.item = null;
         }
 
-        if (SaveManager.Instance != null) {
-            var state = SaveManager.Instance.GetEquipState(characterId);
-            // Body 以外を全部消す
-            var keys = new List<CategoryType>(state.equipped.Keys);
-            foreach (var k in keys)
-                if (k != CategoryType.Body) state.Clear(k);
-        }
         RefreshSprites();
+    }
+
+    // 現在プレビュー中の見た目をそのまま辞書として取得する(保存状態とは限らない)
+    public Dictionary<CategoryType, DressUpItem> GetVisualSnapshot() {
+        var dict = new Dictionary<CategoryType, DressUpItem>();
+        foreach (var layer in layers)
+            if (layer.item != null) dict[layer.category] = layer.item;
+        return dict;
+    }
+
+    // 「コーデを適用」ボタンから呼ばれる。プレビュー中の見た目を実際の保存状態に反映する
+    public void ApplyOutfit() {
+        if (SaveManager.Instance == null) return;
+
+        var state = SaveManager.Instance.GetEquipState(characterId);
+        state.ClearAll();
+        foreach (var pair in GetVisualSnapshot())
+            state.Set(pair.Key, pair.Value);
+
         DressUpSaveBridge.SaveEquipped(characterId);
     }
 

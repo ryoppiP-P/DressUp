@@ -1,4 +1,4 @@
-// •Û‘¶‚µ‚½ƒR[ƒf‚ÌƒŠƒXƒg
+// ä¿å­˜ã•ã‚ŒãŸã‚³ãƒ¼ãƒ‡ã®ãƒªã‚¹ãƒˆ
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -31,13 +31,13 @@ public class OutfitSlots : MonoBehaviour {
         RestoreFromSave();
     }
 
-    // ‹N“®F•Û‘¶Ï‚İƒR[ƒf‚ğƒXƒƒbƒg‚Ö•œŒ³
+    // èµ·å‹•æ™‚ï¼šä¿å­˜æ¸ˆã¿ã‚³ãƒ¼ãƒ‡ã‚’ã‚¹ãƒ­ãƒƒãƒˆã¸åæ˜ 
     void RestoreFromSave() {
         var outfits = DressUpSaveBridge.LoadSavedOutfits(itemDatabase);
         for (int i = 0; i < slots.Count; i++) {
             if (i < outfits.Count) {
-                int dataIndex = i; // ‚±‚Ì slot ‚ª savedOutfits ‚Ì‰½”Ô–Ú‚©
-                var thumb = BuildThumbnail(outfits[i]); // ÄB‰e‚ÅƒTƒ€ƒl¶¬
+                int dataIndex = i; // ã“ã®slotãŒsavedOutfitsã®ä½•ç•ªç›®ã‹
+                var thumb = BuildThumbnail(outfits[i]); // å†æ’®å½±ã§ã‚µãƒ ãƒç”Ÿæˆ
                 slots[i].Show(outfits[i], thumb, Load, () => DeleteOutfit(dataIndex));
             }
             else {
@@ -52,7 +52,7 @@ public class OutfitSlots : MonoBehaviour {
         if (index < 0) return;
 
         var outfit = new SavedOutfit();
-        outfit.Capture(SaveManager.Instance.GetEquipState(character.CharacterId));
+        outfit.Capture(character.GetVisualSnapshot());
 
         DressUpSaveBridge.AddSavedOutfit(outfit);
         RestoreFromSave();
@@ -65,22 +65,22 @@ public class OutfitSlots : MonoBehaviour {
             character.Equip(pair.Value);
     }
 
-    // •Û‘¶ƒR[ƒf‚©‚çˆê“I‚ÉƒLƒƒƒ‰‚ğ’…‚¹‘Ö‚¦‚ÄB‰e‚µAŒ³‚É–ß‚·
+    // ä¿å­˜ã‚³ãƒ¼ãƒ‡ã‚’ä¸€æ™‚çš„ã«ã‚­ãƒ£ãƒ©ã¸ç€ã›æ›¿ãˆã¦æ’®å½±ã—ã€å…ƒã«æˆ»ã™
     Sprite BuildThumbnail(SavedOutfit outfit) {
         if (capture == null || SaveManager.Instance == null || character == null)
             return null;
 
-        // Œ»İ‘•”õ‚ğ‘Ş”ğ
+        // ç¾åœ¨ã®è£…å‚™(ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ä¸­ã®è¦‹ãŸç›®)ã‚’é€€é¿
         var backup = new SavedOutfit();
-        backup.Capture(SaveManager.Instance.GetEquipState(character.CharacterId));
+        backup.Capture(character.GetVisualSnapshot());
 
-        // ƒR[ƒf‚ğ’…‚¹‚ÄB‰e
+        // ã‚³ãƒ¼ãƒ‡ã‚’ç€ã›ã¦æ’®å½±
         character.UnequipAll();
         foreach (var pair in outfit.items)
             character.Equip(pair.Value);
         Sprite thumb = capture.Capture();
 
-        // Œ³‚É–ß‚·
+        // å…ƒã«æˆ»ã™
         character.UnequipAll();
         foreach (var pair in backup.items)
             character.Equip(pair.Value);
@@ -90,6 +90,6 @@ public class OutfitSlots : MonoBehaviour {
 
     void DeleteOutfit(int dataIndex) {
         DressUpSaveBridge.RemoveSavedOutfit(dataIndex);
-        RestoreFromSave(); // íœŒã‚É‹l‚ß’¼‚µ‚ÄÄ•\¦
+        RestoreFromSave(); // å‰Šé™¤å¾Œã«è©°ã‚ç›´ã—ã¦å†è¡¨ç¤º
     }
 }

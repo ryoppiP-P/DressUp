@@ -55,7 +55,7 @@ public class SaveManager : MonoBehaviour {
 
     /// <summary>ロード（起動時に呼ばれるが、外部から再ロードしたいときも使える）</summary>
     public void Load() {
-        if (!File.Exists(SavePath)) {
+        if (!SaveStorage.Exists(SavePath)) {
             Current = new SaveData();
             if (verboseLog) Debug.Log("[SaveManager] セーブデータなし → 新規作成");
             SaveApplier.ApplyAll();
@@ -63,7 +63,7 @@ public class SaveManager : MonoBehaviour {
         }
 
         try {
-            string raw = File.ReadAllText(SavePath);
+            string raw = SaveStorage.Read(SavePath);
             string json = useEncryption ? SaveCrypto.Decrypt(raw) : raw;
             Current = JsonUtility.FromJson<SaveData>(json) ?? new SaveData();
             if (verboseLog) Debug.Log($"[SaveManager] Loaded\n{json}");
@@ -76,11 +76,11 @@ public class SaveManager : MonoBehaviour {
 
     /// <summary>セーブデータ削除（タイトル画面の「最初から」等で）</summary>
     public void DeleteSave() {
-        if (File.Exists(SavePath)) File.Delete(SavePath);
+        SaveStorage.Delete(SavePath);
         Current = new SaveData();
     }
 
-    public bool HasSaveData() => File.Exists(SavePath);
+    public bool HasSaveData() => SaveStorage.Exists(SavePath);
 
     // ===== 内部 =====
 
@@ -88,7 +88,7 @@ public class SaveManager : MonoBehaviour {
         if (Current == null) Current = new SaveData();
         string json = JsonUtility.ToJson(Current, false);
         string output = useEncryption ? SaveCrypto.Encrypt(json) : json;
-        File.WriteAllText(SavePath, output);
+        SaveStorage.Write(SavePath, output);
         if (verboseLog) Debug.Log($"[SaveManager] Saved to {SavePath}");
     }
 

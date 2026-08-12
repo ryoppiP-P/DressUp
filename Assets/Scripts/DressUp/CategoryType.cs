@@ -29,12 +29,17 @@ public enum CategoryType {
 }
 
 public enum CharaState {
-    Idle,
-    Walk,
-    Sit,
-    Study,
-    Reading,
-    Jump,
+    Idle = 0,       // 立っている
+    Walk = 1,       // 歩く
+    Sit = 2,        // 座る
+    Sitting = 3,    // 座っている
+    Study = 4,      // 勉強する
+    CloseBook = 5,      // 本をしまう
+    PutAwayTools = 6,   // 勉強道具をしまう（座りながら）
+    TakeOutTools = 7,   // 勉強道具を出す（座りながら）
+    Reading = 8,    // 読書する
+    Standup = 9,    // 立ち上がる
+    Play = 10,      // 公園で遊ぶ
 }
 
 public enum Rarity {

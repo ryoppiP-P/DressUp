@@ -22085,6 +22085,10 @@ PrefabInstance:
       propertyPath: defaultBody
       value: 
       objectReference: {fileID: 11400000, guid: c35ccb36d62a449458ff295cc96cdcfd, type: 2}
+    - target: {fileID: 383718401641633493, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
+      propertyPath: freezeState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 442228420589564060, guid: ffa15a837cf38e64d853fa9090b7b74e, type: 3}
       propertyPath: m_IsActive
       value: 0

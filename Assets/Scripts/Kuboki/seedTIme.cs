@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -6,40 +7,41 @@ public class SeedTime : MonoBehaviour
     [SerializeField] private TextMeshProUGUI seedTimeText;
     [SerializeField] private seedTimeSet seedTimeSet;
 
-    private float plantedTime = 0f;  // 植えられた時点のTotalGameTime
-    private float seedTime = 0f; // 成長に必要な合計時間
-    private bool isPlanted = false;
+    [Header("畑の何番目の種スロットか(0-2)")]
+    [SerializeField] private int slotIndex = 0;
 
-    public bool IsPlanted => isPlanted;
+    public int SlotIndex => slotIndex;
 
+    // 成長に必要な合計時間
+    public float GrowSeconds => seedTimeSet != null ? seedTimeSet.GetSeedTime() : 0f;
+
+    // 植えているかどうか。状態はセーブデータ側が持っているので、
+    // アプリを閉じても消えず、実時間で育ち続ける。
+    public bool IsPlanted => FairySaveBridge.IsPlanted(slotIndex);
+
+    // 育ちきったかどうか
+    public bool IsReadyToHatch => FairySaveBridge.IsReadyToHatch(slotIndex);
+
+    // 種を植える（キーワードを決めずに植える場合）
     public void PlantSeed()
     {
-        if (isPlanted) return;
-
-        if (seedTimeSet == null || TimeManager.Instance == null) return;
-
-        // 成長に必要な時間を取得
-        seedTime = seedTimeSet.GetSeedTime();
-
-        // 植えた時点の全体時間を記憶しておく
-        plantedTime = TimeManager.Instance.TotalGameTime;
-
-        isPlanted = true;
+        PlantSeed(null, null);
     }
 
-    // 残り時間を計算して返す
+    // 願いを込めて種を植える（選んだキーワードと、そこから決まった性格を持たせる）
+    public void PlantSeed(List<string> keywords, PersonalitySnapshot personality)
+    {
+        if (IsPlanted) return;
+
+        if (seedTimeSet == null) return;
+
+        FairySaveBridge.PlantSeed(slotIndex, seedTimeSet.GetSeedTime(), keywords, personality);
+    }
+
+    // 残り時間を計算して返す（植えた時刻からの実時間で計算する）
     public float GetRemainingTime()
     {
-        if (!isPlanted) return 0f;
-
-        // 植えてからの経過時間＝ 現在の全体時間 － 植えた時間
-        float elapsedTime = TimeManager.Instance.TotalGameTime - plantedTime;
-
-        // 残り時間＝ 必要時間 － 経過時間
-        float remaining = seedTime - elapsedTime;
-
-        // 0以下なら0にする
-        return Mathf.Max(0f, remaining);
+        return FairySaveBridge.GetRemainingSeconds(slotIndex);
     }
 
     // UIパネルが開いた時や、表示されている時だけこれを呼ぶ
@@ -60,9 +62,9 @@ public class SeedTime : MonoBehaviour
     // 指定した秒数を短縮
     public void ReduceTime(float reduceSecond)
     {
-        if (!isPlanted) return;
+        if (!IsPlanted) return;
 
-        plantedTime -= reduceSecond;
+        FairySaveBridge.ReduceSeconds(slotIndex, reduceSecond);
 
         UpdateUI();
     }

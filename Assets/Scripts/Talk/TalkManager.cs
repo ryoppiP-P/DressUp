@@ -8,6 +8,7 @@
 //  TownMoveTestシーンに1つだけ配置する想定(CharacterManager.CheckPassByから呼ばれる)。
 //==============================================================================
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TalkManager : MonoBehaviour {
@@ -25,14 +26,30 @@ public class TalkManager : MonoBehaviour {
     [Header("会話中の立ち位置(仮、重なり回避)")]
     [SerializeField] private float talkSeparationDistance = 1.6f;
 
+    // 今会話中のキャラクター。会話が終わるまで別の相手とは話さない。
+    private readonly HashSet<CharacterManager> _talking = new HashSet<CharacterManager>();
+
     void Awake() {
         Instance = this;
+    }
+
+    void OnDisable() {
+        // 途中で止まった場合に「会話中」が残らないようにする
+        _talking.Clear();
+    }
+
+    /// <summary>そのキャラクターが今誰かと会話中かどうか</summary>
+    public bool IsTalking(CharacterManager who) {
+        return who != null && _talking.Contains(who);
     }
 
     // 会話を開始し、想定される合計表示時間(秒)を返す。開始できなければ0を返す。
     // (呼び出し側はこの戻り値を使って、すれ違いの一時停止時間を会話の長さまで延長する)
     public float TryStartConversation(CharacterManager a, CharacterManager b) {
         if (database == null || a == null || b == null) return 0f;
+
+        // どちらかが既に別の相手と話しているなら割り込ませない
+        if (IsTalking(a) || IsTalking(b)) return 0f;
 
         SpeechBubble bubbleA = a.GetComponentInChildren<SpeechBubble>();
         SpeechBubble bubbleB = b.GetComponentInChildren<SpeechBubble>();
@@ -44,6 +61,9 @@ public class TalkManager : MonoBehaviour {
 
         TalkData talk = database.PickRandom(personality, hasPlace);
         if (talk == null || talk.lines == null || talk.lines.Length == 0) return 0f;
+
+        _talking.Add(a);
+        _talking.Add(b);
 
         SeparateForTalk(a, b);
         FaceEachOther(a, b);
@@ -68,7 +88,11 @@ public class TalkManager : MonoBehaviour {
             yield return new WaitForSeconds(secondsPerLine);
         }
 
-        // 会話が終わったら、まだ移動を続ける途中なら歩きアニメーションに戻す
+        // 会話が終わったので、また別の相手と話せるようにする
+        _talking.Remove(a);
+        _talking.Remove(b);
+
+        // まだ移動を続ける途中なら歩きアニメーションに戻す
         RestoreWalking(a);
         RestoreWalking(b);
     }

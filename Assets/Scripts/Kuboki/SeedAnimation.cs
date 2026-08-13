@@ -53,6 +53,14 @@ public class SeedAnimation : MonoBehaviour
                 }
             });
         }
+
+        int plantedCount = 0;
+        for (int i = 0; i < FairySaveBridge.SlotCount; i++)
+            if (FairySaveBridge.IsPlanted(i)) plantedCount++;
+
+        for (int i = 0; i < hyoujiObject.Length; i++)
+            if (hyoujiObject[i] != null)
+                hyoujiObject[i].SetActive(i < plantedCount);
     }
 
     private void Update()

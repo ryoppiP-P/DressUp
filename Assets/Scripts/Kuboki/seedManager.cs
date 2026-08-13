@@ -16,18 +16,29 @@ public class seedManager : MonoBehaviour
             toggle.onValueChanged.AddListener(OnToggleChanged);
         }
 
-        foreach (var obj in hyoujiObjects)
-        {
-            if (obj != null)
-            {
-                obj.SetActive(false);
+        // 植わっているかはセーブが持っているので、それに合わせて表示を決める
+        bool planted = (seedTime != null && seedTime.IsPlanted);
+
+        foreach (var obj in hyoujiObjects) {
+            if (obj != null) {
+                obj.SetActive(planted);
             }
         }
 
-        if (seedTime != null)
-        {
-            seedTime.PlantSeed();
+        foreach (var obj in seacretObjects) {
+            if (obj != null) {
+                obj.SetActive(!planted);
+            }
         }
+
+        if (planted) {
+            if (toggle != null) toggle.isOn = true;  // 残り時間の更新はUpdate内でtoggle.isOn依存
+            if (seedTime != null) seedTime.UpdateUI();
+        }
+
+        // 種を植えるのは「願いを込める」でキーワードが決まった時だけ。
+        // ここで自動的に植えてしまうと、性格が決まっていない種になってしまう。
+        Debug.Log($"[畑] SaveManager={SaveManager.Instance != null} / seedTime={seedTime != null} / slot={(seedTime != null ? seedTime.SlotIndex : -1)} / planted={(seedTime != null && seedTime.IsPlanted)} / 残り={(seedTime != null ? seedTime.GetRemainingTime() : 0f)}");
     }
 
     private void Update()

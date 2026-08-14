@@ -44,6 +44,8 @@ public class Character : MonoBehaviour {
 
     [Header("Default")]
     [SerializeField] private DressUpItem defaultBody; // 常に着る素体
+    [SerializeField] private DressUpItem defaultEyes;  // 生まれたての目
+    [SerializeField] private DressUpItem defaultMouth; // 生まれたての口
 
     private CharaState _state = CharaState.Idle;
     private float _timer;
@@ -68,10 +70,20 @@ public class Character : MonoBehaviour {
     }
 
     private void EnsureBody() {
-        if (defaultBody == null || SaveManager.Instance == null) return;
+        if (SaveManager.Instance == null) return;
         var state = SaveManager.Instance.GetEquipState(characterId);
-        if (!state.equipped.ContainsKey(CategoryType.Body))
-            state.Set(CategoryType.Body, defaultBody);
+
+        // 生まれたての妖精は素体と顔だけの状態から始まる。
+        // 既に着ているものがある場合は上書きしない。
+        EnsureDefaultItem(state, CategoryType.Body, defaultBody);
+        EnsureDefaultItem(state, CategoryType.FaceEyes, defaultEyes);
+        EnsureDefaultItem(state, CategoryType.FaceMouth, defaultMouth);
+    }
+
+    private void EnsureDefaultItem(EquipState state, CategoryType category, DressUpItem item) {
+        if (item == null) return;
+        if (!state.equipped.ContainsKey(category))
+            state.Set(category, item);
     }
 
     // 画像サイズを500x500に揃える（素体の高さpxに合わせる）

@@ -21,6 +21,8 @@ public class SaveData {
     public MissionSaveData missionData = new MissionSaveData();
     public ItemSaveData itemData = new ItemSaveData();
     public IntimacySaveData intimacyData = new IntimacySaveData();
+    public FairySaveData fairyData = new FairySaveData();
+    public TownSaveData townData = new TownSaveData();
 }
 
 // プレイヤー全体（コイン等）

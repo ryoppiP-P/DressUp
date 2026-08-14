@@ -199,6 +199,7 @@ public class CharacterManager : MonoBehaviour
     // 道ですれ違ったキャラクター同士を一時停止させ、親密度を上げる
     private void CheckPassBy() {
         if (!isFollowingRoute) return; // 移動中(道の上)でなければ判定しない
+        if (IsPaused) return;          // 会話中に別の相手へ声をかけない
 
         string myId = CharaId;
         if (string.IsNullOrEmpty(myId)) return;
@@ -206,6 +207,7 @@ public class CharacterManager : MonoBehaviour
         foreach (var other in _all) {
             if (other == this) continue;
             if (!other.isFollowingRoute) continue;
+            if (other.IsPaused) continue; // 相手が誰かと会話中なら割り込まない
 
             string otherId = other.CharaId;
             if (string.IsNullOrEmpty(otherId) || otherId == myId) continue;

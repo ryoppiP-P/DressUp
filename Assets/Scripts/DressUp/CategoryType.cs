@@ -35,11 +35,12 @@ public enum CharaState {
     Sitting = 3,    // 座っている
     Study = 4,      // 勉強する
     CloseBook = 5,      // 本をしまう
-    PutAwayTools = 6,   // 勉強道具をしまう（座りながら）
-    TakeOutTools = 7,   // 勉強道具を出す（座りながら）
+    CloseTools = 6,   // 勉強道具をしまう（座りながら）
+    OpenTools = 7,   // 勉強道具を出す（座りながら）
     Reading = 8,    // 読書する
     Standup = 9,    // 立ち上がる
     Play = 10,      // 公園で遊ぶ
+    OpenBook = 11,   // 本を開く
 }
 
 public enum Rarity {

@@ -19942,7 +19942,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SceneChangeBotton
   buttonSettingsList:
   - buttonObject: {fileID: 1700675945}
-    action: 0
+    action: 3
     targetSceneName: TestSceneKuboki
     targetPanel: {fileID: 0}
   - buttonObject: {fileID: 819337443}

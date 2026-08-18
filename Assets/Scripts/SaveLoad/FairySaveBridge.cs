@@ -118,8 +118,7 @@ public static class FairySaveBridge {
         var slot = GetSlot(slotIndex);
         if (data == null || slot == null || !slot.isPlanted) return null;
 
-        string id = string.Format("charaID_{0:0000}", data.nextCharaNumber);
-        data.nextCharaNumber++;
+        string id = NextCharacterId();
 
         var entry = new FairyRosterEntry {
             characterId = id,
@@ -129,16 +128,61 @@ public static class FairySaveBridge {
         };
         data.roster.Add(entry);
 
+        // 番号を使い回した場合、前にその番号を使っていたコの着せ替え記録が
+        // 残っていることがあるので、生まれたてに引き継がれないよう消しておく。
+        var dress = SaveManager.Instance.Current.dressUp.GetOrCreate(id);
+        dress.equipped.Clear();
+        dress.characterName = "";
+
         // 誕生日は着せ替え画面の BirthdayView が読むので、キャラ側のセーブにも書いておく
         var now = DateTime.Now;
-        SaveManager.Instance.Current.dressUp.GetOrCreate(id).birthDate =
-            new BirthDate(now.Year, now.Month, now.Day);
+        dress.birthDate = new BirthDate(now.Year, now.Month, now.Day);
 
         // スロットを空に戻す
         data.slots[slotIndex] = new SeedSlotData();
 
         Save();
         return entry;
+    }
+
+    private const string IdPrefix = "charaID_";
+
+    /// <summary>
+    /// 次に生まれる妖精の characterId を決める。
+    /// 見るのは名簿(実際にいるコ)だけで、空いている一番小さい番号を使う。
+    /// nextCharaNumber には引きずられないので、まっさらなセーブなら必ず 0001 から。
+    ///
+    /// 着せ替えセーブは見ない。着せ替え画面を開いただけで空の記録が作られるため、
+    /// それを「使用済み」と数えると誰もいないのに番号だけ進んでしまう
+    /// (実際にこれで 0001/0002 が飛ばされて 0003 から始まっていた)。
+    /// 番号を使い回した時に前の記録が残らないよう、HatchSlot 側で消してから配る。
+    /// </summary>
+    private static string NextCharacterId() {
+        var data = Data;
+        if (data == null) return IdPrefix + "0001";
+
+        var used = new HashSet<int>();
+        foreach (var entry in data.roster) {
+            if (entry == null) continue;
+
+            int number = ParseIdNumber(entry.characterId);
+            if (number > 0) used.Add(number);
+        }
+
+        int next = 1;
+        while (used.Contains(next)) next++;
+
+        data.nextCharaNumber = next + 1; // 記録用(採番はここを見ていない)
+        return IdPrefix + next.ToString("0000");
+    }
+
+    /// <summary>"charaID_0004" → 4。読めなければ 0。</summary>
+    private static int ParseIdNumber(string characterId) {
+        if (string.IsNullOrEmpty(characterId)) return 0;
+        if (!characterId.StartsWith(IdPrefix)) return 0;
+
+        int number;
+        return int.TryParse(characterId.Substring(IdPrefix.Length), out number) ? number : 0;
     }
 
     public static FairyRosterEntry FindRoster(string characterId) {

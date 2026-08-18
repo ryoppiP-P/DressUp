@@ -85,6 +85,6 @@ public class FairySaveData {
     public List<SeedSlotData> slots = new List<SeedSlotData>();
     public List<FairyRosterEntry> roster = new List<FairyRosterEntry>();
 
-    // 次に生まれる妖精に振る番号。charaID_0001 / 0002 は既存キャラが使用中。
-    public int nextCharaNumber = 3;
+    // 次に生まれる妖精に振る番号。charaID_0001から。
+    public int nextCharaNumber = 1;
 }

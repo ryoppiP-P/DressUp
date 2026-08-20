@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4726596085650924411}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -10}
-  m_SizeDelta: {x: 150, y: 130}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -12}
+  m_SizeDelta: {x: -24, y: -24}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &5515572236317782236
 CanvasRenderer:
@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3146694172887425198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -244,8 +244,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3891371752667507950}
-  - {fileID: 4453110548450334980}
   - {fileID: 3146694172887425198}
+  - {fileID: 4453110548450334980}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -307,6 +307,9 @@ MonoBehaviour:
   nameText: {fileID: 8345486767477353339}
   rarityBadge: {fileID: 7031966583511109654}
   rarityTable: {fileID: 11400000, guid: bc5da3274318d3f49ade90d3b845e652, type: 2}
+  showItemName: 0
+  iconMargin: 12
+  nameAreaHeight: 60
 --- !u!1 &9214725422836147267
 GameObject:
   m_ObjectHideFlags: 0

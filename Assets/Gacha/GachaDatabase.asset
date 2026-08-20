@@ -13,15 +13,14 @@ MonoBehaviour:
   m_Name: GachaDatabase
   m_EditorClassIdentifier: Assembly-CSharp::GachaDatabase
   entries:
-  - {fileID: 11400000, guid: 5c4b0efcfccb2ad48854779fa93b8ac4, type: 2}
-  - {fileID: 11400000, guid: 3cb7b75c67d8c974a98f8b24e879f1ea, type: 2}
-  - {fileID: 11400000, guid: caf6ed13dc918f34eadc13a15b15df30, type: 2}
-  - {fileID: 11400000, guid: 27b10044409509d43b5e939f533a8a11, type: 2}
-  - {fileID: 11400000, guid: bbd1a598bb66f0b4a8263e16a193292f, type: 2}
-  - {fileID: 11400000, guid: 43d19795088a7c646a5deaf3a756b908, type: 2}
-  - {fileID: 11400000, guid: 5ced50f26e61ceb4da470058b5df2885, type: 2}
-  - {fileID: 11400000, guid: 7a82c53b1ec41394caf16f1fd87f2461, type: 2}
-  - {fileID: 11400000, guid: ec0b7174c0e1e9443a80da436454f357, type: 2}
-  - {fileID: 11400000, guid: 15b04f8e4187a82469b72c77a7178a34, type: 2}
-  - {fileID: 11400000, guid: dddd6959d899a3d43bdafb4741f98558, type: 2}
-  - {fileID: 11400000, guid: c0f490125ee30e843a48a9db5beab6b0, type: 2}
+  - {fileID: 11400000, guid: 43a3c2c1029df354a9ecaa53b06e92a3, type: 2}
+  - {fileID: 11400000, guid: edba99d336e3fec4d97a09b508fee6f5, type: 2}
+  - {fileID: 11400000, guid: 25a8e38a3767468489b4fd746a10af22, type: 2}
+  - {fileID: 11400000, guid: 1afa3a516c2f209449aa2c6aba45db8d, type: 2}
+  - {fileID: 11400000, guid: 3602bca30ba6345429c3ad147e7c6d55, type: 2}
+  - {fileID: 11400000, guid: 77e781d870249514692d61f3b657b09c, type: 2}
+  - {fileID: 11400000, guid: 0c37ce5edf46899438302945a7726fcb, type: 2}
+  - {fileID: 11400000, guid: bd730d05bf5e4794c834d881792b5e5a, type: 2}
+  - {fileID: 11400000, guid: 525b240648da78b48a7c827d1c69392e, type: 2}
+  - {fileID: 11400000, guid: dc55d2d525637a94bb5614dc810db912, type: 2}
+  - {fileID: 11400000, guid: 0bb5ae3845d645c44b92c0ec20f78143, type: 2}

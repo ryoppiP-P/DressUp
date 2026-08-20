@@ -91,6 +91,14 @@ public class GachaPanel : MonoBehaviour {
     private void TryPull(int count) {
         if (SaveManager.Instance == null) return;
 
+        // 排出するものが1つも登録されていないカテゴリでは引かせない。
+        // (この判定が無いと、先にはちみつを払ってから DrawOne が null を返すので、
+        //  何も出ないのに通貨だけ減る)
+        if (CountCandidates() == 0) {
+            Debug.Log($"[Gacha] {_current} に排出アイテムが登録されていません");
+            return;
+        }
+
         int cost = count == 1 ? singlePullCost : tenPullCost;
         if (!SaveManager.Instance.TrySpendCurrency(CurrencyType.Honey, cost)) {
             Debug.Log("[Gacha] はちみつが足りません");
@@ -131,6 +139,12 @@ public class GachaPanel : MonoBehaviour {
         if (last != null) results.Add(last);
 
         return results;
+    }
+
+    // 今のカテゴリに排出候補が何件あるか
+    private int CountCandidates() {
+        if (gachaDatabase == null || gachaDatabase.entries == null) return 0;
+        return gachaDatabase.entries.Count(e => e != null && e.item != null && e.category == _current);
     }
 
     // 現在のカテゴリから1個抽選する

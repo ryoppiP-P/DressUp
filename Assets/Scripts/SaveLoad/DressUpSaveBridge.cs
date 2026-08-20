@@ -21,7 +21,8 @@ public static class DressUpSaveBridge {
         var state = SaveManager.Instance.GetEquipState(characterId);
         state.ClearAll();
         foreach (var pair in ToDict(data.equipped, db))
-            state.Set(pair.Key, pair.Value);
+            foreach (var item in pair.Value)
+                state.Add(pair.Key, item);
     }
 
     //==========================================================================
@@ -59,25 +60,39 @@ public static class DressUpSaveBridge {
     // 変換ヘルパー
     //==========================================================================
 
-    private static List<EquippedEntry> ToEntries(Dictionary<CategoryType, DressUpItem> dict) {
+    // アクセサリは同じカテゴリに複数入るので、1アイテム=1エントリで並べて書く。
+    // 保存形式(List<EquippedEntry>)自体は元から複数行を許すので、古いセーブもそのまま読める。
+    private static List<EquippedEntry> ToEntries(Dictionary<CategoryType, List<DressUpItem>> dict) {
         var list = new List<EquippedEntry>();
         foreach (var pair in dict) {
             if (pair.Value == null) continue;
-            list.Add(new EquippedEntry {
-                category = pair.Key.ToString(),
-                itemName = pair.Value.itemName
-            });
+
+            foreach (var item in pair.Value) {
+                if (item == null) continue;
+                list.Add(new EquippedEntry {
+                    category = pair.Key.ToString(),
+                    itemName = item.itemName
+                });
+            }
         }
         return list;
     }
 
-    private static Dictionary<CategoryType, DressUpItem> ToDict(List<EquippedEntry> entries, ItemDatabase db) {
-        var dict = new Dictionary<CategoryType, DressUpItem>();
+    private static Dictionary<CategoryType, List<DressUpItem>> ToDict(List<EquippedEntry> entries, ItemDatabase db) {
+        var dict = new Dictionary<CategoryType, List<DressUpItem>>();
         foreach (var e in entries) {
             var item = db.Find(e.itemName);
             if (item == null) continue;
-            if (System.Enum.TryParse<CategoryType>(e.category, out var cat))
-                dict[cat] = item;
+            if (!System.Enum.TryParse<CategoryType>(e.category, out var cat)) continue;
+
+            if (!dict.TryGetValue(cat, out var list)) {
+                list = new List<DressUpItem>();
+                dict[cat] = list;
+            }
+
+            // 上限を超えている古いセーブが来ても、入る分だけにしておく
+            if (list.Count >= CategoryMap.GetMaxEquip(cat)) continue;
+            if (!list.Contains(item)) list.Add(item);
         }
         return dict;
     }

@@ -61,8 +61,8 @@ public class OutfitSlots : MonoBehaviour {
     void Load(SavedOutfit outfit) {
         if (character == null) return;
         character.UnequipAll();
-        foreach (var pair in outfit.items)
-            character.Equip(pair.Value);
+        foreach (var item in outfit.AllItems())
+            character.Equip(item);
     }
 
     // 保存コーデを一時的にキャラへ着せ替えて撮影し、元に戻す
@@ -76,14 +76,14 @@ public class OutfitSlots : MonoBehaviour {
 
         // コーデを着せて撮影
         character.UnequipAll();
-        foreach (var pair in outfit.items)
-            character.Equip(pair.Value);
+        foreach (var item in outfit.AllItems())
+            character.Equip(item);
         Sprite thumb = capture.Capture();
 
         // 元に戻す
         character.UnequipAll();
-        foreach (var pair in backup.items)
-            character.Equip(pair.Value);
+        foreach (var item in backup.AllItems())
+            character.Equip(item);
 
         return thumb;
     }

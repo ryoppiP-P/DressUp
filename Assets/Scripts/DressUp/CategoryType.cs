@@ -50,6 +50,26 @@ public enum Rarity {
 }
 
 public static class CategoryMap {
+    /// <summary>アクセサリを同時に着けられる数(髪飾り/メガネ/体アクセ それぞれ)</summary>
+    public const int AccessoryMaxEquip = 4;
+
+    /// <summary>そのカテゴリを同時に何個着けられるか。アクセサリ以外は1個。</summary>
+    public static int GetMaxEquip(CategoryType category) {
+        switch (category) {
+            case CategoryType.HeadAccessory:
+            case CategoryType.GlassesAccessory:
+            case CategoryType.BodyAccessory:
+                return AccessoryMaxEquip;
+            default:
+                return 1;
+        }
+    }
+
+    /// <summary>2個以上着けられるカテゴリか</summary>
+    public static bool IsMultiEquip(CategoryType category) {
+        return GetMaxEquip(category) > 1;
+    }
+
     public static CategoryType[] GetCategories(CategoryGroup group) {
         switch (group) {
             case CategoryGroup.Fashion:

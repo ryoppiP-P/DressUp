@@ -122,6 +122,31 @@ public class Character : MonoBehaviour {
         RefreshSprites();
     }
 
+    // 今その見た目になっているか(プレビュー基準。保存状態ではなく、今キャラが着ているもの)
+    public bool IsWearing(DressUpItem item) {
+        if (item == null) return false;
+
+        var layer = layers.Find(l => l.category == item.category);
+        return layer != null && layer.item == item;
+    }
+
+    // そのカテゴリを脱ぐ(プレビューのみ)。素体と顔は無いと成立しないので脱がせない
+    public void Unequip(CategoryType category) {
+        if (category == CategoryType.Body) return;
+        if (category == CategoryType.FaceEyes || category == CategoryType.FaceMouth) return;
+
+        SetItem(category, null);
+        RefreshSprites();
+    }
+
+    // 着ていれば脱ぐ、着ていなければ着る(アイテムをタップした時用)
+    public void Toggle(DressUpItem item) {
+        if (item == null) return;
+
+        if (IsWearing(item)) Unequip(item.category);
+        else Equip(item);
+    }
+
     public void UnequipAll() {
         // プレビューのみ。保存はApplyOutfit()が呼ばれた時。Body・目・口はリセット対象外
         foreach (var layer in layers) {

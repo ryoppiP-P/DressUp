@@ -39,7 +39,7 @@ public class FilterScreen : MonoBehaviour {
         grid.ApplyFilter(cond);
     }
 
-    // クリア（全部リセット）
+    // クリア（全部リセット）。押した時点で一覧にも反映する（「適用」を押さなくてよい）
     void Clear() {
         nameInput.text = "";
 
@@ -51,5 +51,9 @@ public class FilterScreen : MonoBehaviour {
         // 並べ替えは既定（入手順 新しい）に戻す
         foreach (var st in sortGroup.GetComponentsInChildren<SortToggle>())
             st.Toggle.isOn = (st.option == SortOption.AcquiredNew);
+
+        // 戻した内容をそのまま一覧へ反映する。
+        // Apply() は今のUIを読み直すだけなので、ここでは条件が空になった状態が渡る。
+        Apply();
     }
 }

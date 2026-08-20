@@ -15,7 +15,7 @@ MonoBehaviour:
   itemId: Bottoms_Fall
   itemName: Bottoms_Fall
   icon: {fileID: 21300000, guid: e4654194f5b7fce4486ea2522cf7a14b, type: 3}
-  rarity: 0
+  rarity: 1
   description: 
   ownedByDefault: 1
   category: 7

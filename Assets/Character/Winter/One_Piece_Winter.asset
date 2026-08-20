@@ -15,7 +15,7 @@ MonoBehaviour:
   itemId: One_Piece_Winter
   itemName: Dress_Winter
   icon: {fileID: 21300000, guid: 08e06d2c7a07a3a4a8064e721dd4f309, type: 3}
-  rarity: 0
+  rarity: 2
   description: 
   ownedByDefault: 0
   category: 6

@@ -109,7 +109,7 @@ MonoBehaviour:
       label: "\u30DE\u30A4\u30DA\u30FC\u30B9"
     - min: 80
       max: 89
-      label: "\u3064\u304B\u307F\u3069\u3053\u308D\u306A\u3044"
+      label: "\u3064\u304B\u307F\u3069\u3053\u308D\u306A"
     - min: 90
       max: 100
       label: "\u66B4\u98A8\u96E8"

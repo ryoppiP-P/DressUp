@@ -138,7 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemButton
   iconImage: {fileID: 8385308934428999083}
   rarityImage: {fileID: 5465970638254693420}
-  rarityTable: {fileID: 11400000, guid: bc5da3274318d3f49ade90d3b845e652, type: 2}
+  rarityTable: {fileID: 11400000, guid: fa9bff7ac7517a64dbad4dde1da5689b, type: 2}
   button: {fileID: 963903859592384367}
   selectImage: {fileID: 1118376987406296653}
 --- !u!1 &5589316974720666182

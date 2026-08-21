@@ -7,6 +7,10 @@ public class DressupGrid : MonoBehaviour {
     [SerializeField] private ItemButton itemButtonPrefab;
     [SerializeField] private ItemDatabase database;     // ScriptableObject で作ったアイテムデータベース
 
+    [Header("所持しているものだけ出す")]
+    [Tooltip("OFFにすると、まだ手に入れていないアイテムも一覧に出る(確認用)")]
+    [SerializeField] private bool showOnlyOwned = true;
+
     private readonly List<ItemButton> _spawned = new();
 
     // 表示条件は「タブ」「名前検索」「絞り込みパネル」の3つを別々に覚えておき、
@@ -23,11 +27,22 @@ public class DressupGrid : MonoBehaviour {
     private string _searchKeyword = "";
     private FilterCondition _condition;
 
-    // 全アイテムはDBから取る（nullや空はここで吸収）
+    // 全アイテムはDBから取る（nullや空はここで吸収）。
+    // 手に入れていないものは出さない(ガチャ等で入手して初めて着せ替えに並ぶ)。
     private IEnumerable<DressUpItem> AllItems =>
         (database != null && database.allItems != null)
-            ? database.allItems.Where(i => i != null)
+            ? database.allItems.Where(i => i != null && IsAvailable(i))
             : Enumerable.Empty<DressUpItem>();
+
+    // 持っているか。ownedByDefault のものと、ガチャ/ショップで入手済みのものが対象。
+    // 今すでに着ているものは、脱げなくならないよう常に出す。
+    private bool IsAvailable(DressUpItem item) {
+        if (!showOnlyOwned) return true;
+        if (SaveManager.Instance == null) return true;
+
+        if (SaveManager.Instance.IsItemOwned(item)) return true;
+        return character != null && character.IsWearing(item);
+    }
 
     // 今の対象キャラは DressUpTarget から取る
     private Character character => DressUpTarget.Instance != null

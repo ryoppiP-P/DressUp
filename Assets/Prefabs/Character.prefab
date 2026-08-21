@@ -940,8 +940,8 @@ MonoBehaviour:
   displayName: "\u307F\u307F"
   referenceHeight: 500
   defaultBody: {fileID: 11400000, guid: c35ccb36d62a449458ff295cc96cdcfd, type: 2}
-  defaultEyes: {fileID: 11400000, guid: 2bdf00d8a484e00408295cf4cdb1fc9d, type: 2}
-  defaultMouth: {fileID: 11400000, guid: e6e5891b0aa749b40abcbba1b90dc0fc, type: 2}
+  defaultEyes: {fileID: 11400000, guid: 7cdaf71d13762544c8f395f5df5f7732, type: 2}
+  defaultMouth: {fileID: 11400000, guid: ca52dccdd895e71419085b2fda279eaa, type: 2}
 --- !u!114 &7963597322337252418
 MonoBehaviour:
   m_ObjectHideFlags: 0

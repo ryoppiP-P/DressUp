@@ -306,7 +306,7 @@ MonoBehaviour:
   iconImage: {fileID: 6333194620662635517}
   nameText: {fileID: 8345486767477353339}
   rarityBadge: {fileID: 7031966583511109654}
-  rarityTable: {fileID: 11400000, guid: bc5da3274318d3f49ade90d3b845e652, type: 2}
+  rarityTable: {fileID: 11400000, guid: fa9bff7ac7517a64dbad4dde1da5689b, type: 2}
   showItemName: 0
   iconMargin: 12
   nameAreaHeight: 60

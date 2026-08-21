@@ -136,8 +136,8 @@ public class TalkManager : MonoBehaviour {
 
         CategoryType[] priority = { CategoryType.Dress, CategoryType.Tops, CategoryType.Bottoms };
         foreach (var category in priority) {
-            if (state.equipped.TryGetValue(category, out DressUpItem item) && item != null)
-                return item.itemName;
+            var item = state.Get(category);
+            if (item != null) return item.itemName;
         }
 
         return fallbackItemWord;

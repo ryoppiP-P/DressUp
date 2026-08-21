@@ -82,7 +82,7 @@ public class Character : MonoBehaviour {
 
     private void EnsureDefaultItem(EquipState state, CategoryType category, DressUpItem item) {
         if (item == null) return;
-        if (!state.equipped.ContainsKey(category))
+        if (state.Count(category) == 0)
             state.Set(category, item);
     }
 
@@ -105,19 +105,53 @@ public class Character : MonoBehaviour {
         foreach (var layer in layers) layer.item = null;
 
         foreach (var pair in state.equipped) {
-            var layer = layers.Find(l => l.category == pair.Key);
-            if (layer != null) layer.item = pair.Value;
+            if (pair.Value == null) continue;
+            AssignToLayers(pair.Key, pair.Value);
         }
         RefreshSprites();
     }
 
+    // そのカテゴリのレイヤーへ、着ている順に前から詰めていく。
+    // アクセサリはレイヤーが4枚あるので、4つまで同時に出せる。
+    // (レイヤーが足りない分は表示されないだけで、着用データからは消えない)
+    private void AssignToLayers(CategoryType category, List<DressUpItem> items) {
+        var slots = layers.FindAll(l => l.category == category);
+
+        for (int i = 0; i < slots.Count; i++)
+            slots[i].item = i < items.Count ? items[i] : null;
+    }
+
+    // 今そのカテゴリで着ているものを、レイヤーの並び順どおりに集める
+    private List<DressUpItem> CollectWorn(CategoryType category) {
+        var result = new List<DressUpItem>();
+        foreach (var layer in layers) {
+            if (layer.category != category) continue;
+            if (layer.item != null) result.Add(layer.item);
+        }
+        return result;
+    }
+
     public void Equip(DressUpItem item) {
+        if (item == null) return;
+
         // 1. 本体を着る(プレビューのみ。実際に保存されるのはApplyOutfit()が呼ばれた時)
-        SetItem(item.category, item);
+        if (CategoryMap.IsMultiEquip(item.category)) {
+            // アクセサリは重ね着けできる。上限(4個)を超えたら一番古いものが外れる。
+            var worn = CollectWorn(item.category);
+            if (!worn.Contains(item)) {
+                worn.Add(item);
+
+                int max = CategoryMap.GetMaxEquip(item.category);
+                while (worn.Count > max) worn.RemoveAt(0);
+            }
+            AssignToLayers(item.category, worn);
+        } else {
+            SetItem(item.category, item);
+        }
 
         // 2. 競合カテゴリを脱がす
         foreach (var conflict in GetConflicts(item.category))
-            SetItem(conflict, null);
+            ClearCategory(conflict);
 
         RefreshSprites();
     }
@@ -126,16 +160,30 @@ public class Character : MonoBehaviour {
     public bool IsWearing(DressUpItem item) {
         if (item == null) return false;
 
-        var layer = layers.Find(l => l.category == item.category);
-        return layer != null && layer.item == item;
+        return layers.Exists(l => l.category == item.category && l.item == item);
     }
 
-    // そのカテゴリを脱ぐ(プレビューのみ)。素体と顔は無いと成立しないので脱がせない
+    // そのカテゴリを丸ごと脱ぐ(プレビューのみ)。素体と顔は無いと成立しないので脱がせない
     public void Unequip(CategoryType category) {
-        if (category == CategoryType.Body) return;
-        if (category == CategoryType.FaceEyes || category == CategoryType.FaceMouth) return;
+        if (IsAlwaysOn(category)) return;
 
-        SetItem(category, null);
+        ClearCategory(category);
+        RefreshSprites();
+    }
+
+    // アイテム1つだけ脱ぐ(アクセサリを重ね着けしている時に、その1個だけ外す)
+    public void Unequip(DressUpItem item) {
+        if (item == null || IsAlwaysOn(item.category)) return;
+
+        if (!CategoryMap.IsMultiEquip(item.category)) {
+            Unequip(item.category);
+            return;
+        }
+
+        var worn = CollectWorn(item.category);
+        if (!worn.Remove(item)) return;
+
+        AssignToLayers(item.category, worn);
         RefreshSprites();
     }
 
@@ -143,8 +191,21 @@ public class Character : MonoBehaviour {
     public void Toggle(DressUpItem item) {
         if (item == null) return;
 
-        if (IsWearing(item)) Unequip(item.category);
+        if (IsWearing(item)) Unequip(item);
         else Equip(item);
+    }
+
+    // 素体と顔は外させない
+    private static bool IsAlwaysOn(CategoryType category) {
+        return category == CategoryType.Body
+            || category == CategoryType.FaceEyes
+            || category == CategoryType.FaceMouth;
+    }
+
+    // そのカテゴリのレイヤーを全部空にする
+    private void ClearCategory(CategoryType category) {
+        foreach (var layer in layers)
+            if (layer.category == category) layer.item = null;
     }
 
     public void UnequipAll() {
@@ -158,11 +219,19 @@ public class Character : MonoBehaviour {
         RefreshSprites();
     }
 
-    // 現在プレビュー中の見た目をそのまま辞書として取得する(保存状態とは限らない)
-    public Dictionary<CategoryType, DressUpItem> GetVisualSnapshot() {
-        var dict = new Dictionary<CategoryType, DressUpItem>();
-        foreach (var layer in layers)
-            if (layer.item != null) dict[layer.category] = layer.item;
+    // 現在プレビュー中の見た目をそのまま辞書として取得する(保存状態とは限らない)。
+    // アクセサリは複数着けられるので、カテゴリごとにリストで返す。
+    public Dictionary<CategoryType, List<DressUpItem>> GetVisualSnapshot() {
+        var dict = new Dictionary<CategoryType, List<DressUpItem>>();
+        foreach (var layer in layers) {
+            if (layer.item == null) continue;
+
+            if (!dict.TryGetValue(layer.category, out var list)) {
+                list = new List<DressUpItem>();
+                dict[layer.category] = list;
+            }
+            if (!list.Contains(layer.item)) list.Add(layer.item);
+        }
         return dict;
     }
 
@@ -173,7 +242,8 @@ public class Character : MonoBehaviour {
         var state = SaveManager.Instance.GetEquipState(characterId);
         state.ClearAll();
         foreach (var pair in GetVisualSnapshot())
-            state.Set(pair.Key, pair.Value);
+            foreach (var item in pair.Value)
+                state.Add(pair.Key, item);
 
         DressUpSaveBridge.SaveEquipped(characterId);
     }
@@ -258,9 +328,15 @@ public class Character : MonoBehaviour {
     }
 
 
+    // そのカテゴリをこの1つだけにする(同カテゴリの余りレイヤーは空にする)
     private void SetItem(CategoryType category, DressUpItem item) {
-        var layer = layers.Find(l => l.category == category);
-        if (layer != null) layer.item = item;
+        bool assigned = false;
+        foreach (var layer in layers) {
+            if (layer.category != category) continue;
+
+            layer.item = assigned ? null : item;
+            assigned = true;
+        }
     }
 
     private IEnumerable<CategoryType> GetConflicts(CategoryType category) {

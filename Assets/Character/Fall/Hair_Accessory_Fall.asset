@@ -15,7 +15,7 @@ MonoBehaviour:
   itemId: Hair_Accessory_Fall
   itemName: Hair_Accessory_Fall
   icon: {fileID: 21300000, guid: 9ce7f905e28070c4ebb4728dba6a353c, type: 3}
-  rarity: 0
+  rarity: 2
   description: 
   ownedByDefault: 1
   category: 10

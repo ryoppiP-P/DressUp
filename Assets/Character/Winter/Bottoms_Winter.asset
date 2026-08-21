@@ -15,7 +15,7 @@ MonoBehaviour:
   itemId: Bottoms_Winter
   itemName: Bottoms_Winter
   icon: {fileID: 21300000, guid: e5b963a87fa115f48a3d7da73957549f, type: 3}
-  rarity: 0
+  rarity: 1
   description: 
   ownedByDefault: 0
   category: 7

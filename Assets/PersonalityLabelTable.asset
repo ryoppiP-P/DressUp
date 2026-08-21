@@ -17,79 +17,79 @@ MonoBehaviour:
     ranges:
     - min: 0
       max: 19
-      label: "\u73FE\u5B9F\u4E3B\u7FA9"
+      label: "\u3052\u3093\u3058\u3064\u306F"
     - min: 20
       max: 39
-      label: "\u5E38\u8B58\u4EBA"
+      label: "\u3057\u3063\u304B\u308A\u3084"
     - min: 40
       max: 59
-      label: "\u3061\u3087\u3074\u500B\u6027\u7684"
+      label: "\u3075\u3057\u304E\u3055\u3093"
     - min: 60
       max: 79
-      label: "\u5929\u7136"
+      label: "\u3066\u3093\u306D\u3093\u3084"
     - min: 80
       max: 89
-      label: "\u30DF\u30B9\u30C6\u30EA\u30A2\u30B9"
+      label: "\u3057\u3093\u3074\u3066\u304D"
     - min: 90
       max: 100
-      label: "\u5B87\u5B99\u4EBA"
+      label: "\u3046\u3061\u3085\u3046\u3058\u3093"
   - axis: 1
     ranges:
     - min: 0
       max: 19
-      label: "\u5B64\u9AD8\u306E\u4E00\u5339\u72FC"
+      label: "\u3072\u3068\u308A\u305F\u3073"
     - min: 20
       max: 39
-      label: "\u3072\u3068\u308A\u597D\u304D"
+      label: "\u3058\u3086\u3046\u306D\u3053"
     - min: 40
       max: 59
-      label: "\u4EBA\u808C\u604B\u3057\u3081"
+      label: "\u308F\u3044\u308F\u3044\u6D3E"
     - min: 60
       max: 79
-      label: "\u3055\u307F\u3057\u304C\u308A\u5C4B"
+      label: "\u307B\u3069\u3088\u304F"
     - min: 80
       max: 89
       label: "\u304B\u307E\u3063\u3066\u3061\u3083\u3093"
     - min: 90
       max: 100
-      label: "\u5E38\u306B\u8AB0\u304B\u3068\u3044\u305F\u3044"
+      label: "\u3044\u3064\u3082\u3044\u3063\u3057\u3087"
   - axis: 2
     ranges:
     - min: 0
       max: 19
-      label: "\u5F37\u6C17"
+      label: "\u3064\u3093\u3064\u3093"
     - min: 20
       max: 39
       label: "\u5802\u3005"
     - min: 40
       max: 59
-      label: "\u306B\u3053\u306B\u3053"
+      label: "\u306F\u305A\u304B\u3057\u304C\u308A"
     - min: 60
       max: 79
       label: "\u4EBA\u898B\u77E5\u308A"
     - min: 80
       max: 89
-      label: "\u7167\u308C\u5C4B"
+      label: "\u3066\u308C\u3084\u3055\u3093"
     - min: 90
       max: 100
-      label: "\u8996\u7DDA\u306B\u5F31\u3044"
+      label: "\u8449\u96A0\u308C"
   - axis: 3
     ranges:
     - min: 0
       max: 19
-      label: "\u7121\u95A2\u5FC3"
+      label: "\u3055\u3063\u3071\u308A\u306F"
     - min: 20
       max: 39
-      label: "\u30C9\u30E9\u30A4"
+      label: "\u30AF\u30FC\u30EB\u808C"
     - min: 40
       max: 59
-      label: "\u6C17\u914D\u308A\u4E0A\u624B"
+      label: "\u304D\u304F\u3070\u308A\u306F"
     - min: 60
       max: 79
-      label: "\u4E16\u8A71\u713C\u304D"
+      label: "\u304A\u4E16\u8A71\u713C\u304D"
     - min: 80
       max: 89
-      label: "\u5144\u8CB4\u808C"
+      label: "\u3042\u306D\u3054\u306F\u3060"
     - min: 90
       max: 100
       label: "\u304A\u305B\u3063\u304B\u3044"
@@ -100,19 +100,19 @@ MonoBehaviour:
       label: "\u51E0\u5E33\u9762"
     - min: 20
       max: 39
-      label: "\u5B89\u5B9A"
+      label: "\u5B89\u5B9A\u6D3E"
     - min: 40
       max: 59
-      label: "\u67D4\u8EDF"
+      label: "\u81EA\u7531\u4EBA"
     - min: 60
       max: 79
       label: "\u30DE\u30A4\u30DA\u30FC\u30B9"
     - min: 80
       max: 89
-      label: "\u3064\u304B\u307F\u3069\u3053\u308D\u306A\u3044"
+      label: "\u306D\u3053\u304D\u3057\u3064"
     - min: 90
       max: 100
-      label: "\u66B4\u98A8\u96E8"
+      label: "\u3042\u3089\u3057\u306E\u3053"
   - axis: 5
     ranges:
     - min: 0
@@ -120,16 +120,16 @@ MonoBehaviour:
       label: "\u30B9\u30C8\u30A4\u30C3\u30AF"
     - min: 20
       max: 39
-      label: "\u5F37\u304C\u308A"
+      label: "\u304C\u3093\u3070\u308A\u3084"
     - min: 40
       max: 59
-      label: "\u7518\u3048\u4E0B\u624B"
+      label: "\u3059\u306A\u304A\u4E0B\u624B"
     - min: 60
       max: 79
-      label: "\u7518\u3048\u3093\u574A"
+      label: "\u3064\u3088\u304C\u308A\u3084"
     - min: 80
       max: 89
-      label: "\u9699\u3042\u3089\u3070\u7518\u3048"
+      label: "\u3042\u307E\u3048\u3093\u307C\u3046"
     - min: 90
       max: 100
       label: "\u8D64\u3061\u3083\u3093"

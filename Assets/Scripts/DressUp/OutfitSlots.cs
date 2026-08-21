@@ -23,7 +23,10 @@ public class OutfitSlots : MonoBehaviour {
     }
 
     void Start() {
-        saveButton.onClick.AddListener(SaveCurrent);
+        // 保存ボタンの登録はここでやらない。
+        // このスクリプトはコーデ保存パネルの上に乗っていて、パネルが閉じている間は
+        // Start が走らない = 一度も開かずに保存を押しても何も起きなかった。
+        // ボタン側(常にアクティブ)の OutfitSaveButton から SaveCurrent() を呼んでもらう。
         if (character != null) RestoreFromSave();
     }
 
@@ -46,10 +49,13 @@ public class OutfitSlots : MonoBehaviour {
         }
     }
 
-    void SaveCurrent() {
+    /// <summary>今の見た目をコーデとして保存する(パネルの外の保存ボタンからも呼ばれる)</summary>
+    public void SaveCurrent() {
         if (SaveManager.Instance == null || character == null) return;
-        int index = slots.FindIndex(s => s.IsEmpty);
-        if (index < 0) return;
+
+        // 空きがあるかは、スロットの表示状態ではなく保存データの件数で判断する。
+        // (パネルを一度も開いていないとスロットは全部空に見えるため)
+        if (DressUpSaveBridge.LoadSavedOutfits(itemDatabase).Count >= slots.Count) return;
 
         var outfit = new SavedOutfit();
         outfit.Capture(character.GetVisualSnapshot());
@@ -61,8 +67,8 @@ public class OutfitSlots : MonoBehaviour {
     void Load(SavedOutfit outfit) {
         if (character == null) return;
         character.UnequipAll();
-        foreach (var pair in outfit.items)
-            character.Equip(pair.Value);
+        foreach (var item in outfit.AllItems())
+            character.Equip(item);
     }
 
     // 保存コーデを一時的にキャラへ着せ替えて撮影し、元に戻す
@@ -76,14 +82,14 @@ public class OutfitSlots : MonoBehaviour {
 
         // コーデを着せて撮影
         character.UnequipAll();
-        foreach (var pair in outfit.items)
-            character.Equip(pair.Value);
+        foreach (var item in outfit.AllItems())
+            character.Equip(item);
         Sprite thumb = capture.Capture();
 
         // 元に戻す
         character.UnequipAll();
-        foreach (var pair in backup.items)
-            character.Equip(pair.Value);
+        foreach (var item in backup.AllItems())
+            character.Equip(item);
 
         return thumb;
     }

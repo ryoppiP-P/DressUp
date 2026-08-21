@@ -16,6 +16,25 @@ MonoBehaviour:
   category: 2
   type: 0
   description: "\u8857\u306B\u88C5\u98FE\u3092\u7F6E\u3053\u3046"
-  targetCount: 5
+  targetCount: 30
   rewardNut: 0
-  rewardHoney: 400
+  rewardHoney: 0
+  tiers:
+  - targetCount: 5
+    rewardNut: 0
+    rewardHoney: 400
+  - targetCount: 10
+    rewardNut: 0
+    rewardHoney: 500
+  - targetCount: 15
+    rewardNut: 0
+    rewardHoney: 600
+  - targetCount: 20
+    rewardNut: 0
+    rewardHoney: 800
+  - targetCount: 25
+    rewardNut: 0
+    rewardHoney: 1200
+  - targetCount: 30
+    rewardNut: 0
+    rewardHoney: 1500

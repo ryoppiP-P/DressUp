@@ -77,6 +77,9 @@ public class TownFairySpawner : MonoBehaviour {
     private HashSet<string> CollectExistingIds() {
         var ids = new HashSet<string>();
         foreach (var character in FindObjectsByType<Character>(FindObjectsSortMode.None)) {
+            // UI表示用のキャラは街に居る扱いにしない(居ることにすると本物が出てこない)
+            if (TownPositionSaver.IsIgnored(character)) continue;
+
             if (character != null && !string.IsNullOrEmpty(character.CharacterId))
                 ids.Add(character.CharacterId);
         }

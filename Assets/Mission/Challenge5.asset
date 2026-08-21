@@ -14,8 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MissionData
   missionId: challenge5
   category: 2
-  type: 9
-  description: "\u670D\u3092\u96C6\u3081\u3088\u3046"
-  targetCount: 10
+  type: 8
+  description: "\u5404\u6027\u683C\u306E\u30B3\u3092\u4F5C\u308D\u3046"
+  targetCount: 6
   rewardNut: 0
-  rewardHoney: 400
+  rewardHoney: 0
+  tiers:
+  - targetCount: 1
+    rewardNut: 0
+    rewardHoney: 400
+  - targetCount: 2
+    rewardNut: 0
+    rewardHoney: 500
+  - targetCount: 3
+    rewardNut: 0
+    rewardHoney: 600
+  - targetCount: 4
+    rewardNut: 0
+    rewardHoney: 800
+  - targetCount: 5
+    rewardNut: 0
+    rewardHoney: 1200
+  - targetCount: 6
+    rewardNut: 0
+    rewardHoney: 1500

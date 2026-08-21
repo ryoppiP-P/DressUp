@@ -39,28 +39,14 @@ public class MissionSlot : MonoBehaviour {
     [SerializeField] private Sprite honeySprite;
 
     private MissionData _data;
+    private MissionPanel _owner;   // 「挑戦する」でどこへ行くかはこちらが知っている
 
-    public void Setup(MissionData data) {
+    public void Setup(MissionData data, MissionPanel owner = null) {
         _data = data;
+        _owner = owner;
         description.text = data.description;
 
-        // どんぐり報酬（0なら非表示）
-        if (nutRewardObj != null) {
-            bool hasNut = data.rewardNut > 0;
-            nutRewardObj.SetActive(hasNut);
-            if (hasNut && nutRewardText != null)
-                nutRewardText.text = $"×{data.rewardNut}";
-        }
-
-        // はちみつ報酬（0なら非表示）
-        if (honeyRewardObj != null) {
-            bool hasHoney = data.rewardHoney > 0;
-            honeyRewardObj.SetActive(hasHoney);
-            if (hasHoney && honeyRewardText != null)
-                honeyRewardText.text = $"×{data.rewardHoney}";
-        }
-
-        Refresh();
+        Refresh();   // 報酬の数字は段階で変わるので Refresh 側で出す
 
         actionButton.onClick.RemoveAllListeners();
         actionButton.onClick.AddListener(OnClickAction);
@@ -70,8 +56,17 @@ public class MissionSlot : MonoBehaviour {
         if (MissionManager.Instance == null || _data == null) return;
 
         int progress = MissionManager.Instance.GetProgress(_data);
-        int target = _data.targetCount;
+        int stage = MissionManager.Instance.GetStage(_data);
+        int target = MissionManager.Instance.GetTarget(_data);
         var state = MissionManager.Instance.GetState(_data);
+
+        // 段階制は今の段階の報酬を出す
+        int nut = _data.GetRewardNut(stage);
+        int honey = _data.GetRewardHoney(stage);
+        // 金額のテキストはアイコンの子ではなく兄弟なので、両方まとめて出し入れする
+        // (アイコンだけ消すと、報酬0のミッションで古い数字が残ってしまう)
+        SetReward(nutRewardObj, nutRewardText, nut);
+        SetReward(honeyRewardObj, honeyRewardText, honey);
 
         // 進捗バー
         progressBar.maxValue = target;
@@ -101,6 +96,17 @@ public class MissionSlot : MonoBehaviour {
         }
     }
 
+    // 報酬アイコンと金額をまとめて表示/非表示する(0なら丸ごと消す)
+    private void SetReward(GameObject icon, TMP_Text amount, int value) {
+        bool show = value > 0;
+
+        if (icon != null) icon.SetActive(show);
+        if (amount == null) return;
+
+        amount.gameObject.SetActive(show);
+        if (show) amount.text = $"×{value}";
+    }
+
     private void SetBarColor(Color c) {
         var fill = progressBar.fillRect ? progressBar.fillRect.GetComponent<Image>() : null;
         if (fill) fill.color = c;
@@ -114,9 +120,9 @@ public class MissionSlot : MonoBehaviour {
             // 受け取る
             MissionManager.Instance.Claim(_data);
         } else if (state == MissionState.InProgress) {
-            // 「挑戦する」→ 該当ページへ移動、など（仕様の“挑戦する”）
-            // ここは遷移先が決まってから実装。今はログだけ。
-            Debug.Log($"[Mission] 挑戦する: {_data.description}");
+            // 「挑戦する」→ そのミッションの場所へ移動する
+            if (_owner != null) _owner.GoToChallenge(_data);
+            else Debug.LogWarning("[Mission] 行き先を知っている MissionPanel が渡されていません", this);
         }
         // Claimed は interactable=false なので押せない
     }

@@ -27,12 +27,35 @@ public class MissionPanel : MonoBehaviour {
     [Header("この画面自体（戻るで閉じる対象）")]
     [SerializeField] private GameObject panelRoot;
 
+    // 「挑戦する」を押した時にどこへ連れて行くか。
+    // パネルを指定すればこのシーン内でそれを開き、シーン名を指定すればそちらへ移動する。
+    // どちらも空なら、ミッション画面を閉じるだけ(街に戻る)。
+    [System.Serializable]
+    public class ChallengeDestination {
+        public MissionType type;
+        [Tooltip("同じシーン内で開くパネル")] public GameObject targetPanel;
+        [Tooltip("シーンごと移動する場合の行き先")] [BuildScene] public string targetSceneName;
+    }
+
+    [Header("「挑戦する」の行き先")]
+    [SerializeField] private List<ChallengeDestination> challengeDestinations = new();
+
     private readonly List<MissionSlot> _spawned = new();
     private MissionCategory _current = MissionCategory.Daily;
 
     void OnEnable() {
-        if (MissionManager.Instance != null)
-            MissionManager.Instance.OnMissionChanged += RefreshAll;
+        if (MissionManager.Instance == null) return;
+
+        MissionManager.Instance.OnMissionChanged += RefreshAll;
+
+        // 妖精の誕生・服の入手・プレイ時間は別のシーンで増えるので、
+        // 開いた時にセーブから数え直して表示を合わせる
+        MissionManager.Instance.SyncDerivedProgress();
+
+        // 閉じている間に進んだぶん(報酬回収・ガチャ等)を表示に反映する。
+        // SyncDerivedProgress は「変化があった時だけ」通知を飛ばすので、
+        // それ任せにすると閉じる前の数字のまま出てしまう。
+        RefreshAll();
     }
 
     void OnDisable() {
@@ -71,7 +94,7 @@ public class MissionPanel : MonoBehaviour {
         var missions = MissionManager.Instance.GetMissions(_current);
         foreach (var m in missions) {
             var slot = Instantiate(slotPrefab, contentParent);
-            slot.Setup(m);
+            slot.Setup(m, this);
             _spawned.Add(slot);
         }
     }
@@ -85,6 +108,24 @@ public class MissionPanel : MonoBehaviour {
         if (MissionManager.Instance == null) return;
         MissionManager.Instance.ClaimAll(_current);
         // ClaimAll 内で OnMissionChanged が飛ぶので表示は自動更新される
+    }
+
+    /// <summary>「挑戦する」を押された。そのミッションの場所へ連れて行く。</summary>
+    public void GoToChallenge(MissionData mission) {
+        if (mission == null) return;
+
+        var dest = challengeDestinations.Find(d => d != null && d.type == mission.type);
+
+        // 行き先が決まっていないものは、閉じて街に戻るだけ
+        if (dest == null) { Close(); return; }
+
+        if (!string.IsNullOrEmpty(dest.targetSceneName)) {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(dest.targetSceneName);
+            return;
+        }
+
+        Close();
+        if (dest.targetPanel != null) dest.targetPanel.SetActive(true);
     }
 
     // 画面を開く（外部から呼ぶ用）

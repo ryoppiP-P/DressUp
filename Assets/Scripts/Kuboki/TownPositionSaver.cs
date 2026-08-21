@@ -24,8 +24,11 @@ public class TownPositionSaver : MonoBehaviour {
 
     void Awake() {
         // シーンに元から居るキャラを、前回の場所 or ランダムな場所へ
-        foreach (var character in FindObjectsByType<Character>(FindObjectsSortMode.None))
+        // (UI表示用に画面外へ置いてあるキャラ = TownIgnore 付き は動かさない)
+        foreach (var character in FindObjectsByType<Character>(FindObjectsSortMode.None)) {
+            if (IsIgnored(character)) continue;
             TownCharacterPlacement.Place(character);
+        }
     }
 
     void Start() {
@@ -58,11 +61,20 @@ public class TownPositionSaver : MonoBehaviour {
         foreach (var character in FindObjectsByType<Character>(FindObjectsSortMode.None)) {
             if (character == null || string.IsNullOrEmpty(character.CharacterId)) continue;
 
+            // UI表示用のキャラは街に居るわけではないので、居場所を書かない。
+            // (書いてしまうと、そのIDの本物が次回そこへ飛ぶ)
+            if (IsIgnored(character)) continue;
+
             TownSaveBridge.SetPosition(character.CharacterId, character.transform.position);
             count++;
         }
 
         if (count > 0) TownSaveBridge.Flush();
+    }
+
+    /// <summary>街の住人として扱わないキャラか(UI表示用など)</summary>
+    public static bool IsIgnored(Character character) {
+        return character != null && character.GetComponent<TownIgnore>() != null;
     }
 
     // アプリを閉じる/バックグラウンドに回る時も取りこぼさないようにする

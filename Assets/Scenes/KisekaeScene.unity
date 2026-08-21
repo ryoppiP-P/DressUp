@@ -23218,8 +23218,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4788800725196399621, guid: 047f7e85dbe573f4aa2593b5ccc4213a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1858882343359841888}
   m_SourcePrefab: {fileID: 100100000, guid: 047f7e85dbe573f4aa2593b5ccc4213a, type: 3}
+--- !u!1 &1858882343359841887 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4788800725196399621, guid: 047f7e85dbe573f4aa2593b5ccc4213a, type: 3}
+  m_PrefabInstance: {fileID: 1858882343359841886}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1858882343359841888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858882343359841887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee56bf594957464a8e09533443d872e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayTimeTracker
+  saveInterval: 30
 --- !u!1001 &5220784924243122784
 PrefabInstance:
   m_ObjectHideFlags: 0

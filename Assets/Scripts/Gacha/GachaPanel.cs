@@ -113,6 +113,10 @@ public class GachaPanel : MonoBehaviour {
                 SaveManager.Instance.AddOwnedItem(entry.item.itemId);
         }
 
+        // ミッション「ガチャをしよう」。引いた回数ぶん数える(1回ガチャ=1、10連=10)
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.Report(MissionType.Gacha, count);
+
         if (resultPopup) resultPopup.Show(results);
     }
 

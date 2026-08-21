@@ -102,7 +102,8 @@ public class SavedOutfitData {
 public class MissionSaveEntry {
     public string missionId;
     public int progress;      // 現在の進捗数
-    public bool claimed;      // 受取済みか
+    public bool claimed;      // 受取済みか(単発ミッション用)
+    public int claimedStage;  // 受け取り済みの段階数(段階制ミッション用。0=まだ1つも受け取っていない)
 }
 // ミッション全体のセーブデータ
 [System.Serializable]
@@ -110,6 +111,7 @@ public class MissionSaveData {
     public List<MissionSaveEntry> entries = new();
     public string lastDailyReset;   // 最終デイリーリセット日時(ISO文字列)
     public string lastWeeklyReset;  // 最終ウィークリーリセット日時(ISO文字列)
+    public double playSeconds;      // 累計プレイ時間(秒)。「N時間プレイしよう」で使う
 }
 
 // 所持アイテムのセーブデータ

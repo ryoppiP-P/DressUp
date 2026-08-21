@@ -42,6 +42,10 @@ public class CharacterReward : MonoBehaviour {
         }
         Debug.Log($"[Reward] 木の実+{nut}, はちみつ+{honey}");
 
+        // ミッション「キャラクターから報酬を取得しよう」
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.Report(MissionType.CollectReward, 1);
+
         // 消して再補充へ
         _ready = false;
         SetPopupActive(false);

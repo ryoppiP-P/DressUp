@@ -20,9 +20,16 @@ public class TimeReduceItem : OtherItem
 
         if (targetSeed != null && targetSeed.IsPlanted)
         {
+            // 持っていなければ使えない(ショップで買った個数を1つ消費する)
+            if (!ConsumableBridge.TryConsume(this, 1))
+            {
+                Debug.Log($"{itemName} を持っていません");
+                return false;
+            }
+
             // 時間を短縮
             targetSeed.ReduceTime(reduceSeconds);
-            Debug.Log($"{itemName} を使用して {reduceSeconds} 秒短縮しました！");
+            Debug.Log($"{itemName} を使用して {reduceSeconds} 秒短縮しました！(残り {ConsumableBridge.GetCount(this)}個)");
             return true; // 成功
         }
 

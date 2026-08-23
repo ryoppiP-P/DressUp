@@ -69,8 +69,12 @@ public class ShopPurchaseDialog : MonoBehaviour {
             return;
         }
 
-        // 購入できたら所持アイテムとして記録する(アイテム一覧画面に出るようになる)
-        if (_listing.item != null) SaveManager.Instance.AddOwnedItem(_listing.item.itemId);
+        if (_listing.item != null) {
+            // 使うと減るもの(種・時短の実)は個数を増やす。
+            // 服などは今まで通り「持っている」の記録だけでよい。
+            if (_listing.item is OtherItem) ConsumableBridge.Add(_listing.item.itemId, 1);
+            else SaveManager.Instance.AddOwnedItem(_listing.item.itemId);
+        }
 
         Close();
     }

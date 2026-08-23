@@ -11,6 +11,7 @@ using UnityEngine;
 public enum OtherItemType
 {
     TimeReduce, // 時間短縮アイテム
+    Seed,       // 妖精の畑に植える種
 }
 
 [CreateAssetMenu(menuName = "Items/OtherItem")]

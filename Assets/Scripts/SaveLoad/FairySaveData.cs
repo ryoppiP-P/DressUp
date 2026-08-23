@@ -78,6 +78,10 @@ public class FairyRosterEntry {
 
     // 名前を付け終わったか。false の間は誕生フローの途中なので街には出さない。
     public bool namingDone;
+
+    // 生まれた鉢(0-2)。名前を付けるまでその鉢に「生まれた！」を出したいので覚えておく。
+    // 古いセーブには入っていないので、読めなかった時のために -1 ではなく 0 でも困らない使い方にする。
+    public int bornSlotIndex = -1;
 }
 
 [Serializable]

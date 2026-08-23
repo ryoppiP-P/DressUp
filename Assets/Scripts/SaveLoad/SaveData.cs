@@ -20,6 +20,7 @@ public class SaveData {
     public DressUpSaveData dressUp = new DressUpSaveData();
     public MissionSaveData missionData = new MissionSaveData();
     public ItemSaveData itemData = new ItemSaveData();
+    public ConsumableSaveData consumables = new ConsumableSaveData(); // g‚¤‚ÆŒ¸‚é‚à‚Ì(íE’Z‚ÌÀ)
     public IntimacySaveData intimacyData = new IntimacySaveData();
     public FairySaveData fairyData = new FairySaveData();
     public TownSaveData townData = new TownSaveData();

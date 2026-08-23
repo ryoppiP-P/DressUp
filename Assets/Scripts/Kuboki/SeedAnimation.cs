@@ -19,6 +19,9 @@ public class SeedAnimation : MonoBehaviour
     [SerializeField] private GameObject targetGameObject;
     [SerializeField] private float moveSpeed;
     [SerializeField] private GameObject prefabObjects;
+    // エフェクトの置き場所。UIの上で出したいので Canvas の中を指定する。
+    // 未指定なら今までどおりシーン直下に出る。
+    [SerializeField] private Transform effectParent;
     [SerializeField] private int effectCount;
     [SerializeField] private GameObject[] hyoujiObject;
     private bool isMove = false;
@@ -54,13 +57,12 @@ public class SeedAnimation : MonoBehaviour
             });
         }
 
-        int plantedCount = 0;
-        for (int i = 0; i < FairySaveBridge.SlotCount; i++)
-            if (FairySaveBridge.IsPlanted(i)) plantedCount++;
-
+        // 芽は「その鉢に植わっているか」で出す。
+        // 植わっている数だけ数えて先頭から出すと、
+        // 鉢２や鉢３に植えても鉢１の芽が出てしまう。
         for (int i = 0; i < hyoujiObject.Length; i++)
             if (hyoujiObject[i] != null)
-                hyoujiObject[i].SetActive(i < plantedCount);
+                hyoujiObject[i].SetActive(FairySaveBridge.IsPlanted(i));
     }
 
     private void Update()
@@ -79,21 +81,34 @@ public class SeedAnimation : MonoBehaviour
             int count = 0;
             while (count < effectCount)
             {
-                GameObject newObj = Instantiate(prefabObjects, seedObject.transform.position, Quaternion.identity);
+                GameObject newObj = effectParent != null
+                    ? Instantiate(prefabObjects, seedObject.transform.position, Quaternion.identity, effectParent)
+                    : Instantiate(prefabObjects, seedObject.transform.position, Quaternion.identity);
                 count++;
             }
             seedObject.gameObject.transform.position = startPosition; // 元の位置に戻す
 
             // 種を表示する
-            foreach (var obj in hyoujiObject)
+            int slot = FairyPotFocus.Current != null ? FairyPotFocus.Current.FocusedSlot : -1;
+
+            if (slot >= 0 && slot < hyoujiObject.Length && hyoujiObject[slot] != null)
             {
-                if (obj != null)
+                // 今開いている鉢に出す。
+                // 種切れなどで植えられなかった時は芽を出さない。
+                hyoujiObject[slot].SetActive(FairySaveBridge.IsPlanted(slot));
+            }
+            else
+            {
+                foreach (var obj in hyoujiObject)
                 {
-                    if (obj.activeSelf) continue; // すでに表示されている場合はスキップ
+                    if (obj != null)
+                    {
+                        if (obj.activeSelf) continue; // すでに表示されている場合はスキップ
 
-                    obj.SetActive(true);
+                        obj.SetActive(true);
 
-                    break;
+                        break;
+                    }
                 }
             }
 
@@ -105,6 +120,6 @@ public class SeedAnimation : MonoBehaviour
     private IEnumerator ButtonReset(float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
-        seedButton.SetActive(true); // ボタンを表示
+        if (seedButton != null) seedButton.SetActive(true); // ボタンを表示
     }
 }

@@ -10,6 +10,7 @@
 //  YES を押すと ToggleSlotManager 側が選択をリセットしてしまうため、
 //  「ちょうど3つ選ばれた時点のキーワード」を毎フレーム控えておき、確定時はそれを使う。
 //==============================================================================
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +27,18 @@ public class FairyWishConfirm : MonoBehaviour {
 
     [Header("育成時間(秒)。未設定なら targetSeed の seedTimeSet を使う")]
     [SerializeField] private float overrideGrowSeconds = 0f;
+
+    [Header("植えるのに使う種(ショップで買うもの)")]
+    [SerializeField] private OtherItem seedItem;
+
+    [Header("植えられない時に出すメッセージ(任意)")]
+    [SerializeField] private FairyMessagePopup message;
+
+    [Header("落ちてくる種(SeedAnimation が動かすもの)。落ちきってから育成中の見た目にする")]
+    [SerializeField] private GameObject fallingSeed;
+
+    [Header("種が落ちてこなかった時に待つのをやめる秒数")]
+    [SerializeField] private float maxWaitSeconds = 5f;
 
     // ちょうど3つ選ばれた時点のキーワード(YES を押した時にはもう消えているので控えておく)
     private readonly List<string> _pendingKeywords = new List<string>();
@@ -66,6 +79,15 @@ public class FairyWishConfirm : MonoBehaviour {
             return;
         }
 
+        // 種を1つ使う。持っていない時とキャラが上限に達している時はここで止まる。
+        string reason;
+        if (!FairyFarmRules.TryUseSeed(seedItem, out reason)) {
+            Debug.Log("[FairyWishConfirm] 植えられない: " + reason);
+            if (message != null) message.Show(reason);
+            _pendingKeywords.Clear();
+            return;
+        }
+
         var personality = FairyKeywordTable.Build(_pendingKeywords);
         float growSeconds = ResolveGrowSeconds();
 
@@ -75,16 +97,54 @@ public class FairyWishConfirm : MonoBehaviour {
                   $"({string.Join("/", _pendingKeywords)} / {growSeconds}秒)");
 
         _pendingKeywords.Clear();
+
+        // 種が落ちきってから、開いている鉢のアップを「育成中」の見た目に切り替える
+        // (キーワードを引っ込めて、鉢の下に大きく残り時間と短縮ボタンを出す)
+        StartCoroutine(ShowGrowingAfterSeedLands());
+    }
+
+    /// <summary>
+    /// 久保木さんの SeedAnimation が種を落とし終える(落ちた種を非表示に戻す)のを待ってから、
+    /// 鉢のアップを育成中の見た目にする。設計書でも「種が落ちる → タイマーが出る」の順。
+    /// </summary>
+    private IEnumerator ShowGrowingAfterSeedLands() {
+        if (fallingSeed != null) {
+            yield return null;   // 同じ「はい」で種が表示されるので、1フレーム待ってから見る
+
+            float limit = Time.time + maxWaitSeconds;
+            while (fallingSeed.activeInHierarchy && Time.time < limit) yield return null;
+        }
+
+        var focus = FairyPotFocus.Current;
+        if (focus != null) focus.Refresh();
     }
 
     private int ResolveSlotIndex() {
         if (targetSeed != null && !targetSeed.IsPlanted) return targetSeed.SlotIndex;
+
+        // 今プレイヤーが開いている鉢に植える。
+        // これが無いと常に一番若い空きスロットへ植わってしまい、
+        // 鉢2や鉢3をタップしても中身が鉢1に入って「植わっていない鉢」が残る。
+        var focus = FairyPotFocus.Current;
+        if (focus != null) {
+            int focused = focus.FocusedSlot;
+            if (focused >= 0 && !FairySaveBridge.IsPlanted(focused)) return focused;
+        }
+
         return FairySaveBridge.FindEmptySlot();
     }
 
     private float ResolveGrowSeconds() {
         if (overrideGrowSeconds > 0f) return overrideGrowSeconds;
-        if (targetSeed != null) return targetSeed.GrowSeconds;
-        return 300f; // 保険(5分)
+        if (targetSeed != null && targetSeed.GrowSeconds > 0f) return targetSeed.GrowSeconds;
+
+        // targetSeed を指定していない時(空きスロットに自動で植える運用)は、
+        // シーンにある SeedTime から育成時間を取る。
+        // これを見ないと下の保険値が使われてしまい、seedTimeSet の設定が効かなかった。
+        foreach (var seedTime in FindObjectsByType<SeedTime>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
+            if (seedTime != null && seedTime.GrowSeconds > 0f) return seedTime.GrowSeconds;
+        }
+
+        return 3600f; // 保険(1時間)
     }
 }

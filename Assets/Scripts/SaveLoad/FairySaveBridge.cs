@@ -5,9 +5,6 @@
 //  Author : Ryoto Kikuchi
 //  Date   : 2026/8/13
 //------------------------------------------------------------------------------
-//  DressUpSaveBridge と同じ方針で、SaveManager 本体(Shift-JIS)を触らずに
-//  static ヘルパー側へ処理をまとめる。
-//  育成時間は実時間(DateTime.UtcNow)で数えるため、アプリを閉じている間も進む。
 //==============================================================================
 using System;
 using System.Collections.Generic;
@@ -125,6 +122,7 @@ public static class FairySaveBridge {
             bornAtUtc = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture),
             personality = slot.personality ?? new PersonalitySnapshot(),
             namingDone = false,
+            bornSlotIndex = slotIndex,   // どの鉢から生まれたか(畑で「生まれた！」を出す鉢)
         };
         data.roster.Add(entry);
 

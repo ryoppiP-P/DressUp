@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: TimeReduceItem_01_Listing
   m_EditorClassIdentifier: Assembly-CSharp::ShopListing
   item: {fileID: 11400000, guid: 9ac4f8cb63f41d64a9b8f34a17c22821, type: 2}
-  price: 100
+  price: 200
   currencyType: 0

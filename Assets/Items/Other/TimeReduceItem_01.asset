@@ -19,4 +19,4 @@ MonoBehaviour:
   description: "\u690D\u3048\u305F\u7A2E\u306E\u6210\u9577\u6642\u9593\u3092\u77ED\u7E2E\u3067\u304D\u308B\u5B9F\u3002\u4F7F\u3046\u3068\u6210\u9577\u304C1\u6642\u9593\u9032\u3080\u3002"
   ownedByDefault: 0
   itemType: 0
-  reduceSeconds: 3600
+  reduceSeconds: 1800

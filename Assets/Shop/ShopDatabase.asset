@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopDatabase
   listings:
   - {fileID: 11400000, guid: c86e138b5e1bd9244aaf7f0dc0bd1862, type: 2}
+  - {fileID: 11400000, guid: 181d2f80e026972419186aba1924aa64, type: 2}

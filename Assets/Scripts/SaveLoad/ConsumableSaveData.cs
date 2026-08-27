@@ -8,10 +8,6 @@
 //  既存の ItemSaveData.ownedItemIds は「持っているかどうか」の1ビットしか無く、
 //  服やアクセのように一度手に入れたら消えないものが対象。
 //  種や時短の実は使うと減るので、こちらで個数を持つ。
-//
-//  SaveData.cs は Shift-JIS のため、追加するデータ構造はこの UTF-8 ファイル側に
-//  定義し、SaveData 本体にはフィールドを1行足すだけにしている
-//  (FairySaveData.cs と同じ方針)。
 //==============================================================================
 using System;
 using System.Collections.Generic;
@@ -24,5 +20,9 @@ public class ConsumableEntry {
 
 [Serializable]
 public class ConsumableSaveData {
-    public List<ConsumableEntry> items = new List<ConsumableEntry>();
+    public List<ConsumableEntry> items = new List<ConsumableEntry> {
+        // 初期所持アイテム
+        new ConsumableEntry {itemId = "FairySeed_01", count = 1},
+        //new ConsumableEntry {itemId = "TimeReduceItem_01", count = 1},
+    };
 }

@@ -21,8 +21,11 @@ public class FairyPotFocus : MonoBehaviour {
     [Header("各鉢の「時間を短縮させる」ボタン(ItemUseManager が使う実物)")]
     [SerializeField] private GameObject[] reduceButtons;
 
-    [Header("各鉢の芽(全景)。誕生後も名前を付けるまでは出しておく")]
+    [Header("各鉢の芽(全景・育成中だけ)")]
     [SerializeField] private GameObject[] potSprouts;
+
+    [Header("各鉢の花(全景・誕生後、名前を付けるまで)")]
+    [SerializeField] private GameObject[] potFlowers;
 
     [Header("各鉢の「生まれた！」(全景。設計書どおり残り時間と同じ位置)")]
     [SerializeField] private GameObject[] bornLabels;
@@ -36,7 +39,13 @@ public class FairyPotFocus : MonoBehaviour {
     [Header("開くもの")]
     [SerializeField] private GameObject closeUpRoot;     // 鉢のアップ画面
     [SerializeField] private GameObject keywordPanel;    // どんな子に育ってほしい？
-    [SerializeField] private GameObject bigSprout;       // アップ画面の芽
+    [SerializeField] private GameObject bigSprout;       // アップ画面の芽/花(育成中は芽、誕生後は花に差し替える)
+
+    [Header("アップ画面の芽/花の絵(育成中は双葉、タイマー0=誕生の瞬間からは花)")]
+    [SerializeField] private Sprite growingSproutSprite;
+    [SerializeField] private Sprite bornFlowerSprite;
+    [SerializeField] private float growingSproutWidth = 300f;
+    [SerializeField] private float bornFlowerWidth = 420f;
 
     [Header("アップ画面の「〇〇な子が生まれそうだ！」(拡大した時だけ出す)")]
     [SerializeField] private GameObject growMessageRoot;
@@ -166,7 +175,11 @@ public class FairyPotFocus : MonoBehaviour {
 
         if (closeUpRoot != null) closeUpRoot.SetActive(true);
         if (keywordPanel != null) keywordPanel.SetActive(!planted && !_born);   // 空の鉢だけキーワードを聞く
-        if (bigSprout != null) bigSprout.SetActive(planted || _born);
+        if (bigSprout != null) {
+            bool showSprout = planted || _born;
+            bigSprout.SetActive(showSprout);
+            if (showSprout) ApplyBigSproutVisual(_born);
+        }
 
         RefreshPots();
         ShowGrowMessage(planted && !_born ? index : -1);
@@ -219,6 +232,32 @@ public class FairyPotFocus : MonoBehaviour {
         if (growMessageRoot != null) growMessageRoot.SetActive(show);
     }
 
+    /// <summary>
+    /// アップ画面の芽/花の絵を今の状態に合わせる。
+    /// 育成中は双葉、タイマーが0になった瞬間(誕生)からは花に差し替える。
+    /// 根元(下端)の位置は変わらないよう pivot を下端に固定してあるので、
+    /// 絵によって縦横比が違っても土から生えている見た目が崩れない。
+    /// </summary>
+    private void ApplyBigSproutVisual(bool born) {
+        if (bigSprout == null) return;
+
+        var sprite = born ? bornFlowerSprite : growingSproutSprite;
+        if (sprite == null) return;
+
+        var image = bigSprout.GetComponent<Image>();
+        if (image != null) {
+            image.sprite = sprite;
+            image.preserveAspect = true;
+        }
+
+        var rt = bigSprout.transform as RectTransform;
+        if (rt != null) {
+            float width = born ? bornFlowerWidth : growingSproutWidth;
+            float height = width * sprite.rect.height / sprite.rect.width;
+            rt.sizeDelta = new Vector2(width, height);
+        }
+    }
+
     private void Back() {
         Close();
     }
@@ -261,9 +300,12 @@ public class FairyPotFocus : MonoBehaviour {
         for (int i = 0; i < potToggles.Length; i++) {
             bool born = (i == bornSlot);
 
-            // 芽は育成中の鉢と、生まれたけどまだ名前が無い鉢に出す
+            // 芽は育成中だけ。生まれたら花に切り替わる。
             if (potSprouts != null && i < potSprouts.Length && potSprouts[i] != null)
-                potSprouts[i].SetActive(IsPlanted(i) || born);
+                potSprouts[i].SetActive(IsPlanted(i) && !born);
+
+            if (potFlowers != null && i < potFlowers.Length && potFlowers[i] != null)
+                potFlowers[i].SetActive(born);
 
             // 「生まれた！」は全景の時だけ(アップでは大きい方を出す)
             if (bornLabels != null && i < bornLabels.Length && bornLabels[i] != null)

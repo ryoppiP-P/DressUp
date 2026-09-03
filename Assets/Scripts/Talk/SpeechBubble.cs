@@ -44,7 +44,21 @@ public class SpeechBubble : MonoBehaviour {
 
     private IEnumerator ShowRoutine(string text, float duration) {
         if (canvasGroup != null) canvasGroup.alpha = 1f;
-        if (label != null) label.text = "";
+
+        // オートサイズは「今表示されている文字数」を見て毎回計算し直すため、
+        // タイプライターで1文字ずつ増やしていくと最初の1文字だけ大きく表示され、
+        // 文字が増えるにつれ縮んでいくように見えてしまう。
+        // 先に全文を仮表示してサイズを確定させ、以降はそのサイズで固定して表示する。
+        if (label != null) {
+            if (label.enableAutoSizing) {
+                label.text = text;
+                label.ForceMeshUpdate();
+                float settledSize = label.fontSize;
+                label.enableAutoSizing = false;
+                label.fontSize = settledSize;
+            }
+            label.text = "";
+        }
 
         // 文字数がどれだけ多くても、表示にかかる合計時間はdurationを超えないようにする
         // (PlayLines側がdurationぶん待ってから次の行へ進むため、ここで超過すると噛み合わなくなる)

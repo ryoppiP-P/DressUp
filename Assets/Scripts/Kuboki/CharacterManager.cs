@@ -82,6 +82,23 @@ public class CharacterManager : MonoBehaviour
         _pauseTimer = Mathf.Max(_pauseTimer, seconds);
     }
 
+    // 一時停止を即座に解除する(会話が完全に終わった瞬間にTalkManagerが呼ぶ)。
+    // SetPauseSecondsで見積もった秒数と実際のカメラ演出時間に多少のズレがあっても、
+    // 「動き出す」と「歩きアニメーションに戻す」を同じタイミングで確実に揃えるために使う。
+    public void ClearPause() {
+        _pauseTimer = 0f;
+    }
+
+    // 指定した相手と、これだけの秒数は次のすれ違い判定(会話の誘いを含む)をしないようにする。
+    // TalkManagerが会話の誘い直後/終了直後に呼ぶ想定(通常のCheckPassBy側のクールダウンとは別に上書きする)。
+    public void SetPassByCooldown(CharacterManager other, float seconds) {
+        if (other == null) return;
+
+        float until = Time.time + seconds;
+        _nextPassByTime[other] = until;
+        other._nextPassByTime[this] = until;
+    }
+
     // このキャラクターのセーブキー(同じGameObjectのCharacterコンポーネントから取得)
     public string CharaId {
         get {

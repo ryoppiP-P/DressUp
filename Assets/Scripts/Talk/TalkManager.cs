@@ -35,6 +35,9 @@ public class TalkManager : MonoBehaviour {
     [Header("会話中の立ち位置(仮、重なり回避)")]
     [SerializeField] private float talkSeparationDistance = 1.6f;
 
+    [Header("同じ相手と続けて誘い/会話しないための猶予(秒)")]
+    [SerializeField] private float postTalkCooldown = 5f;
+
     [Header("「！」ポップアップ")]
     [SerializeField] private TalkPrompt prompt;
     [SerializeField] private float promptTimeout = 10f;   // これだけタップされなければ会話なしで解散
@@ -144,8 +147,12 @@ public class TalkManager : MonoBehaviour {
         if (offer.timeoutRoutine != null) StopCoroutine(offer.timeoutRoutine);
         prompt.Hide();
 
-        // 実際の会話にかかる時間(カメラ移動×2 + セリフ)ぶん、一時停止を延長しておく
-        float talkDuration = cameraMoveDuration * 2f + offer.talk.lines.Length * secondsPerLine;
+        // 実際の会話にかかる時間(カメラ移動×2 + セリフ)ぶん、一時停止を延長しておく。
+        // コルーチンのつなぎ目には多少のオーバーヘッドが乗るので、少し多めに見積もっておく
+        // (見積もりが足りずに会話の途中で_pauseTimerが尽きてしまうと、
+        //  ズームしたままキャラが目的地へ歩き出してしまう)。
+        // 実際に動き出すタイミングは、この見積もりではなく会話終了時のClearPause()で確定させる。
+        float talkDuration = cameraMoveDuration * 2f + offer.talk.lines.Length * secondsPerLine + 1f;
         offer.a.SetPauseSeconds(talkDuration);
         offer.b.SetPauseSeconds(talkDuration);
 
@@ -166,6 +173,9 @@ public class TalkManager : MonoBehaviour {
         // まだ移動を続ける途中なら歩きアニメーションに戻す(会話は無かったことになる)
         RestoreWalking(offer.a);
         RestoreWalking(offer.b);
+
+        // すぐ横にいるのでこのままだと即座にまた誘い直してしまう。少し間を空ける。
+        offer.a.SetPassByCooldown(offer.b, postTalkCooldown);
     }
 
     private IEnumerator RunConversation(PendingOffer offer) {
@@ -180,6 +190,25 @@ public class TalkManager : MonoBehaviour {
         yield return PlayLines(offer.talk, offer.a, offer.b, bubbleA, bubbleB, offer.destinationName);
 
         if (cam != null) yield return cam.Restore(cameraMoveDuration);
+
+        // 会話が終わったので、また別の相手と話せるようにする。
+        // 歩きアニメーションに戻すのもここ(カメラが戻り切った後)でやる。
+        // PlayLines側の直後でやると、_pauseTimer はカメラが戻る秒数ぶんまだ残っているのに
+        // 見た目だけ歩き出してしまい、「その場でWalkアニメだけ再生されて動かない」状態になっていた。
+        _talking.Remove(offer.a);
+        _talking.Remove(offer.b);
+
+        // SetPauseSecondsの見積もりが多少ズレていても、
+        // 「動けるようになる」と「歩きアニメーションに戻す」を必ず同じ瞬間に揃える。
+        // これでカメラが戻り切った直後、間を置かずそれぞれの目的地へ歩き出す。
+        offer.a.ClearPause();
+        offer.b.ClearPause();
+
+        RestoreWalking(offer.a);
+        RestoreWalking(offer.b);
+
+        // すぐ横にいるのでこのままだと即座にまた誘い直してしまう。少し間を空ける。
+        offer.a.SetPassByCooldown(offer.b, postTalkCooldown);
 
         _busy = false;
     }
@@ -197,14 +226,6 @@ public class TalkManager : MonoBehaviour {
 
             yield return new WaitForSeconds(secondsPerLine);
         }
-
-        // 会話が終わったので、また別の相手と話せるようにする
-        _talking.Remove(a);
-        _talking.Remove(b);
-
-        // まだ移動を続ける途中なら歩きアニメーションに戻す
-        RestoreWalking(a);
-        RestoreWalking(b);
     }
 
     // 会話中はIdleアニメーションで立ち止まらせる
@@ -259,16 +280,17 @@ public class TalkManager : MonoBehaviour {
         return wander != null ? wander.CurrentDestinationName : "";
     }
 
-    // すれ違った時点では重なっているので、真ん中を基準に一定距離だけ引き離す
+    // すれ違った時点では重なっているので、真ん中を基準に一定距離だけ引き離す。
+    // キャラは左右にしか向けない(スプライトに上下向きが無い)ので、
+    // 斜め/縦にすれ違った場合でもX方向だけで横並びにする(Yは真ん中に揃える)。
     private void SeparateForTalk(CharacterManager a, CharacterManager b) {
         Vector3 posA = a.transform.position;
         Vector3 posB = b.transform.position;
         Vector3 mid = (posA + posB) * 0.5f;
 
-        Vector3 dir = posB - posA;
-        dir.z = 0f;
-        if (dir.sqrMagnitude < 0.0001f) dir = Vector3.right; // 完全に重なっている場合のフォールバック
-        dir.Normalize();
+        // 元々どちらが右寄りだったかで左右の割り振りだけ決める
+        float dirX = (posB.x >= posA.x) ? 1f : -1f;
+        Vector3 dir = new Vector3(dirX, 0f, 0f);
 
         a.transform.position = mid - dir * (talkSeparationDistance * 0.5f);
         b.transform.position = mid + dir * (talkSeparationDistance * 0.5f);

@@ -76,6 +76,12 @@ public class CharacterManager : MonoBehaviour
     // すれ違い会話などで一時停止中かどうか(会話中は向き・アニメーションを動かさないための判定に使う)
     public bool IsPaused => _pauseTimer > 0f;
 
+    // 一時停止の残り秒数を外部(TalkManager)から設定する。
+    // 今の残り時間より短い場合は縮めない(誘い中→会話本編で必要秒数が変わるため延長のみ)。
+    public void SetPauseSeconds(float seconds) {
+        _pauseTimer = Mathf.Max(_pauseTimer, seconds);
+    }
+
     // このキャラクターのセーブキー(同じGameObjectのCharacterコンポーネントから取得)
     public string CharaId {
         get {
@@ -219,9 +225,10 @@ public class CharacterManager : MonoBehaviour
             if (_nextPassByTime.TryGetValue(other, out float next) && Time.time < next) continue;
 
             // すれ違い成立：お互い一時停止させ、親密度を上げる(すれ違いは一発イベントなので即保存)
-            // 会話が始まった場合は、その表示が終わるまで停止時間を延長する
-            float talkDuration = TalkManager.Instance != null ? TalkManager.Instance.TryStartConversation(this, other) : 0f;
-            float pauseSeconds = Mathf.Max(passByPauseSeconds, talkDuration);
+            // 「！」ポップアップで誘えた場合は、タップ待ちの間だけ停止時間を延長する
+            // (実際に会話が始まった時の延長は TalkManager 側が SetPauseSeconds で行う)
+            float offerSeconds = TalkManager.Instance != null ? TalkManager.Instance.OfferConversation(this, other) : 0f;
+            float pauseSeconds = Mathf.Max(passByPauseSeconds, offerSeconds);
             _pauseTimer = pauseSeconds;
             other._pauseTimer = pauseSeconds;
 

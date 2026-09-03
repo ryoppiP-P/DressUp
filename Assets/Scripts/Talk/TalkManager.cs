@@ -5,7 +5,16 @@
 //
 //  Name   : Ryoto Kikuchi
 //
-//  TownMoveTestシーンに1つだけ配置する想定(CharacterManager.CheckPassByから呼ばれる)。
+//  TownSceneに1つだけ配置する想定(CharacterManager.CheckPassByから呼ばれる)。
+//------------------------------------------------------------------------------
+//  会話の流れ(2026/9/3 更新):
+//   1. すれ違い成立 → OfferConversation() が「！」ポップアップを2人の間に出す。
+//      10秒以内にタップされなければ、会話なしで解散して歩き出す。
+//   2. タップされたら RunConversation() で、カメラをその場所へズームしてから
+//      セリフを交互に表示する。終わったらカメラを元の位置・ズームへ戻す。
+//   3. カメラ・ポップアップはシーンに1つずつなので、会話(誘い中〜終了まで)は
+//      町全体で同時に1組だけ。既に誰かが話している/誘われている間、
+//      別のペアがすれ違ってもOfferConversationは0を返して何も起きない。
 //==============================================================================
 using System.Collections;
 using System.Collections.Generic;
@@ -26,29 +35,62 @@ public class TalkManager : MonoBehaviour {
     [Header("会話中の立ち位置(仮、重なり回避)")]
     [SerializeField] private float talkSeparationDistance = 1.6f;
 
+    [Header("「！」ポップアップ")]
+    [SerializeField] private TalkPrompt prompt;
+    [SerializeField] private float promptTimeout = 10f;   // これだけタップされなければ会話なしで解散
+    [SerializeField] private float promptHeight = 1.2f;    // 2人の中間からどれだけ上に出すか
+
+    [Header("会話中のカメラズーム")]
+    [SerializeField] private CameraController cameraController;   // 未指定ならCameraController.Instanceを使う
+    [SerializeField] private float talkZoomSize = 3f;
+    [SerializeField] private float cameraMoveDuration = 0.5f;
+
     // 今会話中のキャラクター。会話が終わるまで別の相手とは話さない。
     private readonly HashSet<CharacterManager> _talking = new HashSet<CharacterManager>();
 
+    // 誘い(ポップアップ表示)〜会話終了まで、町全体で他のペアを誘わないためのガード。
+    // ポップアップ・カメラがシーンに1つずつしか無いため、同時に持てる会話は1組だけ。
+    private bool _busy;
+
+    // タップ待ち中の誘いの中身。タップ or タイムアウトで null に戻す。
+    private class PendingOffer {
+        public CharacterManager a;
+        public CharacterManager b;
+        public TalkData talk;
+        public string destinationName;
+        public Coroutine timeoutRoutine;
+    }
+    private PendingOffer _pending;
+
     void Awake() {
         Instance = this;
+
+        // ポップアップのタップは毎回リスナーを付け外ししない(重複登録を避けるため一度だけ購読する)
+        if (prompt != null && prompt.TapButton != null)
+            prompt.TapButton.onClick.AddListener(OnPromptTapped);
     }
 
     void OnDisable() {
-        // 途中で止まった場合に「会話中」が残らないようにする
+        // 途中で止まった場合に状態が残らないようにする
         _talking.Clear();
+        _busy = false;
+        _pending = null;
     }
 
-    /// <summary>そのキャラクターが今誰かと会話中かどうか</summary>
+    /// <summary>そのキャラクターが今誘われている/会話中かどうか</summary>
     public bool IsTalking(CharacterManager who) {
         return who != null && _talking.Contains(who);
     }
 
-    // 会話を開始し、想定される合計表示時間(秒)を返す。開始できなければ0を返す。
-    // (呼び出し側はこの戻り値を使って、すれ違いの一時停止時間を会話の長さまで延長する)
-    public float TryStartConversation(CharacterManager a, CharacterManager b) {
-        if (database == null || a == null || b == null) return 0f;
-
-        // どちらかが既に別の相手と話しているなら割り込ませない
+    /// <summary>
+    /// 会話を誘う(「！」ポップアップを出す)。
+    /// 戻り値は「タップ待ちに必要な一時停止秒数」(誘えなければ0)。
+    /// 呼び出し側(CharacterManager.CheckPassBy)はこれで一時停止時間を確保する。
+    /// タップされた後の実際の会話時間は、こちらから改めて SetPauseSeconds で延長する。
+    /// </summary>
+    public float OfferConversation(CharacterManager a, CharacterManager b) {
+        if (database == null || a == null || b == null || prompt == null) return 0f;
+        if (_busy) return 0f;                          // 町全体で同時に1組だけ
         if (IsTalking(a) || IsTalking(b)) return 0f;
 
         SpeechBubble bubbleA = a.GetComponentInChildren<SpeechBubble>();
@@ -64,14 +106,82 @@ public class TalkManager : MonoBehaviour {
 
         _talking.Add(a);
         _talking.Add(b);
+        _busy = true;
 
         SeparateForTalk(a, b);
         FaceEachOther(a, b);
         SetIdle(a);
         SetIdle(b);
-        StartCoroutine(PlayLines(talk, a, b, bubbleA, bubbleB, destinationName));
 
-        return talk.lines.Length * secondsPerLine;
+        _pending = new PendingOffer {
+            a = a, b = b, talk = talk, destinationName = destinationName,
+        };
+
+        Vector3 mid = (a.transform.position + b.transform.position) * 0.5f + Vector3.up * promptHeight;
+        prompt.transform.position = mid;
+        prompt.Show();
+
+        _pending.timeoutRoutine = StartCoroutine(PromptTimeoutRoutine());
+
+        return promptTimeout;
+    }
+
+    private IEnumerator PromptTimeoutRoutine() {
+        yield return new WaitForSeconds(promptTimeout);
+
+        // タップ済みなら既に _pending は null になっている
+        if (_pending == null) yield break;
+
+        CancelOffer();
+    }
+
+    private void OnPromptTapped() {
+        if (_pending == null) return;   // タップ待ちの誘いが無い時の空振りタップは無視
+
+        PendingOffer offer = _pending;
+        _pending = null;
+
+        if (offer.timeoutRoutine != null) StopCoroutine(offer.timeoutRoutine);
+        prompt.Hide();
+
+        // 実際の会話にかかる時間(カメラ移動×2 + セリフ)ぶん、一時停止を延長しておく
+        float talkDuration = cameraMoveDuration * 2f + offer.talk.lines.Length * secondsPerLine;
+        offer.a.SetPauseSeconds(talkDuration);
+        offer.b.SetPauseSeconds(talkDuration);
+
+        StartCoroutine(RunConversation(offer));
+    }
+
+    /// <summary>タップされずタイムアウトした時: 会話なしで解散する</summary>
+    private void CancelOffer() {
+        PendingOffer offer = _pending;
+        _pending = null;
+        _busy = false;
+
+        prompt.Hide();
+
+        _talking.Remove(offer.a);
+        _talking.Remove(offer.b);
+
+        // まだ移動を続ける途中なら歩きアニメーションに戻す(会話は無かったことになる)
+        RestoreWalking(offer.a);
+        RestoreWalking(offer.b);
+    }
+
+    private IEnumerator RunConversation(PendingOffer offer) {
+        CameraController cam = cameraController != null ? cameraController : CameraController.Instance;
+
+        Vector3 mid = (offer.a.transform.position + offer.b.transform.position) * 0.5f;
+        if (cam != null) yield return cam.FocusOn(mid, talkZoomSize, cameraMoveDuration);
+
+        SpeechBubble bubbleA = offer.a.GetComponentInChildren<SpeechBubble>();
+        SpeechBubble bubbleB = offer.b.GetComponentInChildren<SpeechBubble>();
+
+        yield return PlayLines(offer.talk, offer.a, offer.b, bubbleA, bubbleB, offer.destinationName);
+
+        if (cam != null) yield return cam.Restore(cameraMoveDuration);
+
+        _busy = false;
     }
 
     private IEnumerator PlayLines(TalkData talk, CharacterManager a, CharacterManager b,
@@ -83,7 +193,7 @@ public class TalkManager : MonoBehaviour {
             SpeechBubble bubble = isA ? bubbleA : bubbleB;
 
             string text = ResolveLine(talk.lines[i], speaker, listener, destinationName);
-            bubble.ShowLine(text, secondsPerLine);
+            if (bubble != null) bubble.ShowLine(text, secondsPerLine);
 
             yield return new WaitForSeconds(secondsPerLine);
         }

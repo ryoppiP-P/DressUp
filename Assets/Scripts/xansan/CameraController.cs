@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
@@ -5,6 +6,14 @@ using UnityEngine.EventSystems;
 public class CameraController : MonoBehaviour
 {
     private Camera cam;
+
+    // 会話中のカメラズーム用。TalkManagerなどが FocusOn/Restore を呼ぶ先を探すのに使う。
+    public static CameraController Instance { get; private set; }
+
+    // true の間はプレイヤーのパン/ズーム操作を受け付けない(会話中のカメラズーム中など)
+    private bool isLocked = false;
+    private Vector3 savedPosition;
+    private float savedZoom;
 
     [Header("移動")]
     public float panSpeed = 0.01f;
@@ -26,6 +35,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        Instance = this;
         cam = GetComponent<Camera>();
 
         transform.position = defaultPosition;
@@ -38,6 +48,9 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        // 会話中(カメラズーム中)はプレイヤーのカメラ操作を一切受け付けない
+        if (isLocked) return;
+
 #if UNITY_EDITOR || UNITY_STANDALONE
         HandleMouse();
 #else
@@ -187,5 +200,64 @@ public class CameraController : MonoBehaviour
         {
             cam.fieldOfView = defaultZoom;
         }
+    }
+
+
+    // ==================================
+    // 会話カメラズーム(TalkManagerから呼ばれる)
+    // ==================================
+
+    // 指定した場所へズームして寄る。呼ぶ前の位置/ズームは Restore 用に控えておく。
+    public IEnumerator FocusOn(Vector3 worldPos, float zoomSize, float duration)
+    {
+        isLocked = true;
+        savedPosition = transform.position;
+        savedZoom = cam.orthographic ? cam.orthographicSize : cam.fieldOfView;
+
+        Vector3 targetPos = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+        float clampedZoom = Mathf.Clamp(zoomSize, minZoom, maxZoom);
+        yield return LerpCamera(targetPos, clampedZoom, duration);
+    }
+
+    // FocusOnする前の位置・ズームに戻す。戻し終わったらプレイヤー操作を解除する。
+    public IEnumerator Restore(float duration)
+    {
+        yield return LerpCamera(savedPosition, savedZoom, duration);
+        isLocked = false;
+    }
+
+    private IEnumerator LerpCamera(Vector3 targetPos, float targetZoom, float duration)
+    {
+        Vector3 startPos = transform.position;
+        float startZoom = cam.orthographic ? cam.orthographicSize : cam.fieldOfView;
+
+        if (duration <= 0f)
+        {
+            transform.position = targetPos;
+            SetZoom(targetZoom);
+            yield break;
+        }
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float p = Mathf.Clamp01(t / duration);
+            p = p * p * (3f - 2f * p); // smoothstep
+
+            transform.position = Vector3.Lerp(startPos, targetPos, p);
+            SetZoom(Mathf.Lerp(startZoom, targetZoom, p));
+
+            yield return null;
+        }
+
+        transform.position = targetPos;
+        SetZoom(targetZoom);
+    }
+
+    private void SetZoom(float value)
+    {
+        if (cam.orthographic) cam.orthographicSize = value;
+        else cam.fieldOfView = value;
     }
 }

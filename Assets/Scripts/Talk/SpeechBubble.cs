@@ -5,14 +5,19 @@
 //  Name   : Ryoto Kikuchi
 //
 //  ShowLine(text, duration) で指定時間だけ文字を表示し、自動で消える。
+//  文字は一文字ずつタイプライター風に出す(表示にかかる合計時間はdurationのまま変わらない)。
 //==============================================================================
 using System.Collections;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
 public class SpeechBubble : MonoBehaviour {
     [SerializeField] private TMP_Text label;
     [SerializeField] private CanvasGroup canvasGroup;
+
+    [Header("タイプライター(1文字あたりの間隔・秒)")]
+    [SerializeField] private float charInterval = 0.04f;
 
     private Coroutine _current;
 
@@ -38,10 +43,24 @@ public class SpeechBubble : MonoBehaviour {
     }
 
     private IEnumerator ShowRoutine(string text, float duration) {
-        if (label != null) label.text = text;
         if (canvasGroup != null) canvasGroup.alpha = 1f;
+        if (label != null) label.text = "";
 
-        yield return new WaitForSeconds(duration);
+        // 文字数がどれだけ多くても、表示にかかる合計時間はdurationを超えないようにする
+        // (PlayLines側がdurationぶん待ってから次の行へ進むため、ここで超過すると噛み合わなくなる)
+        float interval = charInterval;
+        if (text.Length > 0) interval = Mathf.Min(interval, duration / text.Length);
+
+        var sb = new StringBuilder();
+        for (int i = 0; i < text.Length; i++) {
+            sb.Append(text[i]);
+            if (label != null) label.text = sb.ToString();
+
+            if (interval > 0f) yield return new WaitForSeconds(interval);
+        }
+
+        float remaining = duration - interval * text.Length;
+        if (remaining > 0f) yield return new WaitForSeconds(remaining);
 
         Hide();
     }

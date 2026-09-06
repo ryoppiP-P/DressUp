@@ -5,14 +5,19 @@
 //  Name   : Ryoto Kikuchi
 //
 //  ShowLine(text, duration) で指定時間だけ文字を表示し、自動で消える。
+//  文字は一文字ずつタイプライター風に出す(表示にかかる合計時間はdurationのまま変わらない)。
 //==============================================================================
 using System.Collections;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
 public class SpeechBubble : MonoBehaviour {
     [SerializeField] private TMP_Text label;
     [SerializeField] private CanvasGroup canvasGroup;
+
+    [Header("タイプライター(1文字あたりの間隔・秒)")]
+    [SerializeField] private float charInterval = 0.04f;
 
     private Coroutine _current;
 
@@ -38,10 +43,38 @@ public class SpeechBubble : MonoBehaviour {
     }
 
     private IEnumerator ShowRoutine(string text, float duration) {
-        if (label != null) label.text = text;
         if (canvasGroup != null) canvasGroup.alpha = 1f;
 
-        yield return new WaitForSeconds(duration);
+        // オートサイズは「今表示されている文字数」を見て毎回計算し直すため、
+        // タイプライターで1文字ずつ増やしていくと最初の1文字だけ大きく表示され、
+        // 文字が増えるにつれ縮んでいくように見えてしまう。
+        // 先に全文を仮表示してサイズを確定させ、以降はそのサイズで固定して表示する。
+        if (label != null) {
+            if (label.enableAutoSizing) {
+                label.text = text;
+                label.ForceMeshUpdate();
+                float settledSize = label.fontSize;
+                label.enableAutoSizing = false;
+                label.fontSize = settledSize;
+            }
+            label.text = "";
+        }
+
+        // 文字数がどれだけ多くても、表示にかかる合計時間はdurationを超えないようにする
+        // (PlayLines側がdurationぶん待ってから次の行へ進むため、ここで超過すると噛み合わなくなる)
+        float interval = charInterval;
+        if (text.Length > 0) interval = Mathf.Min(interval, duration / text.Length);
+
+        var sb = new StringBuilder();
+        for (int i = 0; i < text.Length; i++) {
+            sb.Append(text[i]);
+            if (label != null) label.text = sb.ToString();
+
+            if (interval > 0f) yield return new WaitForSeconds(interval);
+        }
+
+        float remaining = duration - interval * text.Length;
+        if (remaining > 0f) yield return new WaitForSeconds(remaining);
 
         Hide();
     }

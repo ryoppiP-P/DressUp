@@ -6,12 +6,17 @@
 //  Date   : 2026/8/2
 //------------------------------------------------------------------------------
 //==============================================================================
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemListSlot : MonoBehaviour {
     [Header("表示")]
     [SerializeField] private Image iconImage;
+
+    [Header("個数表示(右下のバッジ。種・時短の実など個数管理のアイテムだけ出す)")]
+    [SerializeField] private GameObject countBadge;
+    [SerializeField] private TMP_Text countText;
 
     /// <summary>アイテムのアイコンを表示する</summary>
     public void Setup(GameItem item) {
@@ -23,5 +28,11 @@ public class ItemListSlot : MonoBehaviour {
 
         iconImage.sprite = item.icon;
         iconImage.enabled = item.icon != null;
+
+        // 服やアクセのように「持っているか」だけのアイテムはConsumableBridgeに記録が無いので
+        // GetCountは0になり、バッジは自然に出ない(種・時短の実だけ個数が表示される)
+        int count = ConsumableBridge.GetCount(item);
+        if (countBadge != null) countBadge.SetActive(count > 0);
+        if (countText != null && count > 0) countText.text = "x" + count;
     }
 }

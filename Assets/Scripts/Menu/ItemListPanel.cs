@@ -101,6 +101,12 @@ public class ItemListPanel : MonoBehaviour {
     private bool IsVisible(GameItem item) {
         if (!showOnlyOwned) return true;
         if (item.ownedByDefault) return true;              // 初期所持アイテムはセーブに無くても表示する
+
+        // 種・時短の実などの消耗品(OtherItem)は「持っているか」ではなく個数で管理されている
+        // (ConsumableBridge)。ショップで買ってもSaveManager側のownedItemIdsには載らないので、
+        // そちらも見ないと「買ったのに一覧に出てこない」ことになる。
+        if (ConsumableBridge.GetCount(item) > 0) return true;
+
         if (SaveManager.Instance == null) return false;
         return SaveManager.Instance.IsItemOwned(item);
     }

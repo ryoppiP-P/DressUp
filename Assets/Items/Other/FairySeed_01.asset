@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OtherItem
   itemId: FairySeed_01
   itemName: "\u5996\u7CBE\u306E\u7A2E"
-  icon: {fileID: 0}
+  icon: {fileID: 5940507111622638072, guid: 0d40994b01d8e1f41976c664c4e7c150, type: 3}
   rarity: 0
   description: "\u5996\u7CBE\u306E\u7551\u306B\u690D\u3048\u308B\u3068\u30011\u6642\u9593\u3067\u5996\u7CBE\u304C\u751F\u307E\u308C\u308B\u7A2E\u3002"
   ownedByDefault: 0

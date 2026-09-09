@@ -33,19 +33,14 @@ public class NewFairyNamingPanel : MonoBehaviour {
 
     [Header("戻るボタン(誕生フロー中はここから名前入力を出す)")]
     [SerializeField] private Button backButton;
-    [SerializeField] private SceneChangeButton backSceneChanger;
 
     private Character Target {
         get { return DressUpTarget.Instance != null ? DressUpTarget.Instance.Current : null; }
     }
 
-    void Awake() {
-        // 誕生フロー中は「戻る」で街に帰らせない。
-        // SceneChangeButton は Start でリスナーを登録するので、それより前(Awake)に
-        // 無効化しておく必要がある(無効なコンポーネントの Start は呼ばれない)。
-        if (FairyBirthFlow.IsNamingFlow && backSceneChanger != null)
-            backSceneChanger.enabled = false;
-    }
+    // 誕生フロー中に「戻る」で街へ帰らせない仕組みは、ボタン側の DressUpHomeGuard が
+    // FairyBirthFlow.IsNamingFlow を見て自分から何もしないようにする形で持っている
+    // (このスクリプトはその間だけ backButton に名前入力を開く処理を足す側)。
 
     void Start() {
         // 名前入力は最初は出さない。着せ替えが終わって戻るボタンを押した時に出す。

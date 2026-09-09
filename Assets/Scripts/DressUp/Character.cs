@@ -53,7 +53,12 @@ public class Character : MonoBehaviour {
 
     private bool _facingRight = false;
 
+    private bool _dirty = false; // ApplyOutfit()未実行の変更があるか(戻るボタンの確認用)
+
     public CharaState CurrentState => _state;
+
+    // ApplyOutfit()がまだ呼ばれていない未保存の変更があるか
+    public bool HasUnsavedChanges => _dirty;
 
     void Start() {
         _state = initialState;
@@ -153,6 +158,7 @@ public class Character : MonoBehaviour {
         foreach (var conflict in GetConflicts(item.category))
             ClearCategory(conflict);
 
+        _dirty = true;
         RefreshSprites();
     }
 
@@ -168,6 +174,7 @@ public class Character : MonoBehaviour {
         if (IsAlwaysOn(category)) return;
 
         ClearCategory(category);
+        _dirty = true;
         RefreshSprites();
     }
 
@@ -184,6 +191,7 @@ public class Character : MonoBehaviour {
         if (!worn.Remove(item)) return;
 
         AssignToLayers(item.category, worn);
+        _dirty = true;
         RefreshSprites();
     }
 
@@ -216,6 +224,7 @@ public class Character : MonoBehaviour {
             layer.item = null;
         }
 
+        _dirty = true;
         RefreshSprites();
     }
 
@@ -246,6 +255,7 @@ public class Character : MonoBehaviour {
                 state.Add(pair.Key, item);
 
         DressUpSaveBridge.SaveEquipped(characterId);
+        _dirty = false;
     }
 
     //--------------------------------------------------------------------------

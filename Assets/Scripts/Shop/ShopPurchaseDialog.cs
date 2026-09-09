@@ -31,6 +31,10 @@ public class ShopPurchaseDialog : MonoBehaviour {
     [SerializeField] private Button yesButton;  // 購入する
     [SerializeField] private Button noButton;   // やめる
 
+    [Header("通貨が足りない時に出すトースト(任意)")]
+    [SerializeField] private SimpleMessagePopup insufficientFundsPopup;
+    [SerializeField] private string insufficientFundsMessage = "お金が足りないよ!";
+
     private ShopListing _listing;
 
     void Awake() {
@@ -66,6 +70,7 @@ public class ShopPurchaseDialog : MonoBehaviour {
         if (!bought) {
             Debug.Log($"[Shop] 通貨が足りません: {(_listing.item != null ? _listing.item.itemName : _listing.name)}");
             Close();
+            if (insufficientFundsPopup != null) insufficientFundsPopup.Show(insufficientFundsMessage);
             return;
         }
 

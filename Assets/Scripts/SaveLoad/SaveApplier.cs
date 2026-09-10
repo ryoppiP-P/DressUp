@@ -28,7 +28,15 @@ public static class SaveApplier {
         if (SaveManager.Instance == null) return;
 
         var s = SaveManager.Instance.Current.settings;
-        AudioListener.volume = Mathf.Clamp01(s.masterVolume / 100f);
+
+        if (AudioManager.Instance != null) {
+            AudioManager.Instance.SetMasterVolume(s.masterVolume);
+            AudioManager.Instance.SetBGMVolume(s.bgmVolume);
+            AudioManager.Instance.SetSEVolume(s.seVolume);
+        } else {
+            // AudioManager がまだシーンに居ない時のフォールバック(マスターのみ)
+            AudioListener.volume = Mathf.Clamp01(s.masterVolume / 100f);
+        }
     }
 
     ////==========================================================================

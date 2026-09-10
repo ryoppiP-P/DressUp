@@ -83,7 +83,8 @@ public class EnvironmentSettingsPanel : MonoBehaviour {
         if (SaveManager.Instance == null) return;
         SaveManager.Instance.Current.settings.masterVolume = value;
         UpdateVolumeText(masterVolumeText, value);
-        SaveApplier.ApplyAudio(); // マスター音量は AudioListener.volume に即反映
+        if (AudioManager.Instance != null) AudioManager.Instance.SetMasterVolume(value);
+        else SaveApplier.ApplyAudio(); // AudioManager が無い時は AudioListener.volume に直接反映
         SaveManager.Instance.SaveAuto();
     }
 
@@ -91,16 +92,16 @@ public class EnvironmentSettingsPanel : MonoBehaviour {
         if (SaveManager.Instance == null) return;
         SaveManager.Instance.Current.settings.bgmVolume = value;
         UpdateVolumeText(bgmVolumeText, value);
+        if (AudioManager.Instance != null) AudioManager.Instance.SetBGMVolume(value);
         SaveManager.Instance.SaveAuto();
-        // TODO: BGM 用の AudioMixer / AudioSource が用意でき次第、ここで音量を反映する
     }
 
     private void OnSeVolumeChanged(float value) {
         if (SaveManager.Instance == null) return;
         SaveManager.Instance.Current.settings.seVolume = value;
         UpdateVolumeText(seVolumeText, value);
+        if (AudioManager.Instance != null) AudioManager.Instance.SetSEVolume(value);
         SaveManager.Instance.SaveAuto();
-        // TODO: SE 用の AudioMixer / AudioSource が用意でき次第、ここで音量を反映する
     }
 
     //--------------------------------------------------------------

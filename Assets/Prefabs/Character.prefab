@@ -2372,6 +2372,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: SpeechBubble
       objectReference: {fileID: 0}
+    - target: {fileID: 4002409852385228728, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 4655967311553195531, guid: dea5916f26fb650479a68eaa19c66260, type: 3}
+    - target: {fileID: 4002409852385228728, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782423316531349001, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782423316531349001, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782423316531349001, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1.4011
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782423316531349001, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.7339
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782423316531349001, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.7005
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782423316531349001, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.241
+      objectReference: {fileID: 0}
     - target: {fileID: 5871994971356698511, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2438,7 +2470,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5871994971356698511, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.84
+      value: 3.348
       objectReference: {fileID: 0}
     - target: {fileID: 5871994971356698511, guid: 3caffbf1eea413a4a97a08bf4425a9fd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

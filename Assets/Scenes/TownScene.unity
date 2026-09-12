@@ -2697,14 +2697,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.85, b: 0.25, a: 0.95}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 9028320844265100113, guid: 88d2bc474750651448b32a3cc14802f2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2736,10 +2736,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 880538979}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.7706001, y: 0.6194}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &305824867
 GameObject:
@@ -10301,6 +10301,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TalkPrompt
   canvasGroup: {fileID: 880538977}
   tapButton: {fileID: 299080690}
+  label: {fileID: 2106717589}
+  dotInterval: 0.4
 --- !u!114 &880538976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10326,9 +10328,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 880538974}
   m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!223 &880538978
 Canvas:
@@ -10361,7 +10363,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 880538974}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -95}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21619,15 +21621,15 @@ RectTransform:
   m_GameObject: {fileID: 2106717587}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.81438, y: 0.81438, z: 0.81438}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 880538979}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -0.05, y: -0.05}
+  m_AnchoredPosition: {x: 0.000000014901161, y: 0.061000004}
+  m_SizeDelta: {x: 0.20000002, y: -0.050000012}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2106717589
 MonoBehaviour:
@@ -21649,7 +21651,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uFF01"
+  m_text: "\u30FB\u30FB\u30FB"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7c5624f6d9c3de040bcd67fb50380c09, type: 2}
   m_sharedMaterial: {fileID: -8144432201463399560, guid: 7c5624f6d9c3de040bcd67fb50380c09, type: 2}
@@ -21658,8 +21660,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278199897
-  m_fontColor: {r: 0.35, g: 0.15, b: 0, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -21676,8 +21678,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.4
-  m_fontSizeBase: 0.4
+  m_fontSize: 0.2
+  m_fontSizeBase: 0.2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

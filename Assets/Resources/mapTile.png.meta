@@ -1,0 +1,431 @@
+fileFormatVersion: 2
+guid: 330e41520a2b7d5488ea90d096fa22c8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1868488310560947058
+    second: kinokonok_0
+  - first:
+      213: 8849647160541099783
+    second: kinokonok_1
+  - first:
+      213: -655140667551118429
+    second: kinokonok_2
+  - first:
+      213: -8579139849364982229
+    second: kinokonok_3
+  - first:
+      213: -6376575725399874441
+    second: kinokonok_4
+  - first:
+      213: 808277040544996630
+    second: kinokonok_5
+  - first:
+      213: -4673841255513706170
+    second: kinokonok_6
+  - first:
+      213: 2751769596299963440
+    second: kinokonok_7
+  - first:
+      213: 692152835031616680
+    second: kinokonok_8
+  - first:
+      213: 6477657590967643133
+    second: kinokonok_9
+  - first:
+      213: -568726998590496225
+    second: kinokonok_10
+  - first:
+      213: 991784977107661729
+    second: kinokonok_11
+  - first:
+      213: -4369120122653138853
+    second: kinokonok_12
+  - first:
+      213: 3548963528739286302
+    second: kinokonok_13
+  - first:
+      213: -8992362452200900561
+    second: kinokonok_14
+  - first:
+      213: -3178538173491273811
+    second: kinokonok_15
+  - first:
+      213: -6062684379740491543
+    second: kinokonok_16
+  - first:
+      213: -5436164991415779124
+    second: kinokonok_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: kinokonok_0
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 699
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27b74f108343ee910800000000000000
+      internalID: 1868488310560947058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kinokonok_4
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 410
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 774692c892ad187a0800000000000000
+      internalID: -6376575725399874441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kinokonok_16
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 120
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e032489da40ddba0800000000000000
+      internalID: -6062684379740491543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kinokonok_17
+      rect:
+        serializedVersion: 2
+        x: 442
+        y: 117
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc08f3a0ebcde84b0800000000000000
+      internalID: -5436164991415779124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapTile_0
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 421
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1325fd3839cc1cf47b7d0720a4254821
+      internalID: -1322059417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapTile_1
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 706
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e67a41d01e765546979b2e4e4d2d37f
+      internalID: -587857366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapTile_2
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 704
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4e10c376132e8841972ffc7d978a932
+      internalID: 785311591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapTile_3
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 397
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2672d209a21f3a745959eb55bad36f92
+      internalID: -19460502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mapTile_4
+      rect:
+        serializedVersion: 2
+        x: 1183
+        y: 411
+        width: 252
+        height: 252
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa07694f8e6801043bd01b122aab8b8b
+      internalID: -456597330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3d08ae385ec8e114cb4ca182b2ce274d
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      kinokonok_0: 1868488310560947058
+      kinokonok_1: 8849647160541099783
+      kinokonok_10: -568726998590496225
+      kinokonok_11: 991784977107661729
+      kinokonok_12: -4369120122653138853
+      kinokonok_13: 3548963528739286302
+      kinokonok_14: -8992362452200900561
+      kinokonok_15: -3178538173491273811
+      kinokonok_16: -6062684379740491543
+      kinokonok_17: -5436164991415779124
+      kinokonok_2: -655140667551118429
+      kinokonok_3: -8579139849364982229
+      kinokonok_4: -6376575725399874441
+      kinokonok_5: 808277040544996630
+      kinokonok_6: -4673841255513706170
+      kinokonok_7: 2751769596299963440
+      kinokonok_8: 692152835031616680
+      kinokonok_9: 6477657590967643133
+      mapTile_0: -1322059417
+      mapTile_1: -587857366
+      mapTile_2: 785311591
+      mapTile_3: -19460502
+      mapTile_4: -456597330
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

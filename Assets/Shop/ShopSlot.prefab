@@ -104,7 +104,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -252,8 +252,8 @@ MonoBehaviour:
   nameText: {fileID: 1649282072084676259}
   priceCurrencyIcon: {fileID: 2443360281873420795}
   priceText: {fileID: 1751614434656988316}
-  nutSprite: {fileID: 0}
-  honeySprite: {fileID: 0}
+  nutSprite: {fileID: 21300000, guid: 592e8a614ac6746449d3f4f83ff9f54f, type: 3}
+  honeySprite: {fileID: 21300000, guid: c2413aab758abbf4487b30aa3874f2b7, type: 3}
   button: {fileID: 7664404000231313876}
 --- !u!1 &3752549813374203920
 GameObject:

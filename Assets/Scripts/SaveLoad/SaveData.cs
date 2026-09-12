@@ -24,6 +24,7 @@ public class SaveData {
     public IntimacySaveData intimacyData = new IntimacySaveData();
     public FairySaveData fairyData = new FairySaveData();
     public TownSaveData townData = new TownSaveData();
+    public TutorialSaveData tutorialData = new TutorialSaveData();
 }
 
 // プレイヤー全体（コイン等）
@@ -132,4 +133,12 @@ public class IntimacyEntry {
 [System.Serializable]
 public class IntimacySaveData {
     public List<IntimacyEntry> entries = new List<IntimacyEntry>();
+}
+
+// チュートリアル進捗(初回だけ実行する。強制終了してもチェックポイントから再開できるよう
+// 段階が進むたびに保存する)。stage は TutorialStage を int にしたもの(enumはAssets/Scripts/Tutorial側で定義)。
+[System.Serializable]
+public class TutorialSaveData {
+    public bool completed = false;
+    public int stage = 0;
 }

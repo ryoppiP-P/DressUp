@@ -943,6 +943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TownTutorialHook
   fairyFieldButtonRect: {fileID: 411690007}
+  townCreateButtonRect: {fileID: 1700675948}
 --- !u!4 &85198708
 Transform:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TimeReduceItem
   itemId: TimeReduceItem_01
   itemName: "\u6642\u77ED\u306E\u5B9F"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 76f257e478d03d943b6010db533501ef, type: 3}
   rarity: 0
   description: "\u690D\u3048\u305F\u7A2E\u306E\u6210\u9577\u6642\u9593\u3092\u77ED\u7E2E\u3067\u304D\u308B\u5B9F\u3002\u4F7F\u3046\u3068\u6210\u9577\u304C1\u6642\u9593\u9032\u3080\u3002"
   ownedByDefault: 0

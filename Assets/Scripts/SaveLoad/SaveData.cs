@@ -25,6 +25,7 @@ public class SaveData {
     public FairySaveData fairyData = new FairySaveData();
     public TownSaveData townData = new TownSaveData();
     public TutorialSaveData tutorialData = new TutorialSaveData();
+    public TownCreateSaveData townCreateData = new TownCreateSaveData();
 }
 
 // プレイヤー全体（コイン等）

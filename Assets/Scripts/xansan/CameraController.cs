@@ -15,6 +15,13 @@ public class CameraController : MonoBehaviour
     private Vector3 savedPosition;
     private float savedZoom;
 
+    [Header("マップ範囲(この外にカメラが出ないようにする。falseなら従来通り無制限)")]
+    public bool useBounds = false;
+    public float boundsMinX = -50f;
+    public float boundsMaxX = 50f;
+    public float boundsMinY = -25f;
+    public float boundsMaxY = 25f;
+
     [Header("移動")]
     public float panSpeed = 0.01f;
 
@@ -56,6 +63,30 @@ public class CameraController : MonoBehaviour
 #else
         HandleTouch();
 #endif
+
+        ClampToBounds();
+    }
+
+    // ==================================
+    // マップ範囲の外にカメラが出ないようにする
+    // ==================================
+    private void ClampToBounds()
+    {
+        if (!useBounds || cam == null || !cam.orthographic) return;
+
+        float halfHeight = cam.orthographicSize;
+        float halfWidth = halfHeight * cam.aspect;
+
+        float minX = boundsMinX + halfWidth;
+        float maxX = boundsMaxX - halfWidth;
+        float minY = boundsMinY + halfHeight;
+        float maxY = boundsMaxY - halfHeight;
+
+        Vector3 pos = transform.position;
+        // ズームアウトしすぎてマップより画面の方が大きい場合は中央に固定する
+        pos.x = (minX <= maxX) ? Mathf.Clamp(pos.x, minX, maxX) : (boundsMinX + boundsMaxX) * 0.5f;
+        pos.y = (minY <= maxY) ? Mathf.Clamp(pos.y, minY, maxY) : (boundsMinY + boundsMaxY) * 0.5f;
+        transform.position = pos;
     }
 
     // ==================================

@@ -11,6 +11,10 @@
 //
 //  「配置不可」の場所はTile Palette経由でBlockedレイヤーに直接ペイントして
 //  ユーザー自身が決められるようにしてある(コード側で自動計算しない)。
+//
+//  配置した装飾はSaveManager(SaveData.townCreateData)へ保存し、起動時に読み込んで
+//  Decorationsレイヤーへ復元する。装飾はindexではなくTileアセット名(decorationId)で
+//  持つので、将来decorationTilesの並びを変えても既存セーブが指す装飾はズレない。
 //==============================================================================
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -35,6 +39,9 @@ public class TownCreateController : MonoBehaviour {
     public TownEditMode Mode => _mode;
     public int SelectedDecoration => _selectedDecoration;
 
+    /// <summary>街クリ編集画面が開いている間はtrue。会話などの通常の街イベントを止めるのに使う。</summary>
+    public static bool IsEditScreenOpen { get; set; }
+
     public void SetMode(TownEditMode mode) {
         _mode = mode;
     }
@@ -42,6 +49,32 @@ public class TownCreateController : MonoBehaviour {
     public void SelectDecoration(int index) {
         if (decorationTiles == null || index < 0 || index >= decorationTiles.Length) return;
         _selectedDecoration = index;
+    }
+
+    void Start() {
+        LoadPlacedDecorations();
+    }
+
+    /// <summary>セーブされている装飾を、起動時にDecorationsレイヤーへ復元する</summary>
+    private void LoadPlacedDecorations() {
+        if (SaveManager.Instance == null || SaveManager.Instance.Current == null) return;
+        var entries = SaveManager.Instance.Current.townCreateData.placedDecorations;
+
+        foreach (var entry in entries) {
+            TileBase tile = FindDecorationTile(entry.decorationId);
+            if (tile == null) continue; // 見つからない装飾(削除済み等)は無視する
+
+            var cell = new Vector3Int(entry.x, entry.y, 0);
+            PlaceTileVisual(cell, tile);
+        }
+    }
+
+    private TileBase FindDecorationTile(string decorationId) {
+        if (decorationTiles == null) return null;
+        foreach (var tile in decorationTiles) {
+            if (tile != null && tile.name == decorationId) return tile;
+        }
+        return null;
     }
 
     void Update() {
@@ -83,14 +116,40 @@ public class TownCreateController : MonoBehaviour {
         }
         if (decorationTiles == null || _selectedDecoration < 0 || _selectedDecoration >= decorationTiles.Length) return;
 
-        decorationTilemap.SetTile(cell, decorationTiles[_selectedDecoration]);
-        decorationTilemap.SetTileFlags(cell, TileFlags.None);
-        // 親(Grid)のScaleY=0.5を打ち消して、装飾が縦に潰れないようにする
-        decorationTilemap.SetTransformMatrix(cell, Matrix4x4.Scale(new Vector3(1f, 2f, 1f)));
+        TileBase tile = decorationTiles[_selectedDecoration];
+        PlaceTileVisual(cell, tile);
+        SaveDecoration(cell, tile.name);
     }
 
     private void TryDelete(Vector3Int cell) {
         if (decorationTilemap.GetTile(cell) == null) return;
         decorationTilemap.SetTile(cell, null);
+        RemoveSavedDecoration(cell);
+    }
+
+    /// <summary>Decorationsレイヤーへ実際にタイルを置く見た目の処理だけを行う(セーブはしない)</summary>
+    private void PlaceTileVisual(Vector3Int cell, TileBase tile) {
+        decorationTilemap.SetTile(cell, tile);
+        decorationTilemap.SetTileFlags(cell, TileFlags.None);
+        // 親(Grid)のScaleY=0.5を打ち消して、装飾が縦に潰れないようにする
+        decorationTilemap.SetTransformMatrix(cell, Matrix4x4.Scale(new Vector3(1f, 2f, 1f)));
+    }
+
+    private void SaveDecoration(Vector3Int cell, string decorationId) {
+        if (SaveManager.Instance == null) return;
+        var entries = SaveManager.Instance.Current.townCreateData.placedDecorations;
+
+        var existing = entries.Find(e => e.x == cell.x && e.y == cell.y);
+        if (existing != null) existing.decorationId = decorationId;
+        else entries.Add(new PlacedDecorationEntry { x = cell.x, y = cell.y, decorationId = decorationId });
+
+        SaveManager.Instance.SaveAuto();
+    }
+
+    private void RemoveSavedDecoration(Vector3Int cell) {
+        if (SaveManager.Instance == null) return;
+        var entries = SaveManager.Instance.Current.townCreateData.placedDecorations;
+        entries.RemoveAll(e => e.x == cell.x && e.y == cell.y);
+        SaveManager.Instance.SaveAuto();
     }
 }

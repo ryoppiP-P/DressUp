@@ -223,6 +223,7 @@ public class CharacterManager : MonoBehaviour
     private void CheckPassBy() {
         if (!isFollowingRoute) return; // 移動中(道の上)でなければ判定しない
         if (IsPaused) return;          // 会話中に別の相手へ声をかけない
+        if (TownCreateController.IsEditScreenOpen) return; // 街クリ編集中は会話を開始させない
 
         string myId = CharaId;
         if (string.IsNullOrEmpty(myId)) return;

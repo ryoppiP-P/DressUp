@@ -18,6 +18,12 @@ public class TownCreateUI : MonoBehaviour {
     [SerializeField] private TMP_Text modeLabel;
     [SerializeField] private GameObject decorationRow;
     [SerializeField] private Button[] decorationButtons;
+    [SerializeField] private TMP_Text[] decorationCountLabels; // decorationButtonsと同じ並び順
+
+    [Header("選択中の装飾ボタンの見た目")]
+    [SerializeField] private Color selectedColor = new Color(1f, 0.85f, 0.3f, 1f);
+    [SerializeField] private Color normalColor = new Color(1f, 1f, 1f, 0.9f);
+    [SerializeField] private float selectedScale = 1.15f;
 
     [Header("街クリボタンからの入退場")]
     [SerializeField] private GameObject editModeRoot;   // このUI一式(見せる/隠す対象)
@@ -32,12 +38,22 @@ public class TownCreateUI : MonoBehaviour {
         if (decorationButtons != null) {
             for (int i = 0; i < decorationButtons.Length; i++) {
                 int index = i;
-                if (decorationButtons[i] != null)
-                    decorationButtons[i].onClick.AddListener(() => controller.SelectDecoration(index));
+                if (decorationButtons[i] != null) {
+                    decorationButtons[i].onClick.AddListener(() => {
+                        controller.SelectDecoration(index);
+                        RefreshSelectionHighlight();
+                    });
+                }
             }
         }
 
+        if (controller != null) controller.OnDecorationCountChanged += RefreshDecorationCounts;
+
         RefreshLabel();
+    }
+
+    void OnDestroy() {
+        if (controller != null) controller.OnDecorationCountChanged -= RefreshDecorationCounts;
     }
 
     /// <summary>街クリボタンから呼ぶ。編集画面を出し、通常のボトムバーを隠す。</summary>
@@ -54,7 +70,30 @@ public class TownCreateUI : MonoBehaviour {
     private void OnClickPlace() {
         controller.SetMode(TownEditMode.Place);
         if (decorationRow) decorationRow.SetActive(true);
+        RefreshDecorationCounts();
+        RefreshSelectionHighlight();
         RefreshLabel();
+    }
+
+    /// <summary>
+    /// 今選んでいる装飾のボタンだけ色を変えて拡大し、選択中と分かるようにする。
+    /// Image.colorを直接書き換えるとButtonのTransition(ColorTint)機能に上書きされて
+    /// 元に戻ってしまうため、ButtonのColorBlock(colors.normalColor)側を書き換える。
+    /// </summary>
+    private void RefreshSelectionHighlight() {
+        if (decorationButtons == null) return;
+
+        for (int i = 0; i < decorationButtons.Length; i++) {
+            if (decorationButtons[i] == null) continue;
+            bool isSelected = (i == controller.SelectedDecoration);
+
+            var colors = decorationButtons[i].colors;
+            colors.normalColor = isSelected ? selectedColor : normalColor;
+            colors.selectedColor = isSelected ? selectedColor : normalColor;
+            decorationButtons[i].colors = colors;
+
+            decorationButtons[i].transform.localScale = Vector3.one * (isSelected ? selectedScale : 1f);
+        }
     }
 
     private void OnClickDelete() {
@@ -73,6 +112,23 @@ public class TownCreateUI : MonoBehaviour {
         if (normalBottomBar) normalBottomBar.SetActive(true);
         if (blockedLayerRoot) blockedLayerRoot.SetActive(false);
         TownCreateController.IsEditScreenOpen = false;
+    }
+
+    /// <summary>装飾ボタンの所持数表示を更新する(0個ならボタンも押せなくする)</summary>
+    private void RefreshDecorationCounts() {
+        var items = controller.DecorationItems;
+        if (items == null) return;
+
+        for (int i = 0; i < items.Length; i++) {
+            if (items[i] == null) continue;
+            int count = ConsumableBridge.GetCount(items[i].itemId);
+
+            if (decorationCountLabels != null && i < decorationCountLabels.Length && decorationCountLabels[i] != null)
+                decorationCountLabels[i].text = count.ToString();
+
+            if (decorationButtons != null && i < decorationButtons.Length && decorationButtons[i] != null)
+                decorationButtons[i].interactable = count > 0;
+        }
     }
 
     private void RefreshLabel() {

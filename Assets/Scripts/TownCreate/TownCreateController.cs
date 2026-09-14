@@ -12,9 +12,13 @@
 //  「配置不可」の場所はTile Palette経由でBlockedレイヤーに直接ペイントして
 //  ユーザー自身が決められるようにしてある(コード側で自動計算しない)。
 //
-//  配置した装飾はSaveManager(SaveData.townCreateData)へ保存し、起動時に読み込んで
-//  Decorationsレイヤーへ復元する。装飾はindexではなくTileアセット名(decorationId)で
-//  持つので、将来decorationTilesの並びを変えても既存セーブが指す装飾はズレない。
+//  装飾はTownCreateItem(GameItem)として持ち、所持数はConsumableBridge(itemId基準)で
+//  管理する(種・時短の実と同じ方式)。ガチャ/ショップで増え、配置すると1個減り、
+//  撤去すると1個戻る。初回起動時だけ、装飾を1個ずつ配る。
+//
+//  配置した装飾の「どこに何を置いたか」はSaveManager(SaveData.townCreateData)へ
+//  別途保存し、起動時に読み込んでDecorationsレイヤーへ復元する
+//  (所持数の増減とは別の情報。置いた時点で所持数は既に1個消費済み)。
 //==============================================================================
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -30,14 +34,18 @@ public class TownCreateController : MonoBehaviour {
     [SerializeField] private Tilemap decorationTilemap;
     [SerializeField] private TileBase pureGroundTile; // これ以外(土など)には置けない
 
-    [Header("配置できる装飾")]
-    [SerializeField] private TileBase[] decorationTiles;
+    [Header("配置できる装飾(ガチャ/ショップで手に入るTownCreateItem)")]
+    [SerializeField] private TownCreateItem[] decorationItems;
 
     private TownEditMode _mode = TownEditMode.None;
     private int _selectedDecoration = 0;
 
     public TownEditMode Mode => _mode;
     public int SelectedDecoration => _selectedDecoration;
+    public TownCreateItem[] DecorationItems => decorationItems;
+
+    /// <summary>装飾を置く/撤去して所持数が変わった時に呼ばれる(UIの個数表示更新用)</summary>
+    public event System.Action OnDecorationCountChanged;
 
     /// <summary>街クリ編集画面が開いている間はtrue。会話などの通常の街イベントを止めるのに使う。</summary>
     public static bool IsEditScreenOpen { get; set; }
@@ -47,12 +55,29 @@ public class TownCreateController : MonoBehaviour {
     }
 
     public void SelectDecoration(int index) {
-        if (decorationTiles == null || index < 0 || index >= decorationTiles.Length) return;
+        if (decorationItems == null || index < 0 || index >= decorationItems.Length) return;
         _selectedDecoration = index;
     }
 
     void Start() {
+        GrantStarterDecorationsIfNeeded();
         LoadPlacedDecorations();
+    }
+
+    /// <summary>初回だけ、街クリの装飾を1個ずつ配る</summary>
+    private void GrantStarterDecorationsIfNeeded() {
+        if (SaveManager.Instance == null || SaveManager.Instance.Current == null) return;
+        var data = SaveManager.Instance.Current.townCreateData;
+        if (data.starterDecorationsGranted) return;
+        if (decorationItems == null) return;
+
+        foreach (var item in decorationItems) {
+            if (item == null) continue;
+            ConsumableBridge.Add(item.itemId, 1);
+        }
+
+        data.starterDecorationsGranted = true;
+        SaveManager.Instance.SaveAuto();
     }
 
     /// <summary>セーブされている装飾を、起動時にDecorationsレイヤーへ復元する</summary>
@@ -69,12 +94,17 @@ public class TownCreateController : MonoBehaviour {
         }
     }
 
-    private TileBase FindDecorationTile(string decorationId) {
-        if (decorationTiles == null) return null;
-        foreach (var tile in decorationTiles) {
-            if (tile != null && tile.name == decorationId) return tile;
+    private TownCreateItem FindDecorationItem(string decorationId) {
+        if (decorationItems == null) return null;
+        foreach (var item in decorationItems) {
+            if (item != null && item.itemId == decorationId) return item;
         }
         return null;
+    }
+
+    private TileBase FindDecorationTile(string decorationId) {
+        var item = FindDecorationItem(decorationId);
+        return item != null ? item.decorationTile : null;
     }
 
     void Update() {
@@ -114,17 +144,30 @@ public class TownCreateController : MonoBehaviour {
             Debug.Log("[TownCreate] すでに装飾があります: " + cell);
             return;
         }
-        if (decorationTiles == null || _selectedDecoration < 0 || _selectedDecoration >= decorationTiles.Length) return;
+        if (decorationItems == null || _selectedDecoration < 0 || _selectedDecoration >= decorationItems.Length) return;
 
-        TileBase tile = decorationTiles[_selectedDecoration];
-        PlaceTileVisual(cell, tile);
-        SaveDecoration(cell, tile.name);
+        TownCreateItem item = decorationItems[_selectedDecoration];
+        if (item == null || item.decorationTile == null) return;
+
+        if (!ConsumableBridge.TryConsume(item.itemId, 1)) {
+            Debug.Log("[TownCreate] " + item.itemName + " を持っていません");
+            return;
+        }
+
+        PlaceTileVisual(cell, item.decorationTile);
+        SaveDecoration(cell, item.itemId);
+        OnDecorationCountChanged?.Invoke();
     }
 
     private void TryDelete(Vector3Int cell) {
+        string decorationId = FindPlacedDecorationId(cell);
         if (decorationTilemap.GetTile(cell) == null) return;
+
         decorationTilemap.SetTile(cell, null);
         RemoveSavedDecoration(cell);
+
+        if (!string.IsNullOrEmpty(decorationId)) ConsumableBridge.Add(decorationId, 1); // 撤去したら所持数へ戻す
+        OnDecorationCountChanged?.Invoke();
     }
 
     /// <summary>Decorationsレイヤーへ実際にタイルを置く見た目の処理だけを行う(セーブはしない)</summary>
@@ -133,6 +176,13 @@ public class TownCreateController : MonoBehaviour {
         decorationTilemap.SetTileFlags(cell, TileFlags.None);
         // 親(Grid)のScaleY=0.5を打ち消して、装飾が縦に潰れないようにする
         decorationTilemap.SetTransformMatrix(cell, Matrix4x4.Scale(new Vector3(1f, 2f, 1f)));
+    }
+
+    private string FindPlacedDecorationId(Vector3Int cell) {
+        if (SaveManager.Instance == null) return null;
+        var entries = SaveManager.Instance.Current.townCreateData.placedDecorations;
+        var existing = entries.Find(e => e.x == cell.x && e.y == cell.y);
+        return existing != null ? existing.decorationId : null;
     }
 
     private void SaveDecoration(Vector3Int cell, string decorationId) {

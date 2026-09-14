@@ -122,9 +122,14 @@ public class GachaPanel : MonoBehaviour {
 
         List<GachaEntry> results = count == 1 ? DrawSingle() : DrawTen();
 
-        // 引いたアイテムを所持アイテムとして記録する(アイテム一覧画面に出るようになる)
+        // 引いたアイテムを記録する(アイテム一覧画面に出るようになる)。
+        // 街クリエイトの装飾・その他消耗品(種等)は個数で持つのでConsumableBridge、
+        // それ以外(服等)は所持リストへ。
         foreach (var entry in results) {
-            if (entry != null && entry.item != null)
+            if (entry == null || entry.item == null) continue;
+            if (entry.item is TownCreateItem || entry.item is OtherItem)
+                ConsumableBridge.Add(entry.item.itemId, 1);
+            else
                 SaveManager.Instance.AddOwnedItem(entry.item.itemId);
         }
 

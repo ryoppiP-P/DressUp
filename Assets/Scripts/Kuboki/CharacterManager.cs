@@ -46,6 +46,9 @@ public class CharacterManager : MonoBehaviour
     [Tooltip("次の中継地点にarrivalDistance分近づいたら到着とみなして次の中間地点に向かう")]
     [SerializeField] private float arrivalDistance = 0.2f;
 
+    [Tooltip("スプライトの原点(transform.position)がキャラの中心にあるため、WayPointの位置に足元が来るよう、目的地のYをこの分だけ上げてから移動する")]
+    [SerializeField] private float routeFeetOffsetY = 2.2f;
+
     [Header("移動速度")]
     [SerializeField] private float moveSpeed = 3.0f;
 
@@ -126,6 +129,7 @@ public class CharacterManager : MonoBehaviour
 
             Vector3 targetPos = currentRoute[currentRouteIndex];
             targetPos.z = transform.position.z;
+            targetPos.y += routeFeetOffsetY; // 足元がWayPointの位置(道の上)に来るよう、原点を持ち上げる
 
             // 目的地に向けて直線移動させる処理
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
@@ -178,8 +182,10 @@ public class CharacterManager : MonoBehaviour
     {
         if (currentRoute == null || currentRoute.Count == 0) return;
 
-        // 2Dで正確な直線距離を計算
-        float distance = Vector2.Distance(transform.position, currentRoute[currentRouteIndex]);
+        // 2Dで正確な直線距離を計算(移動先と同じく、足元基準のYで比較する)
+        Vector3 targetPos = currentRoute[currentRouteIndex];
+        targetPos.y += routeFeetOffsetY;
+        float distance = Vector2.Distance(transform.position, targetPos);
 
         // 設定した到着判定距離以下になったら到着したとみなす
         if (distance <= arrivalDistance)

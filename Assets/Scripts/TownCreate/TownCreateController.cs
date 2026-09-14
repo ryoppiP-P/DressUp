@@ -157,6 +157,10 @@ public class TownCreateController : MonoBehaviour {
         PlaceTileVisual(cell, item.decorationTile);
         SaveDecoration(cell, item.itemId);
         OnDecorationCountChanged?.Invoke();
+
+        // ミッション「街に装飾を置こう」
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.Report(MissionType.PlaceDecoration, 1);
     }
 
     private void TryDelete(Vector3Int cell) {

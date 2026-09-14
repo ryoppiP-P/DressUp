@@ -114,6 +114,14 @@ public class MissionPanel : MonoBehaviour {
     public void GoToChallenge(MissionData mission) {
         if (mission == null) return;
 
+        // 「街に装飾を置こう」は専用パネルではなく、街クリの配置モードそのものへ直接入る
+        if (mission.type == MissionType.PlaceDecoration) {
+            Close();
+            var townCreateUI = FindFirstObjectByType<TownCreateUI>(FindObjectsInactive.Include);
+            if (townCreateUI != null) townCreateUI.EnterEditMode();
+            return;
+        }
+
         var dest = challengeDestinations.Find(d => d != null && d.type == mission.type);
 
         // 行き先が決まっていないものは、閉じて街に戻るだけ

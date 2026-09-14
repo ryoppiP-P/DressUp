@@ -216,17 +216,36 @@ public class MissionManager : MonoBehaviour {
         UpdateClearAll(MissionType.ClearAllWeekly, MissionCategory.Weekly);
     }
 
+    // 対象カテゴリの「全クリア以外」のミッションが、いくつ達成済みかを数えて進捗にする。
+    // (以前は達成済みか否かの二択でしか更新していなかったため、進捗バーが動かずに見えていた)
     private void UpdateClearAll(MissionType clearAllType, MissionCategory category) {
-        // 対象カテゴリの「全部クリア以外」のミッションが全部達成済みか
         var others = allMissions.Where(m => m.category == category && m.type != clearAllType).ToList();
         if (others.Count == 0) return;
 
-        bool allDone = others.All(m => GetEntry(m.missionId).progress >= m.GetTarget(GetStage(m)));
+        int doneCount = others.Count(m => GetEntry(m.missionId).progress >= m.GetTarget(GetStage(m)));
 
-        foreach (var m in allMissions.Where(m => m.type == clearAllType)) {
+        // category も一致させて絞り込む（別カテゴリに同じtypeのミッションがあっても互いに巻き込まないように）
+        foreach (var m in allMissions.Where(m => m.type == clearAllType && m.category == category)) {
             var e = GetEntry(m.missionId);
             if (e.claimed) continue;
-            e.progress = allDone ? m.targetCount : 0;
+
+            bool wasFull = e.progress >= m.targetCount;
+            e.progress = Mathf.Clamp(doneCount, 0, m.targetCount);
+            bool isFull = e.progress >= m.targetCount;
+
+            // ちょうど今全部揃った瞬間だけ、週間の「全クリアした回数」を、1増やす
+            if (!wasFull && isFull) IncrementClearAllDailyCount(category);
+        }
+    }
+
+    // 「デイリーを全部クリアした回数」(週をまたいで積み上げる集計ミッション)を、1進める
+    private void IncrementClearAllDailyCount(MissionCategory sourceCategory) {
+        if (sourceCategory != MissionCategory.Daily) return;
+
+        foreach (var counter in allMissions.Where(m => m.type == MissionType.ClearAllDailyCount)) {
+            var e = GetEntry(counter.missionId);
+            if (e.claimed) continue;
+            e.progress = Mathf.Min(e.progress + 1, counter.FinalTarget);
         }
     }
 

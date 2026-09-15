@@ -21,7 +21,6 @@ public class MissionPanel : MonoBehaviour {
     [SerializeField] private Button challengeTab;
 
     [Header("下部ボタン")]
-    [SerializeField] private Button backButton;
     [SerializeField] private Button claimAllButton;
 
     [Header("この画面自体（戻るで閉じる対象）")]
@@ -44,6 +43,7 @@ public class MissionPanel : MonoBehaviour {
     private MissionCategory _current = MissionCategory.Daily;
 
     void OnEnable() {
+        BottomPanelCoordinator.NotifyOpened(Close);
         if (MissionManager.Instance == null) return;
 
         MissionManager.Instance.OnMissionChanged += RefreshAll;
@@ -59,6 +59,7 @@ public class MissionPanel : MonoBehaviour {
     }
 
     void OnDisable() {
+        BottomPanelCoordinator.NotifyClosed(Close);
         if (MissionManager.Instance != null)
             MissionManager.Instance.OnMissionChanged -= RefreshAll;
     }
@@ -70,7 +71,6 @@ public class MissionPanel : MonoBehaviour {
         if (challengeTab) challengeTab.onClick.AddListener(() => ShowCategory(MissionCategory.Challenge));
 
         // 下部ボタン
-        if (backButton) backButton.onClick.AddListener(Close);
         if (claimAllButton) claimAllButton.onClick.AddListener(OnClickClaimAll);
 
         // 初期表示はデイリー
@@ -145,5 +145,11 @@ public class MissionPanel : MonoBehaviour {
     // 画面を閉じる（戻る）
     public void Close() {
         if (panelRoot) panelRoot.SetActive(false);
+    }
+
+    // 開いていれば閉じる、閉じていれば開く(ボトムバーのアイコンから呼ぶ)
+    public void ToggleOpen() {
+        if (panelRoot != null && panelRoot.activeSelf) Close();
+        else Open();
     }
 }

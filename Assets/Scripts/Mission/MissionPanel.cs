@@ -95,8 +95,17 @@ public class MissionPanel : MonoBehaviour {
     private void SetTabColor(Button tab, MissionCategory category) {
         if (tab == null) return;
         bool selected = category == _current;
-        if (tab.image != null) tab.image.color = selected ? tabSelectedColor : tabUnselectedColor;
-        // 選択中のタブを他の2つより前面(手前)に表示する
+        Color c = selected ? tabSelectedColor : tabUnselectedColor;
+
+        // Image.colorを直接書き換えるとButtonのColorTint(Transition)機能に上書きされるため、
+        // Button.colors(ColorBlock)側も一緒に書き換える。
+        var colors = tab.colors;
+        colors.normalColor = c;
+        colors.selectedColor = c;
+        tab.colors = colors;
+        if (tab.image != null) tab.image.color = c;
+
+        // 選択中のタブを他の2つより手前(最前面)に表示する
         if (selected) tab.transform.SetAsLastSibling();
     }
 

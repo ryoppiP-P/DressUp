@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: TownCreateItemDatabase
   m_EditorClassIdentifier: Assembly-CSharp::GameItemDatabase
   allItems:
-  - {fileID: 11400000, guid: 01daabe8ea69c10419050e8b5f3c2d2a, type: 2}
-  - {fileID: 11400000, guid: 31dcfd1f175b6254090d6e0edaed6a01, type: 2}
-  - {fileID: 11400000, guid: 2b33336582fb0ee499ed35ea7483a794, type: 2}
-  - {fileID: 11400000, guid: 8bfd9a6ed7aa9484c8567cdfec520871, type: 2}
-  - {fileID: 11400000, guid: b460c57db57ca254283ad4d4b932e321, type: 2}
-  - {fileID: 11400000, guid: 9ac10b8bac780d649a5086d84c689f76, type: 2}
+  - {fileID: 11400000, guid: cf88c88ffd5023b44811be5ef9d40805, type: 2}
+  - {fileID: 11400000, guid: 4ff0b1bff0301dc4a92288e91a84eb16, type: 2}
+  - {fileID: 11400000, guid: 591dac7eed56f45419f4584cb4ad81d3, type: 2}
+  - {fileID: 11400000, guid: c5b9ed2a53c2bee4aaf3de39ab420643, type: 2}
+  - {fileID: 11400000, guid: edc571f0829d29c40855d4f3fbcd1cca, type: 2}
+  - {fileID: 11400000, guid: cfa3cc3c0d9f01041bac9681bdae6d97, type: 2}

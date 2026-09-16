@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e62a94ccbfbcb148aeb259eba02471f, type: 3}
+  m_Name: deco_flower_purple_cluster
+  m_EditorClassIdentifier: Assembly-CSharp::TownCreateItem
+  itemId: deco_flower_purple_cluster
+  itemName: "\u7D2B\u306E\u82B1"
+  icon: {fileID: 21300000, guid: c91edf5419b272d4ca364eee4781fda9, type: 3}
+  rarity: 0
+  description: "\u8857\u306B\u7F6E\u3051\u308B\u7D2B\u306E\u82B1\u306E\u88C5\u98FE\u3002"
+  ownedByDefault: 0
+  decorationTile: {fileID: 11400000, guid: 8f3503f7e616a59468cd247b3022db05, type: 2}

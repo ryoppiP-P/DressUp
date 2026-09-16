@@ -26,6 +26,7 @@ public enum MissionType {
     BornFairy,         // 妖精を誕生させよう（チャレンジ）
     MakePersonality,   // 各性格のを作ろう（チャレンジ）
     CollectClothes,    // 服を集めよう（チャレンジ）
+    ClearAllDailyCount, // デイリーを全部クリアした回数（週内、ウィークリー側の集計用）
 }
 
 // ミッション1件の状態

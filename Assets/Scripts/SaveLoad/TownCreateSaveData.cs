@@ -24,4 +24,9 @@ public class PlacedDecorationEntry {
 [Serializable]
 public class TownCreateSaveData {
     public List<PlacedDecorationEntry> placedDecorations = new List<PlacedDecorationEntry>();
+
+    // 初期所持(装飾を各1個ずつ配る)を、既に行ったかどうか。
+    // ConsumableBridgeの個数(GetCount<=0)では「配布済みだが配置して使い切った」と
+    // 「まだ一度も配ってない」を区別できないため、専用のフラグで管理する。
+    public bool starterDecorationsGranted = false;
 }

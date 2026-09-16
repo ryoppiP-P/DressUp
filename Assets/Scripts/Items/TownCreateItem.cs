@@ -5,12 +5,15 @@
 //  Author : Ryoto Kikuchi
 //  Date   : 2026/8/4
 //------------------------------------------------------------------------------
-//  現時点では枠組みのみ。街クリエイト機能側の仕様が固まったら、
-//  設置サイズや配置用プレハブ参照などをここに追加する。
+//  所持数はConsumableBridge(itemId基準)で管理する(種・時短の実と同じ方式)。
+//  ガチャ/ショップで手に入れると個数が増え、街クリエイトで配置すると1個減り、
+//  撤去すると1個戻る。
 //==============================================================================
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [CreateAssetMenu(menuName = "Items/TownCreateItem")]
 public class TownCreateItem : GameItem {
-    // TODO: 街クリエイトの仕様が決まり次第、配置に必要な情報(設置プレハブ・サイズ等)を追加する
+    [Header("街クリエイトでの配置に使うTile")]
+    public TileBase decorationTile;
 }

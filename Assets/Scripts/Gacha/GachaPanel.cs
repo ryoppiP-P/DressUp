@@ -53,9 +53,6 @@ public class GachaPanel : MonoBehaviour {
     [Header("結果ポップアップ")]
     [SerializeField] private GachaResultPopup resultPopup;
 
-    [Header("戻るボタン")]
-    [SerializeField] private Button backButton;
-
     [Header("通貨が足りない時に出すトースト(任意)")]
     [SerializeField] private SimpleMessagePopup insufficientFundsPopup;
     [SerializeField] private string insufficientFundsMessage = "お金が足りないよ!";
@@ -72,10 +69,19 @@ public class GachaPanel : MonoBehaviour {
         if (clothesTab) clothesTab.onClick.AddListener(() => ShowCategory(GachaCategory.Clothes));
         if (singlePullButton) singlePullButton.onClick.AddListener(() => StartCoroutine(PullRoutine(1)));
         if (tenPullButton) tenPullButton.onClick.AddListener(() => StartCoroutine(PullRoutine(10)));
-        if (backButton) backButton.onClick.AddListener(Close);
 
         if (singlePullCostText) singlePullCostText.text = singlePullCost.ToString();
         if (tenPullCostText) tenPullCostText.text = tenPullCost.ToString();
+    }
+
+    // 排他制御(他のボトムバーパネルを閉じる)はOnEnable/OnDisableで行う
+    // (SetActiveされた経路に依らず必ず効くようにするため)。
+    void OnEnable() {
+        BottomPanelCoordinator.NotifyOpened(Close);
+    }
+
+    void OnDisable() {
+        BottomPanelCoordinator.NotifyClosed(Close);
     }
 
     /// <summary>ガチャ画面を開く(街装飾タブから開始)</summary>
@@ -86,6 +92,12 @@ public class GachaPanel : MonoBehaviour {
 
     public void Close() {
         if (panelRoot) panelRoot.SetActive(false);
+    }
+
+    /// <summary>開いていれば閉じる、閉じていれば開く(ボトムバーのアイコンから呼ぶ)</summary>
+    public void ToggleOpen() {
+        if (panelRoot != null && panelRoot.activeSelf) Close();
+        else Open();
     }
 
     /// <summary>カテゴリ(街装飾/服)を切り替える</summary>
@@ -122,9 +134,14 @@ public class GachaPanel : MonoBehaviour {
 
         List<GachaEntry> results = count == 1 ? DrawSingle() : DrawTen();
 
-        // 引いたアイテムを所持アイテムとして記録する(アイテム一覧画面に出るようになる)
+        // 引いたアイテムを記録する(アイテム一覧画面に出るようになる)。
+        // 街クリエイトの装飾・その他消耗品(種等)は個数で持つのでConsumableBridge、
+        // それ以外(服等)は所持リストへ。
         foreach (var entry in results) {
-            if (entry != null && entry.item != null)
+            if (entry == null || entry.item == null) continue;
+            if (entry.item is TownCreateItem || entry.item is OtherItem)
+                ConsumableBridge.Add(entry.item.itemId, 1);
+            else
                 SaveManager.Instance.AddOwnedItem(entry.item.itemId);
         }
 

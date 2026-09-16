@@ -21,20 +21,20 @@ MonoBehaviour:
   rewardHoney: 0
   tiers:
   - targetCount: 1
-    rewardNut: 0
+    rewardNut: 600
     rewardHoney: 400
   - targetCount: 2
-    rewardNut: 0
+    rewardNut: 750
     rewardHoney: 500
   - targetCount: 3
-    rewardNut: 0
+    rewardNut: 900
     rewardHoney: 600
   - targetCount: 4
-    rewardNut: 0
+    rewardNut: 1200
     rewardHoney: 800
   - targetCount: 5
-    rewardNut: 0
+    rewardNut: 1800
     rewardHoney: 1200
   - targetCount: 6
-    rewardNut: 0
+    rewardNut: 2250
     rewardHoney: 1500

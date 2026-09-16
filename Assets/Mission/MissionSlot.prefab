@@ -187,8 +187,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 829, y: 70}
-  m_SizeDelta: {x: 120, y: 80}
+  m_AnchoredPosition: {x: 840.9, y: 74.3}
+  m_SizeDelta: {x: 172.3188, y: 116.8417}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7024468806146972094
 CanvasRenderer:
@@ -218,7 +218,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2ce8b65c0f49ab8478e05e9ce0ba0bbf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8ca0608122c5d0b47b668cb594256585, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -330,7 +330,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.7336457, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -381,7 +381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 490, y: 37}
+  m_AnchoredPosition: {x: 485, y: 37}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3194046804921745700
@@ -519,7 +519,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -319, y: -28}
+  m_AnchoredPosition: {x: -319, y: -22.8}
   m_SizeDelta: {x: 98.835, y: 98.5951}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3275145724017181428
@@ -593,8 +593,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3964587972969282979
 GameObject:
@@ -700,12 +700,13 @@ MonoBehaviour:
   progressBar: {fileID: 4574885601064545930}
   progressText: {fileID: 809510965730172918}
   actionButton: {fileID: 3711062065534113454}
+  claimableButtonSprite: {fileID: 21300000, guid: 2ce8b65c0f49ab8478e05e9ce0ba0bbf, type: 3}
   actionLabel: {fileID: 5517703658906712045}
   background: {fileID: 5344726040242101692}
   bgNormal: {r: 1, g: 1, b: 1, a: 1}
   bgClaimed: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-  barInProgress: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  barClaimable: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  barInProgress: {r: 1, g: 1, b: 1, a: 1}
+  barClaimable: {r: 1, g: 1, b: 1, a: 1}
   barClaimed: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   nutSprite: {fileID: 21300000, guid: 592e8a614ac6746449d3f4f83ff9f54f, type: 3}
   honeySprite: {fileID: 21300000, guid: c2413aab758abbf4487b30aa3874f2b7, type: 3}
@@ -744,7 +745,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 494, y: 66}
+  m_AnchoredPosition: {x: 473, y: 66}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4574885601064545930
@@ -832,7 +833,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 98, y: 82}
+  m_AnchoredPosition: {x: 134.6, y: 110.5}
   m_SizeDelta: {x: 80, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &801146041211501420
@@ -897,7 +898,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -929,7 +930,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -63.475098, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1044,7 +1045,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 9.7}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2624991321297360863
@@ -1102,8 +1103,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1181,7 +1182,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 197, y: 29}
+  m_AnchoredPosition: {x: 230.2, y: 38.1}
   m_SizeDelta: {x: 80, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5841725688009091957
@@ -1246,7 +1247,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1278,7 +1279,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -75.06193, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1393,7 +1394,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 494.99963, y: 110}
+  m_AnchoredPosition: {x: 485, y: 110}
   m_SizeDelta: {x: 495.8782, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5221799681321494732

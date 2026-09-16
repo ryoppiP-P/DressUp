@@ -19,6 +19,8 @@ public class MissionPanel : MonoBehaviour {
     [SerializeField] private Button dailyTab;
     [SerializeField] private Button weeklyTab;
     [SerializeField] private Button challengeTab;
+    [SerializeField] private Color tabSelectedColor = Color.white;
+    [SerializeField] private Color tabUnselectedColor = new Color32(0xD3, 0xBF, 0xAF, 0xFF);
 
     [Header("下部ボタン")]
     [SerializeField] private Button claimAllButton;
@@ -80,7 +82,22 @@ public class MissionPanel : MonoBehaviour {
     // カテゴリを表示（タブ切り替え）
     public void ShowCategory(MissionCategory category) {
         _current = category;
+        RefreshTabColors();
         Rebuild();
+    }
+
+    private void RefreshTabColors() {
+        SetTabColor(dailyTab, MissionCategory.Daily);
+        SetTabColor(weeklyTab, MissionCategory.Weekly);
+        SetTabColor(challengeTab, MissionCategory.Challenge);
+    }
+
+    private void SetTabColor(Button tab, MissionCategory category) {
+        if (tab == null) return;
+        bool selected = category == _current;
+        if (tab.image != null) tab.image.color = selected ? tabSelectedColor : tabUnselectedColor;
+        // 選択中のタブを他の2つより前面(手前)に表示する
+        if (selected) tab.transform.SetAsLastSibling();
     }
 
     // 行を作り直す

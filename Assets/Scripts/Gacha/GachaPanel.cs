@@ -34,6 +34,9 @@ public class GachaPanel : MonoBehaviour {
     [SerializeField] private TMP_Text illustrationLabel;
     [SerializeField] private RectTransform illustrationArea; // 抽選演出でバウンドさせる対象
 
+    [Header("R一個以上確定のラベルの表示/非表示（街装飾では出さない）")]
+    [SerializeField] private GameObject rGuaranteedBadge; // 「R以上1個確定」の表示（Rkakutei）
+
     [Header("抽選演出(ボタンを押してから結果が出るまでの「ガコン！」)")]
     [SerializeField] private Image pullFlashImage;    // 画面全体に一瞬光らせる白フラッシュ(初期alpha0)
     [SerializeField] private string pullingMessage = "……";
@@ -107,6 +110,7 @@ public class GachaPanel : MonoBehaviour {
         SetTabState(decorationTab, clothesTab, decorationTabBg, category == GachaCategory.Decoration);
         SetTabState(clothesTab, decorationTab, clothesTabBg, category == GachaCategory.Clothes);
         if (illustrationLabel) illustrationLabel.text = category == GachaCategory.Decoration ? "街装飾ガチャ" : "服ガチャ";
+        if (rGuaranteedBadge) rGuaranteedBadge.SetActive(category == GachaCategory.Clothes);
     }
 
     // タブの色を切り替え、選択中なら「もう片方のタブ」より手前に表示する。

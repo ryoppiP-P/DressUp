@@ -15,6 +15,19 @@ public class BottomBarToggle : MonoBehaviour {
         _shownPos = bottomBar.anchoredPosition;
     }
 
+    void OnEnable() {
+        BottomPanelCoordinator.OnAnyOpenChanged += HandleAnyPanelOpenChanged;
+    }
+
+    void OnDisable() {
+        BottomPanelCoordinator.OnAnyOpenChanged -= HandleAnyPanelOpenChanged;
+    }
+
+    // Gacha/Mission/Shopのいずれかが開いている間はButtonArrowを隠す
+    private void HandleAnyPanelOpenChanged(bool anyOpen) {
+        if (arrow) arrow.gameObject.SetActive(!anyOpen);
+    }
+
     public void OnClickArrow() {
         _hidden = !_hidden;
         if (_routine != null) StopCoroutine(_routine);

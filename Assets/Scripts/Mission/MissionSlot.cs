@@ -24,6 +24,7 @@ public class MissionSlot : MonoBehaviour {
 
     [Header("ボタン")]
     [SerializeField] private Button actionButton;
+    [SerializeField] private Sprite claimableButtonSprite; // Button01
     [SerializeField] private TMP_Text actionLabel;   // 挑戦する/受け取る/クリア
 
     [Header("状態ごとの色")]
@@ -39,12 +40,16 @@ public class MissionSlot : MonoBehaviour {
     [SerializeField] private Sprite honeySprite;
 
     private MissionData _data;
+    private Sprite _defaultButtonSprite;
     private MissionPanel _owner;   // 「挑戦する」でどこへ行くかはこちらが知っている
 
     public void Setup(MissionData data, MissionPanel owner = null) {
         _data = data;
         _owner = owner;
         description.text = data.description;
+
+        if (_defaultButtonSprite == null && actionButton.image != null)
+            _defaultButtonSprite = actionButton.image.sprite;
 
         Refresh();   // 報酬の数字は段階で変わるので Refresh 側で出す
 
@@ -79,18 +84,21 @@ public class MissionSlot : MonoBehaviour {
                 actionLabel.text = "挑戦する";
                 actionButton.interactable = true;
                 if (background) background.color = bgNormal;
+                if (actionButton.image) actionButton.image.sprite = _defaultButtonSprite;
                 SetBarColor(barInProgress);
                 break;
             case MissionState.Claimable:
                 actionLabel.text = "受け取る";
                 actionButton.interactable = true;
                 if (background) background.color = bgNormal;
+                if (actionButton.image) actionButton.image.sprite = claimableButtonSprite;
                 SetBarColor(barClaimable);
                 break;
             case MissionState.Claimed:
                 actionLabel.text = "クリア";
                 actionButton.interactable = false;
                 if (background) background.color = bgClaimed;
+                if (actionButton.image) actionButton.image.sprite = _defaultButtonSprite;
                 SetBarColor(barClaimed);
                 break;
         }

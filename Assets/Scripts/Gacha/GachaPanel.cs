@@ -28,11 +28,14 @@ public class GachaPanel : MonoBehaviour {
     [SerializeField] private Image decorationTabBg;
     [SerializeField] private Image clothesTabBg;
     [SerializeField] private Color tabSelectedColor = new Color(0.95f, 0.75f, 0.35f, 1f);
-    [SerializeField] private Color tabUnselectedColor = new Color(0.9f, 0.9f, 0.9f, 1f);
+    [SerializeField] private Color tabUnselectedColor = new Color32(0xD3, 0xBF, 0xAF, 0xFF);
 
     [Header("イラスト表示部(ダミーの間はカテゴリ名だけ表示)")]
     [SerializeField] private TMP_Text illustrationLabel;
     [SerializeField] private RectTransform illustrationArea; // 抽選演出でバウンドさせる対象
+
+    [Header("R一個以上確定のラベルの表示/非表示（街装飾では出さない）")]
+    [SerializeField] private GameObject rGuaranteedBadge; // 「R以上1個確定」の表示（Rkakutei）
 
     [Header("抽選演出(ボタンを押してから結果が出るまでの「ガコン！」)")]
     [SerializeField] private Image pullFlashImage;    // 画面全体に一瞬光らせる白フラッシュ(初期alpha0)
@@ -74,10 +77,12 @@ public class GachaPanel : MonoBehaviour {
         if (tenPullCostText) tenPullCostText.text = tenPullCost.ToString();
     }
 
-    // 排他制御(他のボトムバーパネルを閉じる)はOnEnable/OnDisableで行う
+    // 排他制御(他のボトムバーパネルを閉じる)と、開いた時に必ず街装飾タブから
+    // 始まるようにする処理をOnEnable/OnDisableで行う
     // (SetActiveされた経路に依らず必ず効くようにするため)。
     void OnEnable() {
         BottomPanelCoordinator.NotifyOpened(Close);
+        ShowCategory(GachaCategory.Decoration);
     }
 
     void OnDisable() {
@@ -87,7 +92,6 @@ public class GachaPanel : MonoBehaviour {
     /// <summary>ガチャ画面を開く(街装飾タブから開始)</summary>
     public void Open() {
         if (panelRoot) panelRoot.SetActive(true);
-        ShowCategory(GachaCategory.Decoration);
     }
 
     public void Close() {
@@ -103,9 +107,28 @@ public class GachaPanel : MonoBehaviour {
     /// <summary>カテゴリ(街装飾/服)を切り替える</summary>
     public void ShowCategory(GachaCategory category) {
         _current = category;
-        if (decorationTabBg) decorationTabBg.color = category == GachaCategory.Decoration ? tabSelectedColor : tabUnselectedColor;
-        if (clothesTabBg) clothesTabBg.color = category == GachaCategory.Clothes ? tabSelectedColor : tabUnselectedColor;
+        SetTabState(decorationTab, clothesTab, decorationTabBg, category == GachaCategory.Decoration);
+        SetTabState(clothesTab, decorationTab, clothesTabBg, category == GachaCategory.Clothes);
         if (illustrationLabel) illustrationLabel.text = category == GachaCategory.Decoration ? "街装飾ガチャ" : "服ガチャ";
+        if (rGuaranteedBadge) rGuaranteedBadge.SetActive(category == GachaCategory.Clothes);
+    }
+
+    // タブの色を切り替え、選択中なら「もう片方のタブ」より手前に表示する。
+    // SetAsLastSibling()でGachaPanel直下の全兄弟(ResultPopup等)より前に出してしまうと、
+    // 抽選結果ポップアップがタブの下に隠れてしまうため、対象をタブ同士の前後関係だけに限定する。
+    private void SetTabState(Button tab, Button otherTab, Image tabBg, bool selected) {
+        Color c = selected ? tabSelectedColor : tabUnselectedColor;
+
+        if (tab != null) {
+            var colors = tab.colors;
+            colors.normalColor = c;
+            colors.selectedColor = c;
+            tab.colors = colors;
+        }
+        if (tabBg) tabBg.color = c;
+
+        if (selected && tab && otherTab && tab.transform.GetSiblingIndex() < otherTab.transform.GetSiblingIndex())
+            tab.transform.SetSiblingIndex(otherTab.transform.GetSiblingIndex());
     }
 
     //--------------------------------------------------------------

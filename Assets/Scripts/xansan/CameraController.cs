@@ -58,11 +58,13 @@ public class CameraController : MonoBehaviour
         // 会話中(カメラズーム中)はプレイヤーのカメラ操作を一切受け付けない
         if (isLocked) return;
 
-#if UNITY_EDITOR || UNITY_STANDALONE
-        HandleMouse();
-#else
-        HandleTouch();
-#endif
+        // タッチが実際に触られている時だけタッチ処理、それ以外はマウス処理
+        bool touching = Touchscreen.current != null &&
+                        Touchscreen.current.touches.Count > 0 &&
+                        Touchscreen.current.touches[0].press.isPressed;
+
+        if (touching) HandleTouch();
+        else if (Mouse.current != null) HandleMouse();
 
         ClampToBounds();
     }

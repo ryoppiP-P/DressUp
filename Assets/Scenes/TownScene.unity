@@ -610,7 +610,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &56766729
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7876,8 +7876,8 @@ MonoBehaviour:
   boundsMaxX: 53.38
   boundsMinY: -26.69
   boundsMaxY: 26.69
-  panSpeed: 0.01
-  zoomSpeed: 0.01
+  panSpeed: 0.05
+  zoomSpeed: 100
   minZoom: 2
   maxZoom: 20
   defaultPosition: {x: 0, y: 0, z: -10}
@@ -20456,8 +20456,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4292796126
-  m_fontColor: {r: 0.87169814, g: 0.87169814, b: 0.87169814, a: 1}
+    rgba: 4281875005
+  m_fontColor: {r: 0.23921569, g: 0.22745098, b: 0.21960784, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

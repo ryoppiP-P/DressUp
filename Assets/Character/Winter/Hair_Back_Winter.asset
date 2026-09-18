@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hair_Back_Winter
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemId: Hair_Back_Winter
-  itemName: Hair_Back_Winter
+  itemName: "\u9AEA"
   icon: {fileID: 21300000, guid: a54c1a9416eb42942ab5f3ba9d2d8cd9, type: 3}
   rarity: 0
   description: 

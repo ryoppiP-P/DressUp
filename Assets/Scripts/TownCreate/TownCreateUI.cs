@@ -58,6 +58,7 @@ public class TownCreateUI : MonoBehaviour {
 
     /// <summary>街クリボタンから呼ぶ。編集画面を出し、通常のボトムバーを隠す。</summary>
     public void EnterEditMode() {
+        BottomPanelCoordinator.CloseCurrent(); // 開いているMission/Gacha/Shopを閉じてから編集画面へ
         if (editModeRoot) editModeRoot.SetActive(true);
         if (normalBottomBar) normalBottomBar.SetActive(false);
         if (blockedLayerRoot) blockedLayerRoot.SetActive(true);

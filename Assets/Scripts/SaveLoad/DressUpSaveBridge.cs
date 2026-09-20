@@ -71,7 +71,8 @@ public static class DressUpSaveBridge {
                 if (item == null) continue;
                 list.Add(new EquippedEntry {
                     category = pair.Key.ToString(),
-                    itemName = item.itemName
+                    itemName = item.itemName,
+                    itemId = item.itemId
                 });
             }
         }
@@ -81,9 +82,11 @@ public static class DressUpSaveBridge {
     private static Dictionary<CategoryType, List<DressUpItem>> ToDict(List<EquippedEntry> entries, ItemDatabase db) {
         var dict = new Dictionary<CategoryType, List<DressUpItem>>();
         foreach (var e in entries) {
-            var item = db.Find(e.itemName);
-            if (item == null) continue;
             if (!System.Enum.TryParse<CategoryType>(e.category, out var cat)) continue;
+            // itemName is NOT unique (Fall/Winter variants, HairFront/HairBack share names).
+            // Resolve by itemId; old saves (no itemId) fall back to category + name.
+            var item = !string.IsNullOrEmpty(e.itemId) ? db.FindById(e.itemId) : db.FindByCategoryAndName(cat, e.itemName);
+            if (item == null) continue;
 
             if (!dict.TryGetValue(cat, out var list)) {
                 list = new List<DressUpItem>();

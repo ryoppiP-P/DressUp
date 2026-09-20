@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         // 会話中(カメラズーム中)はプレイヤーのカメラ操作を一切受け付けない
-        if (isLocked) return;
+        if (isLocked || CharacterDragController.IsDragging) return;
 
         // タッチが実際に触られている時だけタッチ処理、それ以外はマウス処理
         bool touching = Touchscreen.current != null &&

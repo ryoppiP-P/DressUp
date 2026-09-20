@@ -73,6 +73,9 @@ public class TalkManager : MonoBehaviour {
             prompt.TapButton.onClick.AddListener(OnPromptTapped);
     }
 
+    /// <summary>誘い(「！」表示中)〜会話が終わるまでの間 true。この間はキャラをつかませない</summary>
+    public bool IsBusy => _busy;
+
     void OnDisable() {
         // 途中で止まった場合に状態が残らないようにする
         _talking.Clear();

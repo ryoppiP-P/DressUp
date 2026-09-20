@@ -76,8 +76,46 @@ public class CharacterManager : MonoBehaviour
     // 現在ルート移動中かどうか(到着したかの判定に外部から使う)
     public bool IsFollowingRoute => isFollowingRoute;
 
+    // ドラッグでつかまれている間は、会話中と同じく「止まっている」扱いにする
+    // (他キャラのすれ違い判定・TownWanderの待機タイマーもこれで止まる)
+    private bool _isHeld = false;
+    public bool IsHeld => _isHeld;
+
     // すれ違い会話などで一時停止中かどうか(会話中は向き・アニメーションを動かさないための判定に使う)
-    public bool IsPaused => _pauseTimer > 0f;
+    public bool IsPaused => _pauseTimer > 0f || _isHeld;
+
+    /// <summary>ドラッグでつかんだ/離した。つかむ時は今の経路を捨てる(離した場所から引き直すため)</summary>
+    public void SetHeld(bool held) {
+        _isHeld = held;
+        if (held) CancelRoute();
+    }
+
+    /// <summary>今向かっている経路を捨てて立ち止まる</summary>
+    public void CancelRoute() {
+        isFollowingRoute = false;
+        if (currentRoute != null) currentRoute.Clear();
+        currentRouteIndex = 0;
+    }
+
+    /// <summary>
+    /// ドラッグで近くに置いた相手へ、こちらから会話を持ちかける。
+    /// すれ違い(CheckPassBy)と同じ「！」ポップアップを出し、タップされたら会話が始まる。
+    /// </summary>
+    public bool TryStartActiveConversation(CharacterManager other) {
+        if (other == null || other == this || TalkManager.Instance == null) return false;
+        if (TownCreateController.IsEditScreenOpen) return false;
+
+        float offerSeconds = TalkManager.Instance.OfferConversation(this, other);
+        if (offerSeconds <= 0f) return false;
+
+        // タップ待ちの間は2人とも止める(会話が始まったら TalkManager が必要秒数へ延長する)
+        _pauseTimer = Mathf.Max(_pauseTimer, offerSeconds);
+        other._pauseTimer = Mathf.Max(other._pauseTimer, offerSeconds);
+
+        // 会話が終わった直後にすれ違い判定で再度誘わないようにする
+        SetPassByCooldown(other, passByPauseSeconds + passByCooldown);
+        return true;
+    }
 
     // 一時停止の残り秒数を外部(TalkManager)から設定する。
     // 今の残り時間より短い場合は縮めない(誘い中→会話本編で必要秒数が変わるため延長のみ)。
@@ -123,7 +161,7 @@ public class CharacterManager : MonoBehaviour
             // すれ違いで一時停止中は移動しない
             _pauseTimer -= Time.deltaTime;
         }
-        else if (isFollowingRoute)
+        else if (isFollowingRoute && !_isHeld)
         {
             if (currentRoute == null || currentRoute.Count == 0) return;
 

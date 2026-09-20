@@ -28,6 +28,17 @@ public class MenuPanel : MonoBehaviour {
     [SerializeField] private ItemListPanel itemListPanel;
     [SerializeField] private HelpPanel helpPanel;
 
+    // Menu joins the bottom-panel coordinator: opening it closes Shop/Mission/Gacha (exclusive),
+    // and the BottomBar arrow is hidden while it is open, so the bar cannot be stowed.
+    // (OnEnable/OnDisable so it works no matter how the panel is activated.)
+    void OnEnable() {
+        BottomPanelCoordinator.NotifyOpened(Close);
+    }
+
+    void OnDisable() {
+        BottomPanelCoordinator.NotifyClosed(Close);
+    }
+
     void Start() {
         if (environmentButton) environmentButton.onClick.AddListener(OpenEnvironment);
         if (itemListButton) itemListButton.onClick.AddListener(OpenItemList);

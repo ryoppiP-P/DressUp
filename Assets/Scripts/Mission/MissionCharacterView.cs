@@ -28,11 +28,19 @@ public class MissionCharacterView : MonoBehaviour {
 
     private RenderTexture _rt;
 
+    // 撮影用キャラ/カメラを今使っているビュー。ミッション画面とメニュー画面は同じキャラ/カメラを共有していて、
+    // 画面の切り替え時の OnEnable/OnDisable の順番は保証されないので、
+    // 「今の持ち主」以外の OnDisable では止めない(止めると、後から開いた側の映像まで消えてしまう)
+    private static MissionCharacterView _owner;
+
     void OnEnable() {
         ShowRandom();
     }
 
     void OnDisable() {
+        if (_owner != this) return;
+        _owner = null;
+
         // 見ていない間は回しっぱなしにしない
         if (previewCamera != null) previewCamera.gameObject.SetActive(false);
         if (previewCharacter != null) previewCharacter.gameObject.SetActive(false);
@@ -59,6 +67,7 @@ public class MissionCharacterView : MonoBehaviour {
             return;
         }
 
+        _owner = this;
         EnsureTexture();
 
         previewCharacter.gameObject.SetActive(true);
@@ -74,11 +83,12 @@ public class MissionCharacterView : MonoBehaviour {
     }
 
     private void EnsureTexture() {
-        if (_rt != null) return;
+        if (_rt == null) {
+            _rt = new RenderTexture(textureSize, textureSize, 16, RenderTextureFormat.ARGB32);
+            _rt.Create();
+        }
 
-        _rt = new RenderTexture(textureSize, textureSize, 16, RenderTextureFormat.ARGB32);
-        _rt.Create();
-
+        // カメラを共有する別のビューが先に開いていても、自分の映像を映せるよう毎回つなぎ直す
         previewCamera.targetTexture = _rt;
         display.texture = _rt;
     }

@@ -31,6 +31,12 @@ public class ItemListPanel : MonoBehaviour {
     [SerializeField] private Button accessoryTab;
     [SerializeField] private Button otherTab;
 
+    [Header("タブの見た目(フォルダ型カード。ファッション/装飾/その他の順)")]
+    [Tooltip("押せる範囲は上のButton側。ここはカード画像(表示専用)。選択中のものを他より手前に出し、色を変える")]
+    [SerializeField] private Image[] tabCards;
+    [SerializeField] private Color tabSelectedColor = Color.white;
+    [SerializeField] private Color tabUnselectedColor = new Color32(0xD3, 0xBF, 0xAF, 0xFF);
+
     [Header("グリッド")]
     [SerializeField] private ItemListSlot slotPrefab;
     [SerializeField] private Transform contentParent; // ScrollView の Content
@@ -75,7 +81,23 @@ public class ItemListPanel : MonoBehaviour {
     /// <summary>タブを切り替えてグリッドを作り直す</summary>
     public void ShowTab(ItemListTab tab) {
         _current = tab;
+        RefreshTabCards();
         Rebuild();
+    }
+
+    // 選択中のカードだけ白、他はベージュにして、選択中を手前に出す(ミッション画面のタブと同じ見せ方)。
+    // カード画像は全て同じ大きさで重なっているので、押せる範囲はカードではなく上のタブButtonが受け持つ。
+    private void RefreshTabCards() {
+        if (tabCards == null) return;
+
+        for (int i = 0; i < tabCards.Length; i++) {
+            var card = tabCards[i];
+            if (card == null) continue;
+
+            bool selected = i == (int)_current;
+            card.color = selected ? tabSelectedColor : tabUnselectedColor;
+            if (selected) card.transform.SetAsLastSibling();
+        }
     }
 
     private void Rebuild() {

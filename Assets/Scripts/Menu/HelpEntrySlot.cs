@@ -14,7 +14,7 @@ public class HelpEntrySlot : MonoBehaviour {
     [Header("タイトル部")]
     [SerializeField] private Button titleButton;
     [SerializeField] private TMP_Text titleText;
-    [SerializeField] private RectTransform arrowIcon; // 開閉に合わせて回転させる矢印(任意・無くても可)
+    [SerializeField] private RectTransform arrowIcon; // 開閉に合わせて▼/▲に切り替える矢印(任意・無くても可)
 
     [Header("詳細部")]
     [SerializeField] private GameObject detailRoot;
@@ -38,6 +38,11 @@ public class HelpEntrySlot : MonoBehaviour {
     private void SetOpen(bool open) {
         _isOpen = open;
         if (detailRoot) detailRoot.SetActive(open);
-        if (arrowIcon) arrowIcon.localEulerAngles = new Vector3(0f, 0f, open ? 180f : 0f);
+        // ▼を180度回転させると、文字の左右の余白が反転して位置が右にずれるため、文字ごと切り替える
+        if (arrowIcon) {
+            var arrowText = arrowIcon.GetComponent<TMP_Text>();
+            if (arrowText != null) arrowText.text = open ? "▲" : "▼";
+            else arrowIcon.localEulerAngles = new Vector3(0f, 0f, open ? 180f : 0f);
+        }
     }
 }

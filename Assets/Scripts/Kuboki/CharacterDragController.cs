@@ -31,7 +31,7 @@ public class CharacterDragController : MonoBehaviour {
     [Tooltip("この距離以内に別のキャラが居たら会話を持ちかける")]
     [SerializeField] private float talkRange = 2.5f;
     [Tooltip("会話にならなかった時、その場で待ってから歩き出すまでの秒数")]
-    [SerializeField] private float waitAfterDropSeconds = 4f;
+    [SerializeField] private float waitAfterDropSeconds = 1.5f;
 
     private Camera _cam;
     private CharacterManager _held;

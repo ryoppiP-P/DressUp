@@ -2655,7 +2655,7 @@ MonoBehaviour:
   pickHalfSize: {x: 1.3, y: 1.9}
   pickCenterOffset: {x: 0, y: 0.1}
   talkRange: 2.5
-  waitAfterDropSeconds: 4
+  waitAfterDropSeconds: 1.5
 --- !u!4 &186821168
 Transform:
   m_ObjectHideFlags: 0

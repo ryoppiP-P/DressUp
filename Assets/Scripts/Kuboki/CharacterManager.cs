@@ -112,6 +112,14 @@ public class CharacterManager : MonoBehaviour
         _pauseTimer = Mathf.Max(_pauseTimer, offerSeconds);
         other._pauseTimer = Mathf.Max(other._pauseTimer, offerSeconds);
 
+        // すれ違いと同じ親密度アップ。同じ相手に連続でドラッグして稼げないよう、
+        // すれ違い判定のクールダウン中は加算しない(会話自体はできる)
+        string myId = CharaId;
+        string otherId = other.CharaId;
+        bool inCooldown = _nextPassByTime.TryGetValue(other, out float next) && Time.time < next;
+        if (!inCooldown && SaveManager.Instance != null && !string.IsNullOrEmpty(myId) && !string.IsNullOrEmpty(otherId))
+            SaveManager.Instance.AddIntimacy(myId, otherId, passByIntimacyGain);
+
         // 会話が終わった直後にすれ違い判定で再度誘わないようにする
         SetPassByCooldown(other, passByPauseSeconds + passByCooldown);
         return true;

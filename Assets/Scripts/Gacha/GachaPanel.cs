@@ -68,8 +68,8 @@ public class GachaPanel : MonoBehaviour {
     private GachaCategory _current = GachaCategory.Decoration;
 
     void Start() {
-        if (decorationTab) decorationTab.onClick.AddListener(() => ShowCategory(GachaCategory.Decoration));
-        if (clothesTab) clothesTab.onClick.AddListener(() => ShowCategory(GachaCategory.Clothes));
+        if (decorationTab) decorationTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowCategory(GachaCategory.Decoration); });
+        if (clothesTab) clothesTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowCategory(GachaCategory.Clothes); });
         if (singlePullButton) singlePullButton.onClick.AddListener(() => StartCoroutine(PullRoutine(1)));
         if (tenPullButton) tenPullButton.onClick.AddListener(() => StartCoroutine(PullRoutine(10)));
 
@@ -100,6 +100,8 @@ public class GachaPanel : MonoBehaviour {
 
     /// <summary>開いていれば閉じる、閉じていれば開く(ボトムバーのアイコンから呼ぶ)</summary>
     public void ToggleOpen() {
+        bool willOpen = !(panelRoot != null && panelRoot.activeSelf);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(willOpen ? SEType.Tap : SEType.Click);
         if (panelRoot != null && panelRoot.activeSelf) Close();
         else Open();
     }
@@ -151,9 +153,12 @@ public class GachaPanel : MonoBehaviour {
         int cost = count == 1 ? singlePullCost : tenPullCost;
         if (!SaveManager.Instance.TrySpendCurrency(CurrencyType.Honey, cost)) {
             Debug.Log("[Gacha] はちみつが足りません");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             if (insufficientFundsPopup != null) insufficientFundsPopup.Show(insufficientFundsMessage);
             yield break;
         }
+
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Gacha);
 
         List<GachaEntry> results = count == 1 ? DrawSingle() : DrawTen();
 

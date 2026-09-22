@@ -48,6 +48,7 @@ public class DressUpHomeGuard : MonoBehaviour {
             Debug.LogWarning($"{name}: sceneName が設定されていません");
             return;
         }
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
         SceneManager.LoadScene(sceneName);
     }
 }

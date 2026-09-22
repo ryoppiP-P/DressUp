@@ -29,6 +29,7 @@ public class CharacterNaming : MonoBehaviour {
             return;
         }
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         character.SetDisplayName(name);
         Debug.Log($"[Naming] –¼‘O‚ğu{name}v‚Éİ’è");
 

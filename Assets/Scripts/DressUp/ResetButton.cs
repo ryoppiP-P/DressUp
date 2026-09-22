@@ -10,6 +10,7 @@ public class ResetButton : MonoBehaviour {
     }
 
     void OnReset() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         character.UnequipAll();
     }
 }

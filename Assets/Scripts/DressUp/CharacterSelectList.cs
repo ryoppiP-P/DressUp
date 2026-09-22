@@ -166,6 +166,7 @@ public class CharacterSelectList : MonoBehaviour {
 
     private void Select(string characterId) {
         CharacterSelection.SelectedId = characterId;
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
         SceneManager.LoadScene(dressUpSceneName);
     }
 }

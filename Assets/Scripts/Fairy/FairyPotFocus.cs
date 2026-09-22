@@ -148,6 +148,9 @@ public class FairyPotFocus : MonoBehaviour {
         // Start が終わるまでの変化はプレイヤーのタップではない。
         if (!_started || _suppress || _born) return;
 
+        // ここから下は本当にプレイヤーが鉢をタップした時だけ通る
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+
         // 見ている鉢をもう一度タップしたら閉じる
         if (_focused == index) {
             Close();
@@ -259,6 +262,7 @@ public class FairyPotFocus : MonoBehaviour {
     }
 
     private void Back() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         Close();
     }
 

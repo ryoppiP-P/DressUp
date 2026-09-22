@@ -26,6 +26,7 @@ public class FairyCloseUpBack : MonoBehaviour {
 
     /// <summary>開いている鉢のトグルを戻す(= seedManager がアップ画面を閉じる)</summary>
     public void Back() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (potToggles == null) return;
 
         foreach (var toggle in potToggles) {

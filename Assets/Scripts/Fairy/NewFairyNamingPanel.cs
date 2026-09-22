@@ -57,6 +57,7 @@ public class NewFairyNamingPanel : MonoBehaviour {
     public void OpenPanel() {
         if (!FairyBirthFlow.IsNamingFlow) return;
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (panelRoot) panelRoot.SetActive(true);
         if (errorText) errorText.text = "";
     }
@@ -67,9 +68,12 @@ public class NewFairyNamingPanel : MonoBehaviour {
 
         string fairyName = nameInput != null ? nameInput.text.Trim() : "";
         if (string.IsNullOrEmpty(fairyName)) {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             if (errorText) errorText.text = emptyNameMessage;
             return;
         }
+
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
 
         var character = Target;
         if (character != null) {
@@ -82,6 +86,7 @@ public class NewFairyNamingPanel : MonoBehaviour {
         FairySaveBridge.MarkNamingDone(characterId); // これで街に出るようになる
         FairyBirthFlow.Finish();
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
         SceneManager.LoadScene(townSceneName);
     }
 }

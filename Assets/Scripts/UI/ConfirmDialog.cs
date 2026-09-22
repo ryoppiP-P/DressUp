@@ -48,6 +48,7 @@ public class ConfirmDialog : MonoBehaviour {
     }
 
     private void OnClickYes() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         Close();
         var callback = _onConfirmed;
         _onConfirmed = null;
@@ -55,6 +56,7 @@ public class ConfirmDialog : MonoBehaviour {
     }
 
     private void OnClickNo() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         Close();
         _onConfirmed = null;
     }

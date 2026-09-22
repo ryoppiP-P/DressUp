@@ -36,6 +36,7 @@ public class OutfitSaveButton : MonoBehaviour {
             Debug.LogWarning("[OutfitSaveButton] outfitSlots が未設定です", this);
             return;
         }
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         outfitSlots.SaveCurrent();
     }
 }

@@ -28,6 +28,7 @@ public class ItemButton : MonoBehaviour {
             button.onClick.RemoveAllListeners(); // “ñd“o˜^–hŽ~
             button.onClick.AddListener(() => {
                 // ’…‚Ä‚¢‚é‚à‚Ì‚ð‚à‚¤ˆê“x‰Ÿ‚µ‚½‚ç’E‚®
+                if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Wear);
                 character.Toggle(item);
                 if (onChanged != null) onChanged();
             });

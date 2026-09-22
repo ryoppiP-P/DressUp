@@ -96,17 +96,20 @@ public class GameManager : MonoBehaviour
     {
         if (Application.CanStreamedLevelBeLoaded(sceneName))
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
             SceneManager.LoadScene(sceneName);
         }
     }
 
     /// <summary>パネルの表示/非表示を設定</summary>
     private void SetPanel(GameObject panel, bool open) {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(open ? SEType.Tap : SEType.Click);
         if (panel != null) panel.SetActive(open);
     }
 
     /// <summary>パネルの開閉を切り替え</summary>
     private void TogglePanel(GameObject panel) {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         if (panel != null) panel.SetActive(!panel.activeSelf);
     }
 }

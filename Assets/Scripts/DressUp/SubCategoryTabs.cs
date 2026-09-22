@@ -15,7 +15,10 @@ public class SubCategoryTabs : MonoBehaviour {
         // 各ボタンのクリックを一度だけ登録
         foreach (var b in buttons) {
             var captured = b;
-            captured.Button.onClick.AddListener(() => OnClicked(captured));
+            captured.Button.onClick.AddListener(() => {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+                OnClicked(captured);
+            });
         }
     }
 

@@ -33,7 +33,10 @@ public class HelpEntrySlot : MonoBehaviour {
         SetOpen(false);
     }
 
-    private void Toggle() => SetOpen(!_isOpen);
+    private void Toggle() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+        SetOpen(!_isOpen);
+    }
 
     private void SetOpen(bool open) {
         _isOpen = open;

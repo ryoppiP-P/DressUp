@@ -29,6 +29,7 @@ public class BottomBarToggle : MonoBehaviour {
     }
 
     public void OnClickArrow() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         _hidden = !_hidden;
         if (_routine != null) StopCoroutine(_routine);
         _routine = StartCoroutine(AnimateRoutine());

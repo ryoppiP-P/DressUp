@@ -128,6 +128,7 @@ public class HelpPanel : MonoBehaviour {
     }
 
     private void OnClickBack() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (menuPanel) menuPanel.ShowMain();
     }
 }

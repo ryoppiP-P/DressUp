@@ -19,6 +19,7 @@ public class ApplyOutfitButton : MonoBehaviour {
         if (character == null) return;
 
         character.ApplyOutfit();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.OutfitApply);
         if (appliedPopup != null) appliedPopup.Show(appliedMessage);
     }
 }

@@ -62,9 +62,9 @@ public class ItemListPanel : MonoBehaviour {
     private ItemListTab _current = ItemListTab.Fashion;
 
     void Start() {
-        if (fashionTab) fashionTab.onClick.AddListener(() => ShowTab(ItemListTab.Fashion));
-        if (accessoryTab) accessoryTab.onClick.AddListener(() => ShowTab(ItemListTab.Accessory));
-        if (otherTab) otherTab.onClick.AddListener(() => ShowTab(ItemListTab.Other));
+        if (fashionTab) fashionTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowTab(ItemListTab.Fashion); });
+        if (accessoryTab) accessoryTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowTab(ItemListTab.Accessory); });
+        if (otherTab) otherTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowTab(ItemListTab.Other); });
         if (backButton) backButton.onClick.AddListener(OnClickBack);
     }
 
@@ -160,6 +160,7 @@ public class ItemListPanel : MonoBehaviour {
     }
 
     private void OnClickBack() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (menuPanel) menuPanel.ShowMain();
     }
 }

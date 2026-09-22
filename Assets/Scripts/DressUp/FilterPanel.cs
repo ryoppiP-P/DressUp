@@ -15,12 +15,14 @@ public class FilterPanel : MonoBehaviour {
     }
 
     void Open() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         filterPanel.SetActive(true);
         dressupCanvasGroup.interactable = false;
         dressupCanvasGroup.blocksRaycasts = false;
     }
 
     void Close() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         filterPanel.SetActive(false);
         dressupCanvasGroup.interactable = true;
         dressupCanvasGroup.blocksRaycasts = true;

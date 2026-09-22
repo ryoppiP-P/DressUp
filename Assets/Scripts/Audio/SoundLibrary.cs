@@ -27,16 +27,23 @@ public enum BGMType {
 
 public enum SEType {
     None = 0,
-    Tap,          // ボタン全般
+    Tap,          // ボタン全般(主要な操作ボタン。Button.mp3)
     Decide,       // 決定
     Cancel,       // 戻る / キャンセル
     Gacha,        // ガチャを引く
     GachaResult,  // ガチャ結果が出る
-    Purchase,     // ショップ購入
-    CoinGet,      // 通貨獲得
-    OutfitApply,  // コーデ適用OK
+    Purchase,     // ショップ購入(お金を使う音)
+    CoinGet,      // 通貨獲得(報酬ポップアップタップ)
+    OutfitApply,  // コーデ適用OK(着せ替え完了)
     FairyBorn,    // 妖精誕生
-    Error,        // お金が足りない等のNG
+    Error,        // お金/種が足りない・配置失敗等のNG
+    // 2026/9/22 SE一式アタッチで追加(既存値の並びは変えず末尾に足す)
+    Click,        // タブ切り替え/閉じる/キャンセル等の軽い操作(Tapより控えめな主要でないボタン)
+    SceneMove,    // シーン切り替え
+    Talk,         // 会話開始(「！」タップ)
+    Grab,         // 種を植える/装飾を取って配置する
+    Wear,         // 着せ替え(アイテムを着る/脱ぐ)
+    ShopEntrance, // ショップ入場
 }
 
 //------------------------------------------------------------------------------

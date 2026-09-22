@@ -67,8 +67,13 @@ public class SpeechBubble : MonoBehaviour {
 
         var sb = new StringBuilder();
         for (int i = 0; i < text.Length; i++) {
-            sb.Append(text[i]);
+            char c = text[i];
+            sb.Append(c);
             if (label != null) label.text = sb.ToString();
+
+            // 1文字ずつ出る時の「ポポポ…」音(空白は鳴らさない)
+            if (!char.IsWhiteSpace(c) && AudioManager.Instance != null)
+                AudioManager.Instance.PlaySE(SEType.Talk);
 
             if (interval > 0f) yield return new WaitForSeconds(interval);
         }

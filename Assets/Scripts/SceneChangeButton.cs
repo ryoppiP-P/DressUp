@@ -15,6 +15,7 @@ public class SceneChangeButton : MonoBehaviour {
             Debug.LogWarning($"{name}: sceneName ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ");
             return;
         }
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
         SceneManager.LoadScene(sceneName);
     }
 }

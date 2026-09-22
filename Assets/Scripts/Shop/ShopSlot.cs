@@ -41,7 +41,10 @@ public class ShopSlot : MonoBehaviour {
 
         if (button) {
             button.onClick.RemoveAllListeners(); // 使い回し時の二重登録防止
-            button.onClick.AddListener(() => _onClick?.Invoke(_listing));
+            button.onClick.AddListener(() => {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+                _onClick?.Invoke(_listing);
+            });
         }
     }
 }

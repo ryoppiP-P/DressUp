@@ -83,10 +83,13 @@ public class FairyWishConfirm : MonoBehaviour {
         string reason;
         if (!FairyFarmRules.TryUseSeed(seedItem, out reason)) {
             Debug.Log("[FairyWishConfirm] 植えられない: " + reason);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             if (message != null) message.Show(reason);
             _pendingKeywords.Clear();
             return;
         }
+
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Grab);
 
         var personality = FairyKeywordTable.Build(_pendingKeywords);
         float growSeconds = ResolveGrowSeconds();

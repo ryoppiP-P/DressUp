@@ -33,6 +33,8 @@ public class CharacterReward : MonoBehaviour {
     public void OnPopupTapped() {
         if (!_ready) return;
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.CoinGet);
+
         int nut = Random.Range(nutMin, nutMax + 1);   // è„å¿ä‹ÇﬁÇÃÇ≈ +1
         int honey = Random.Range(honeyMin, honeyMax + 1);
 

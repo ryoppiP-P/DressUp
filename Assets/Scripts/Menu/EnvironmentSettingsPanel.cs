@@ -108,6 +108,7 @@ public class EnvironmentSettingsPanel : MonoBehaviour {
     // データ削除
     //--------------------------------------------------------------
     private void OnClickDeleteData() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (confirmDialog == null) return;
         confirmDialog.Open(DeleteSaveAndReturnToTitle);
     }
@@ -115,10 +116,12 @@ public class EnvironmentSettingsPanel : MonoBehaviour {
     // 確認ダイアログで「はい」が押された後の実処理
     private void DeleteSaveAndReturnToTitle() {
         if (SaveManager.Instance != null) SaveManager.Instance.DeleteSave();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
         UnityEngine.SceneManagement.SceneManager.LoadScene(TitleSceneName);
     }
 
     private void OnClickBack() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (menuPanel) menuPanel.ShowMain();
     }
 }

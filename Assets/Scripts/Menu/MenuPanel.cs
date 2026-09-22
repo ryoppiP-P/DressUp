@@ -32,6 +32,9 @@ public class MenuPanel : MonoBehaviour {
     // and the BottomBar arrow is hidden while it is open, so the bar cannot be stowed.
     // (OnEnable/OnDisable so it works no matter how the panel is activated.)
     void OnEnable() {
+        // BottomBar is a later sibling than MenuPanel, so it would otherwise render above
+        // (and be tappable through) DimBackground. Bring MenuPanel to the front while open.
+        transform.SetAsLastSibling();
         BottomPanelCoordinator.NotifyOpened(Close);
     }
 

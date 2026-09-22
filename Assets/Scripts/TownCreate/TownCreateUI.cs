@@ -40,6 +40,7 @@ public class TownCreateUI : MonoBehaviour {
                 int index = i;
                 if (decorationButtons[i] != null) {
                     decorationButtons[i].onClick.AddListener(() => {
+                        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Grab);
                         controller.SelectDecoration(index);
                         RefreshSelectionHighlight();
                     });
@@ -58,6 +59,8 @@ public class TownCreateUI : MonoBehaviour {
 
     /// <summary>街クリボタンから呼ぶ。編集画面を出し、通常のボトムバーを隠す。</summary>
     public void EnterEditMode() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+        BottomPanelCoordinator.CloseCurrent(); // 開いているMission/Gacha/Shopを閉じてから編集画面へ
         if (editModeRoot) editModeRoot.SetActive(true);
         if (normalBottomBar) normalBottomBar.SetActive(false);
         if (blockedLayerRoot) blockedLayerRoot.SetActive(true);
@@ -68,6 +71,7 @@ public class TownCreateUI : MonoBehaviour {
     }
 
     private void OnClickPlace() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         controller.SetMode(TownEditMode.Place);
         if (decorationRow) decorationRow.SetActive(true);
         RefreshDecorationCounts();
@@ -97,12 +101,14 @@ public class TownCreateUI : MonoBehaviour {
     }
 
     private void OnClickDelete() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         controller.SetMode(TownEditMode.Delete);
         if (decorationRow) decorationRow.SetActive(false);
         RefreshLabel();
     }
 
     private void OnClickExit() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         controller.SetMode(TownEditMode.None);
         if (decorationRow) decorationRow.SetActive(false);
         RefreshLabel();

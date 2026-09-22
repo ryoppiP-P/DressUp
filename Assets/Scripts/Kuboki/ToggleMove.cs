@@ -34,6 +34,8 @@ public class ToggleMove : MonoBehaviour
 
     void OnToggleClicked(bool isOn)
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+
         if (isOn)
         {
             manager.AddToggle(this);    // ‘I‘ðƒŠƒXƒg‚Ö’Ç‰Á

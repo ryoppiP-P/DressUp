@@ -22,6 +22,7 @@ public class FilterScreen : MonoBehaviour {
 
     // フィルターの適用
     void Apply() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         var cond = new FilterCondition();
 
         cond.sort = sortGroup.Current;
@@ -41,6 +42,7 @@ public class FilterScreen : MonoBehaviour {
 
     // クリア（全部リセット）。押した時点で一覧にも反映する（「適用」を押さなくてよい）
     void Clear() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         nameInput.text = "";
 
         // 絞り込みチェックは全部OFFに（= 集合が空 = 全部表示）

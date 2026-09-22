@@ -27,7 +27,7 @@ public class FairyMessagePopup : MonoBehaviour {
     private Coroutine _closing;
 
     void Awake() {
-        if (closeButton != null) closeButton.onClick.AddListener(Close);
+        if (closeButton != null) closeButton.onClick.AddListener(OnClickClose);
     }
 
     void OnDestroy() {
@@ -48,6 +48,12 @@ public class FairyMessagePopup : MonoBehaviour {
     public void Close() {
         if (_closing != null) { StopCoroutine(_closing); _closing = null; }
         if (panelRoot != null) panelRoot.SetActive(false);
+    }
+
+    // 閉じるボタンをタップした時だけSEを鳴らす(自動で閉じる時は鳴らさない)
+    private void OnClickClose() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+        Close();
     }
 
     private IEnumerator CloseLater() {

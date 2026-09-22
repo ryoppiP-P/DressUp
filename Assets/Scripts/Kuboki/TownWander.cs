@@ -51,6 +51,9 @@ public class TownWander : MonoBehaviour {
 
         UpdateFacing();
 
+        // ドラッグでつかまれている間・会話中は、待機タイマーも進めず次の行き先も決めない
+        if (character.IsPaused) return;
+
         if (_isIdling) {
             _idleTimer -= Time.deltaTime;
             if (_idleTimer <= 0f) {
@@ -68,6 +71,13 @@ public class TownWander : MonoBehaviour {
         }
     }
 
+
+    /// <summary>その場で立ち止まり、指定秒数待ってから(今いる場所から)また歩き出す</summary>
+    public void HoldFor(float seconds) {
+        _isIdling = true;
+        _idleTimer = seconds;
+        SetViewState(CharaState.Idle);
+    }
 
     // 今いる建物とは別の建物をランダムに選んで移動を開始する
     private void GoToRandomBuilding() {

@@ -28,6 +28,7 @@ public class SidePanelTabs : MonoBehaviour {
     }
 
     void Toggle(Entry tapped) {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         // “¯‚¶ƒ{ƒ^ƒ“‚ð‚à‚¤ˆê“x‰Ÿ‚µ‚½‚ç•Â‚¶‚é
         _open = (_open == tapped) ? null : tapped;
         ApplyState();

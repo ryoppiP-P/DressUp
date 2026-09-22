@@ -84,6 +84,7 @@ public class BirthPopup : MonoBehaviour {
         FairyBirthFlow.Begin(_characterId);
         CharacterSelection.SelectedId = _characterId;
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
         SceneManager.LoadScene(dressUpSceneName);
     }
 }

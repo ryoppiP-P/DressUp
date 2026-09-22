@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Accessory_Winter
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemId: Accessory_Winter
-  itemName: Accessory_Winter
+  itemName: "\u30D4\u30A2\u30B9"
   icon: {fileID: 21300000, guid: 0fd1085790e2dfb419da68c55d544515, type: 3}
   rarity: 0
   description: 

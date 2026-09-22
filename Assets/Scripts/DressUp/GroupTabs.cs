@@ -15,7 +15,10 @@ public class GroupTabs : MonoBehaviour {
     void Start() {
         foreach (var t in tabs) {
             var captured = t;
-            captured.button.onClick.AddListener(() => OnClicked(captured));
+            captured.button.onClick.AddListener(() => {
+                if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+                OnClicked(captured);
+            });
         }
         if (tabs.Count > 0) OnClicked(tabs[0]);
     }

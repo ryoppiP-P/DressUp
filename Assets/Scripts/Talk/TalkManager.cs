@@ -73,6 +73,9 @@ public class TalkManager : MonoBehaviour {
             prompt.TapButton.onClick.AddListener(OnPromptTapped);
     }
 
+    /// <summary>誘い(「！」表示中)〜会話が終わるまでの間 true。この間はキャラをつかませない</summary>
+    public bool IsBusy => _busy;
+
     void OnDisable() {
         // 途中で止まった場合に状態が残らないようにする
         _talking.Clear();
@@ -146,6 +149,10 @@ public class TalkManager : MonoBehaviour {
 
         if (offer.timeoutRoutine != null) StopCoroutine(offer.timeoutRoutine);
         prompt.Hide();
+
+        // 会話の音(Talk.mp3)は文字が一文字ずつ出る時に鳴らす(SpeechBubble.ShowRoutine側)。
+        // ここでは誘いに乗った時の通常のタップ音を鳴らす。
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
 
         // 実際の会話にかかる時間(カメラ移動×2 + セリフ)ぶん、一時停止を延長しておく。
         // コルーチンのつなぎ目には多少のオーバーヘッドが乗るので、少し多めに見積もっておく

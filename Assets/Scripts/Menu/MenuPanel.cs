@@ -28,11 +28,27 @@ public class MenuPanel : MonoBehaviour {
     [SerializeField] private ItemListPanel itemListPanel;
     [SerializeField] private HelpPanel helpPanel;
 
+    // Menu joins the bottom-panel coordinator: opening it closes Shop/Mission/Gacha (exclusive),
+    // and the BottomBar arrow is hidden while it is open, so the bar cannot be stowed.
+    // (OnEnable/OnDisable so it works no matter how the panel is activated.)
+    void OnEnable() {
+        BottomPanelCoordinator.NotifyOpened(Close);
+    }
+
+    void OnDisable() {
+        BottomPanelCoordinator.NotifyClosed(Close);
+    }
+
     void Start() {
         if (environmentButton) environmentButton.onClick.AddListener(OpenEnvironment);
         if (itemListButton) itemListButton.onClick.AddListener(OpenItemList);
         if (helpButton) helpButton.onClick.AddListener(OpenHelp);
-        if (backButton) backButton.onClick.AddListener(Close);
+        if (backButton) backButton.onClick.AddListener(OnClickClose);
+    }
+
+    private void OnClickClose() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+        Close();
     }
 
     /// <summary>メニュー画面を開く(外部の設定ボタンから呼ぶ)</summary>
@@ -51,9 +67,13 @@ public class MenuPanel : MonoBehaviour {
         SetSubScreen(MenuScreen.Main);
     }
 
-    private void OpenEnvironment() => SetSubScreen(MenuScreen.Environment);
-    private void OpenItemList() => SetSubScreen(MenuScreen.ItemList);
-    private void OpenHelp() => SetSubScreen(MenuScreen.Help);
+    private void OpenEnvironment() { PlayTap(); SetSubScreen(MenuScreen.Environment); }
+    private void OpenItemList() { PlayTap(); SetSubScreen(MenuScreen.ItemList); }
+    private void OpenHelp() { PlayTap(); SetSubScreen(MenuScreen.Help); }
+
+    private void PlayTap() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+    }
 
     //--------------------------------------------------------------
     // サブ画面切り替え(1つだけ開いて他は閉じる)

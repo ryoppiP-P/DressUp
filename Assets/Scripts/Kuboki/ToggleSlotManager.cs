@@ -81,6 +81,7 @@ public class ToggleSlotManager : MonoBehaviour
 
     void HideConfirmUI()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         confirmUI.SetActive(false);
         ToggleUI.SetActive(true); // Toggleƒpƒlƒ‹‚ð•\Ž¦
     }

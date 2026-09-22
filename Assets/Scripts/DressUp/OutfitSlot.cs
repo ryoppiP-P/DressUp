@@ -35,11 +35,15 @@ public class OutfitSlot : MonoBehaviour {
     }
 
     void OnClicked() {
-        if (_outfit != null) _onLoad?.Invoke(_outfit);
+        if (_outfit == null) return;
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+        _onLoad?.Invoke(_outfit);
     }
 
     void OnDelete() {
-        if (_outfit != null) _onDelete?.Invoke();
+        if (_outfit == null) return;
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+        _onDelete?.Invoke();
     }
 
     public bool IsEmpty => _outfit == null;

@@ -123,6 +123,7 @@ public class MissionSlot : MonoBehaviour {
     private void OnClickAction() {
         if (MissionManager.Instance == null || _data == null) return;
         var state = MissionManager.Instance.GetState(_data);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
 
         if (state == MissionState.Claimable) {
             // Žó‚¯Žæ‚é

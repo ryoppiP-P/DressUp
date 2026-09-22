@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dress_Fall
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemId: Dress_Fall
-  itemName: Dress_Fall
+  itemName: "\u30EF\u30F3\u30D4\u30FC\u30B9"
   icon: {fileID: 21300000, guid: 3bbfdf93e06260d4bb9ee662507ea18c, type: 3}
   rarity: 0
   description: 

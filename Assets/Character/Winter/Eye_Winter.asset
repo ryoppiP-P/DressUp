@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Eye_Winter
   m_EditorClassIdentifier: Assembly-CSharp::DressUpItem
   itemId: Eye_Winter
-  itemName: Eye_Winter
+  itemName: "\u304A\u76EE\u76EE"
   icon: {fileID: 21300000, guid: bb5114a5674b82e4a92614ab8203c824, type: 3}
   rarity: 0
   description: 

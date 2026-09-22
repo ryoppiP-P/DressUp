@@ -15,6 +15,11 @@ public static class BottomPanelCoordinator {
         OnAnyOpenChanged?.Invoke(true);
     }
 
+    // 今開いているパネルがあれば閉じる(街クリなど、パネル以外の画面へ遷移する時に呼ぶ)。
+    public static void CloseCurrent() {
+        _closeCurrent?.Invoke();
+    }
+
     // 自分を閉じた時に呼ぶ。今開いている記録が自分なら消す。
     public static void NotifyClosed(Action closeSelf) {
         if (_closeCurrent == null || !_closeCurrent.Equals(closeSelf)) return;

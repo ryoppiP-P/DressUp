@@ -68,9 +68,9 @@ public class MissionPanel : MonoBehaviour {
 
     void Start() {
         // タブ
-        if (dailyTab) dailyTab.onClick.AddListener(() => ShowCategory(MissionCategory.Daily));
-        if (weeklyTab) weeklyTab.onClick.AddListener(() => ShowCategory(MissionCategory.Weekly));
-        if (challengeTab) challengeTab.onClick.AddListener(() => ShowCategory(MissionCategory.Challenge));
+        if (dailyTab) dailyTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowCategory(MissionCategory.Daily); });
+        if (weeklyTab) weeklyTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowCategory(MissionCategory.Weekly); });
+        if (challengeTab) challengeTab.onClick.AddListener(() => { if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click); ShowCategory(MissionCategory.Challenge); });
 
         // 下部ボタン
         if (claimAllButton) claimAllButton.onClick.AddListener(OnClickClaimAll);
@@ -132,6 +132,7 @@ public class MissionPanel : MonoBehaviour {
 
     private void OnClickClaimAll() {
         if (MissionManager.Instance == null) return;
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         MissionManager.Instance.ClaimAll(_current);
         // ClaimAll 内で OnMissionChanged が飛ぶので表示は自動更新される
     }
@@ -154,6 +155,7 @@ public class MissionPanel : MonoBehaviour {
         if (dest == null) { Close(); return; }
 
         if (!string.IsNullOrEmpty(dest.targetSceneName)) {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.SceneMove);
             UnityEngine.SceneManagement.SceneManager.LoadScene(dest.targetSceneName);
             return;
         }
@@ -175,6 +177,8 @@ public class MissionPanel : MonoBehaviour {
 
     // 開いていれば閉じる、閉じていれば開く(ボトムバーのアイコンから呼ぶ)
     public void ToggleOpen() {
+        bool willOpen = !(panelRoot != null && panelRoot.activeSelf);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(willOpen ? SEType.Tap : SEType.Click);
         if (panelRoot != null && panelRoot.activeSelf) Close();
         else Open();
     }

@@ -26,6 +26,8 @@ public class ItemUseManager : MonoBehaviour
         {
             bool success = itemToUse.Use(targetSeedObject);
 
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
+
             if (success)
             {
                 Debug.Log("ƒAƒCƒeƒ€‚ÌÁ”ïˆ—");

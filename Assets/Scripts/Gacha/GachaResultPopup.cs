@@ -51,6 +51,7 @@ public class GachaResultPopup : MonoBehaviour {
         }
 
         if (panelRoot) panelRoot.SetActive(true);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.GachaResult);
 
         if (isActiveAndEnabled) _revealCoroutine = StartCoroutine(RevealSequence());
     }
@@ -64,6 +65,7 @@ public class GachaResultPopup : MonoBehaviour {
     }
 
     public void Close() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         if (panelRoot) panelRoot.SetActive(false);
     }
 }

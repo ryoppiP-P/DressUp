@@ -69,10 +69,13 @@ public class ShopPurchaseDialog : MonoBehaviour {
         bool bought = SaveManager.Instance.TrySpendCurrency(_listing.currencyType, _listing.price);
         if (!bought) {
             Debug.Log($"[Shop] 通貨が足りません: {(_listing.item != null ? _listing.item.itemName : _listing.name)}");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             Close();
             if (insufficientFundsPopup != null) insufficientFundsPopup.Show(insufficientFundsMessage);
             return;
         }
+
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Purchase);
 
         if (_listing.item != null) {
             // 使うと減るもの(種・時短の実)は個数を増やす。
@@ -85,6 +88,7 @@ public class ShopPurchaseDialog : MonoBehaviour {
     }
 
     private void OnClickNo() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         Close();
     }
 }

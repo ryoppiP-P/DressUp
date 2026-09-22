@@ -35,6 +35,7 @@ public class ShopPanel : MonoBehaviour {
     // 排他制御(他パネルを閉じる)もOnEnable/OnDisableで行う(SetActiveされた経路に依らず必ず効く)。
     void OnEnable() {
         BottomPanelCoordinator.NotifyOpened(Close);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.ShopEntrance);
         Rebuild();
     }
 
@@ -53,6 +54,8 @@ public class ShopPanel : MonoBehaviour {
 
     /// <summary>開いていれば閉じる、閉じていれば開く(ボトムバーのアイコンから呼ぶ)</summary>
     public void ToggleOpen() {
+        bool willOpen = !(panelRoot != null && panelRoot.activeSelf);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(willOpen ? SEType.Tap : SEType.Click);
         if (panelRoot != null && panelRoot.activeSelf) Close();
         else Open();
     }

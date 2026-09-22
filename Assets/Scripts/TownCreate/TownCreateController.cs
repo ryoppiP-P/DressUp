@@ -138,10 +138,12 @@ public class TownCreateController : MonoBehaviour {
     private void TryPlace(Vector3Int cell) {
         if (!IsPureGreen(cell)) {
             Debug.Log("[TownCreate] ここには置けません(純粋な緑タイルのみ): " + cell);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             return;
         }
         if (decorationTilemap.GetTile(cell) != null) {
             Debug.Log("[TownCreate] すでに装飾があります: " + cell);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             return;
         }
         if (decorationItems == null || _selectedDecoration < 0 || _selectedDecoration >= decorationItems.Length) return;
@@ -151,9 +153,11 @@ public class TownCreateController : MonoBehaviour {
 
         if (!ConsumableBridge.TryConsume(item.itemId, 1)) {
             Debug.Log("[TownCreate] " + item.itemName + " を持っていません");
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Error);
             return;
         }
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
         PlaceTileVisual(cell, item.decorationTile);
         SaveDecoration(cell, item.itemId);
         OnDecorationCountChanged?.Invoke();
@@ -166,6 +170,8 @@ public class TownCreateController : MonoBehaviour {
     private void TryDelete(Vector3Int cell) {
         string decorationId = FindPlacedDecorationId(cell);
         if (decorationTilemap.GetTile(cell) == null) return;
+
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Tap);
 
         decorationTilemap.SetTile(cell, null);
         RemoveSavedDecoration(cell);

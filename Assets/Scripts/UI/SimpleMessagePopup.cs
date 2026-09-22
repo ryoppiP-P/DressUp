@@ -29,11 +29,17 @@ public class SimpleMessagePopup : MonoBehaviour {
     private Coroutine _closing;
 
     void Awake() {
-        if (closeButton != null) closeButton.onClick.AddListener(Close);
+        if (closeButton != null) closeButton.onClick.AddListener(OnClickClose);
     }
 
     void OnDestroy() {
-        if (closeButton != null) closeButton.onClick.RemoveListener(Close);
+        if (closeButton != null) closeButton.onClick.RemoveListener(OnClickClose);
+    }
+
+    // 閉じるボタンをタップした時だけSEを鳴らす(自動で閉じる時は鳴らさない)
+    private void OnClickClose() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
+        Close();
     }
 
     /// <summary>メッセージを出す</summary>

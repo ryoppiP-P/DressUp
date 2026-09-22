@@ -46,6 +46,7 @@ public class TutorialOverlay : MonoBehaviour {
     }
 
     private void OnMaskTapped() {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.Click);
         _advanceTapped = true;
     }
 

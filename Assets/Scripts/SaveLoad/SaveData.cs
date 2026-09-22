@@ -92,7 +92,8 @@ public class BirthDate {
 [Serializable]
 public class EquippedEntry {
     public string category;
-    public string itemName;
+    public string itemName; // legacy key (not unique across seasons). Kept so old saves still load.
+    public string itemId;   // unique key (GameItem.itemId). Preferred when present.
 }
 
 [Serializable]

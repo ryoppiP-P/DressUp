@@ -5545,6 +5545,8 @@ MonoBehaviour:
   bornFlowerSprite: {fileID: -6029767554297699322, guid: b3d78591cadce064ba91dc0e421fdc51, type: 3}
   growingSproutWidth: 300
   bornFlowerWidth: 420
+  bloomBuildSeconds: 0.9
+  bloomPopSeconds: 0.65
   growMessageRoot: {fileID: 1948791614}
   growMessageText: {fileID: 1948791616}
   closeUpTimerSlot: {fileID: 204666484}
@@ -6850,6 +6852,9 @@ MonoBehaviour:
   - {fileID: 1196470786}
   - {fileID: 1913267042}
   - {fileID: 1348388528}
+  hoverSeconds: 0.35
+  fallSeconds: 1.6
+  fallDistanceMultiplier: 2.6
 --- !u!1 &1385356808
 GameObject:
   m_ObjectHideFlags: 0

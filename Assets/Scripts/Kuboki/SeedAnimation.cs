@@ -24,7 +24,13 @@ public class SeedAnimation : MonoBehaviour
     [SerializeField] private Transform effectParent;
     [SerializeField] private int effectCount;
     [SerializeField] private GameObject[] hyoujiObject;
+    [SerializeField] private float hoverSeconds = 0.35f;
+    [SerializeField] private float fallSeconds = 1.6f;
+    [SerializeField] private float fallDistanceMultiplier = 3f;
     private bool isMove = false;
+    private bool _fallStarted = false;
+    private float _elapsed;
+    private Vector3 _fallFrom;
     private Vector3 startPosition;
 
     void Start()
@@ -69,13 +75,25 @@ public class SeedAnimation : MonoBehaviour
     {
         if (!isMove) return;
 
-        if (targetGameObject.transform.position.y < seedObject.transform.position.y)
+        if (!_fallStarted)
         {
-            seedObject.transform.position += new Vector3(0.0f, -1.0f * moveSpeed, 0.0f) * Time.deltaTime;
+            _fallStarted = true;
+            _elapsed = 0f;
+            _fallFrom = seedObject.transform.position;
         }
-        else
+        _elapsed += Time.deltaTime;
+        float t = Mathf.Clamp01((_elapsed - hoverSeconds) / Mathf.Max(0.01f, fallSeconds));
+        float endY = _fallFrom.y + (targetGameObject.transform.position.y - _fallFrom.y) * fallDistanceMultiplier;
+        Vector3 to = new Vector3(_fallFrom.x, endY, _fallFrom.z);
+        seedObject.transform.position = Vector3.Lerp(_fallFrom, to, t * t);
+        seedObject.transform.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(_elapsed * 9f) * 12f * (1f - t));
+
+        if (t < 1f) return;
+
         {
             isMove = false;
+            _fallStarted = false;
+            seedObject.transform.localRotation = Quaternion.identity;
             // ”ñ•\Ž¦‚·‚é
             seedObject.gameObject.SetActive(false);
             int count = 0;

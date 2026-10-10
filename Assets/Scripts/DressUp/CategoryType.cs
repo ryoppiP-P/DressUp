@@ -31,16 +31,16 @@ public enum CategoryType {
 public enum CharaState {
     Idle = 0,       // 立っている
     Walk = 1,       // 歩く
-    Sit = 2,        // 座る
-    Sitting = 3,    // 座っている
+    Sit_Start = 2,        // 座る
+    Sit = 3,    // 座っている
     Study = 4,      // 勉強する
-    CloseBook = 5,      // 本をしまう
-    CloseTools = 6,   // 勉強道具をしまう（座りながら）
-    OpenTools = 7,   // 勉強道具を出す（座りながら）
-    Reading = 8,    // 読書する
-    Standup = 9,    // 立ち上がる
+    Read_End = 5,      // 本をしまう
+    Study_End = 6,   // 勉強道具をしまう（座りながら）
+    Study_Start = 7,   // 勉強道具を出す（座りながら）
+    Read = 8,    // 読書する
+    Sit_End = 9,    // 立ち上がる
     Play = 10,      // 公園で遊ぶ
-    OpenBook = 11,   // 本を開く
+    Read_Start = 11,   // 本を開く
 }
 
 public enum Rarity {

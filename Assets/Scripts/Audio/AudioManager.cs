@@ -40,6 +40,9 @@ public class AudioManager : MonoBehaviour {
     private Coroutine _fade;
     private BGMType _currentBGM = BGMType.None;
 
+    /// <summary>今流している(流そうとしている)BGM。パネルが閉じた時に元へ戻すために使う</summary>
+    public BGMType CurrentBGM => _currentBGM;
+
     //==========================================================================
     // 初期化
     //==========================================================================

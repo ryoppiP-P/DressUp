@@ -22,7 +22,11 @@ public enum BGMType {
     Title,
     Town,
     DressUp,     // 着せ替え画面(KisekaeScene)
-    FairyFarm,   // 妖精の畑
+    FairyFarm,   // 妖精の畑(hatake.mp3)
+    // 2026/10/6 BGM一式で追加(既存値の並びは変えず末尾に足す)
+    Main,        // 基本のBGM(main.mp3)。街/タイトル/着せ替えなど、下の専用以外すべて
+    Gacha,       // ガチャ画面(Gacha.mp3)
+    Shop,        // ショップ画面(Shop.mp3)
 }
 
 public enum SEType {

@@ -80,13 +80,24 @@ public class GachaPanel : MonoBehaviour {
     // 排他制御(他のボトムバーパネルを閉じる)と、開いた時に必ず街装飾タブから
     // 始まるようにする処理をOnEnable/OnDisableで行う
     // (SetActiveされた経路に依らず必ず効くようにするため)。
+    private BGMType _bgmBefore = BGMType.None;
+
     void OnEnable() {
         BottomPanelCoordinator.NotifyOpened(Close);
         ShowCategory(GachaCategory.Decoration);
+
+        // ガチャ中はガチャのBGM。閉じたら元のBGMへ戻す
+        if (AudioManager.Instance != null) {
+            _bgmBefore = AudioManager.Instance.CurrentBGM;
+            AudioManager.Instance.PlayBGM(BGMType.Gacha);
+        }
     }
 
     void OnDisable() {
         BottomPanelCoordinator.NotifyClosed(Close);
+
+        if (AudioManager.Instance != null && AudioManager.Instance.CurrentBGM == BGMType.Gacha)
+            AudioManager.Instance.PlayBGM(_bgmBefore != BGMType.None ? _bgmBefore : BGMType.Main);
     }
 
     /// <summary>ガチャ画面を開く(街装飾タブから開始)</summary>

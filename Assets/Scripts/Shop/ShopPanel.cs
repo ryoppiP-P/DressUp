@@ -33,14 +33,25 @@ public class ShopPanel : MonoBehaviour {
     // GameManagerの汎用TogglePanel/SetActiveなど、Open()を経由せずこのGameObjectが
     // 直接アクティブ化されるルートでもグリッドが必ず作り直されるようにする。
     // 排他制御(他パネルを閉じる)もOnEnable/OnDisableで行う(SetActiveされた経路に依らず必ず効く)。
+    private BGMType _bgmBefore = BGMType.None;
+
     void OnEnable() {
         BottomPanelCoordinator.NotifyOpened(Close);
-        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.ShopEntrance);
+        if (AudioManager.Instance != null) {
+            AudioManager.Instance.PlaySE(SEType.ShopEntrance);
+
+            // ショップ中はショップのBGM。閉じたら元のBGMへ戻す
+            _bgmBefore = AudioManager.Instance.CurrentBGM;
+            AudioManager.Instance.PlayBGM(BGMType.Shop);
+        }
         Rebuild();
     }
 
     void OnDisable() {
         BottomPanelCoordinator.NotifyClosed(Close);
+
+        if (AudioManager.Instance != null && AudioManager.Instance.CurrentBGM == BGMType.Shop)
+            AudioManager.Instance.PlayBGM(_bgmBefore != BGMType.None ? _bgmBefore : BGMType.Main);
     }
 
     /// <summary>ショップ画面を開く</summary>

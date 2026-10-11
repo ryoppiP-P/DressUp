@@ -47,6 +47,10 @@ public class FairyPotFocus : MonoBehaviour {
     [SerializeField] private float growingSproutWidth = 300f;
     [SerializeField] private float bornFlowerWidth = 420f;
 
+    [Header("花が咲く演出の長さ(秒)")]
+    [SerializeField] private float bloomBuildSeconds = 0.9f;
+    [SerializeField] private float bloomPopSeconds = 0.65f;
+
     [Header("アップ画面の「〇〇な子が生まれそうだ！」(拡大した時だけ出す)")]
     [SerializeField] private GameObject growMessageRoot;
     [SerializeField] private TMPro.TMP_Text growMessageText;
@@ -69,6 +73,10 @@ public class FairyPotFocus : MonoBehaviour {
     private bool _suppress;     // こちらから isOn を書き換えている間は反応しない
     private bool _born;         // 「生まれた！」を出している間
 
+    private FairyBloomFX _bloom;
+    private Coroutine _bloomRoutine;
+    private string _bloomedFor = "";   // もう咲く演出を見せた妖精(戻るの後に開き直しても繰り返さない)
+
     /// <summary>今開いている鉢(0-2)。開いていなければ -1。</summary>
     public int FocusedSlot { get { return _focused; } }
 
@@ -82,6 +90,7 @@ public class FairyPotFocus : MonoBehaviour {
 
     void Awake() {
         Current = this;
+        _bloom = gameObject.AddComponent<FairyBloomFX>();
 
         int count = potToggles != null ? potToggles.Length : 0;
         _timerLayouts = new Layout[count];
@@ -169,6 +178,7 @@ public class FairyPotFocus : MonoBehaviour {
 
         _focused = index;
         bool planted = IsPlanted(index);
+        if (!_born) StopBloom();
 
         // 残り時間の更新(seedManager.Update)はトグルが ON の間だけ動くので、
         // 見ている鉢は ON にしておく。誕生後は空の鉢なので同期だけでよい。
@@ -209,6 +219,7 @@ public class FairyPotFocus : MonoBehaviour {
         // 誕生の演出を出したまま帰らない(妖精は名前待ちのまま鉢に残る)
         if (_born && birthPopup != null) birthPopup.Hide();
 
+        StopBloom();
         _focused = -1;
         _born = false;
 
@@ -283,6 +294,85 @@ public class FairyPotFocus : MonoBehaviour {
 
         _born = true;
         Open(slotIndex);
+        MaybePlayBloom();
+    }
+
+    //--------------------------------------------------------------------------
+    // 花が咲く演出(生まれた妖精ごとに1回だけ)
+    //--------------------------------------------------------------------------
+
+    private void MaybePlayBloom() {
+        if (bigSprout == null || bigSprout.transform as RectTransform == null) return;
+
+        var pending = FairySaveBridge.FindUnnamed();
+        string id = pending != null ? pending.characterId : "";
+        if (string.IsNullOrEmpty(id) || id == _bloomedFor) return;
+
+        _bloomedFor = id;
+        StopBloom();
+        _bloomRoutine = StartCoroutine(BloomRoutine());
+    }
+
+    private void StopBloom() {
+        if (_bloomRoutine != null) { StopCoroutine(_bloomRoutine); _bloomRoutine = null; }
+        if (_bloom != null) _bloom.Clear();
+
+        if (bigSprout != null) {
+            var rt = bigSprout.transform as RectTransform;
+            if (rt != null) { rt.localScale = Vector3.one; rt.localRotation = Quaternion.identity; }
+        }
+    }
+
+    /// <summary>双葉がぷるぷる震えて光が強まる → ぽんっと花に変わって花びらとキラキラが舞う</summary>
+    private IEnumerator BloomRoutine() {
+        var rt = (RectTransform)bigSprout.transform;
+
+        ApplyBigSproutVisual(false);
+        rt.localScale = Vector3.one;
+        rt.localRotation = Quaternion.identity;
+        _bloom.Begin(rt);
+
+        // 溜め(双葉が震えて少しふくらみ、後ろの光が強くなっていく)
+        float t = 0f;
+        while (t < bloomBuildSeconds) {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / bloomBuildSeconds);
+            rt.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(t * (18f + 30f * k)) * (3f + 9f * k));
+            float s = 1f + 0.18f * k * k;
+            rt.localScale = new Vector3(s * (1f + 0.04f * Mathf.Sin(t * 30f)), s, 1f);
+            _bloom.Follow(rt);
+            _bloom.SetGlow(k * 0.7f, 0.6f + 0.4f * k);
+            yield return null;
+        }
+
+        // 開花
+        ApplyBigSproutVisual(true);
+        rt.localRotation = Quaternion.identity;
+        _bloom.Burst(rt);
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySE(SEType.FairyBorn);
+
+        const float c1 = 2.2f;
+        const float c3 = c1 + 1f;
+        t = 0f;
+        while (t < bloomPopSeconds) {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / bloomPopSeconds);
+            float ease = 1f + c3 * Mathf.Pow(k - 1f, 3f) + c1 * Mathf.Pow(k - 1f, 2f);   // easeOutBack
+            rt.localScale = Vector3.one * Mathf.LerpUnclamped(0.15f, 1f, ease);
+            _bloom.Follow(rt);
+            _bloom.SetGlow(Mathf.Lerp(1f, 0.4f, k), Mathf.Lerp(1.3f, 1f, k));
+            yield return null;
+        }
+        rt.localScale = Vector3.one;
+
+        // 咲いている間は光がゆっくり呼吸する(画面を閉じると StopBloom で消える)
+        float breathe = 0f;
+        while (true) {
+            breathe += Time.deltaTime;
+            _bloom.Follow(rt);
+            _bloom.SetGlow(0.4f + 0.12f * Mathf.Sin(breathe * 2.2f), 1f);
+            yield return null;
+        }
     }
 
     /// <summary>名前待ちの妖精がいる鉢(0-2)。いなければ -1。</summary>

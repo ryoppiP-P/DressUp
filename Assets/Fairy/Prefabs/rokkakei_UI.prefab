@@ -88,5 +88,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a4bde9de6e615468d55ee44ebde7ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParticleMove
-  isLife: 1.2
-  speed: 130
+  isLife: 3
+  speed: 50

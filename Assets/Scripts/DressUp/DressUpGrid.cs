@@ -37,6 +37,7 @@ public class DressupGrid : MonoBehaviour {
     // 持っているか。ownedByDefault のものと、ガチャ/ショップで入手済みのものが対象。
     // 今すでに着ているものは、脱げなくならないよう常に出す。
     private bool IsAvailable(DressUpItem item) {
+        if (item.isSetPart) return false; // shown together with its set's main item
         if (!showOnlyOwned) return true;
         if (SaveManager.Instance == null) return true;
 

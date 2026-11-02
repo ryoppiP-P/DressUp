@@ -51,6 +51,13 @@ public class TownWander : MonoBehaviour {
 
         UpdateFacing();
 
+        // 建物の中で椅子などを回っている間はコルーチン側が動かす。
+        // ドラッグでつかまれたら中断して、離された場所から普段の巡回に戻る。
+        if (_activity != null) {
+            if (character.IsHeld) AbortActivity();
+            return;
+        }
+
         // ドラッグでつかまれている間・会話中は、待機タイマーも進めず次の行き先も決めない
         if (character.IsPaused) return;
 
@@ -65,6 +72,13 @@ public class TownWander : MonoBehaviour {
 
         // 移動中でなければ「到着した」とみなし、少し待ってから次の建物へ向かう
         if (!character.IsFollowingRoute) {
+            // 中に座る場所がある建物なら、先にそこを回る(終わったらこの処理に戻ってくる)
+            if (!_activityDone && _currentTarget != null && _currentTarget.ActivitySpots.Count > 0) {
+                _activityDone = true;
+                _activity = StartCoroutine(RunActivities(_currentTarget));
+                return;
+            }
+
             _isIdling = true;
             _idleTimer = Random.Range(idleSecondsMin, idleSecondsMax);
             SetViewState(CharaState.Idle);
@@ -74,6 +88,7 @@ public class TownWander : MonoBehaviour {
 
     /// <summary>その場で立ち止まり、指定秒数待ってから(今いる場所から)また歩き出す</summary>
     public void HoldFor(float seconds) {
+        AbortActivity();
         _isIdling = true;
         _idleTimer = seconds;
         SetViewState(CharaState.Idle);
@@ -92,8 +107,84 @@ public class TownWander : MonoBehaviour {
         }
 
         _currentTarget = next;
+        _activityDone = false;
         character.StartRouteNavigation(next);
         SetViewState(CharaState.Walk);
+    }
+
+    //--------------------------------------------------------------------------
+    // 建物の中の椅子・座布団などを回る
+    //--------------------------------------------------------------------------
+
+    private Coroutine _activity;
+    private bool _activityDone;
+    private ActivitySpot _reservedSpot;
+
+    /// <summary>
+    /// order の小さい順に、空いている場所を1つずつ選んで歩いて行き、
+    /// その場所に設定されたモーションを指定秒数ずつ再生する(会話などで止まっている間は時間を進めない)。
+    /// 空きが無い order は飛ばす。全部終わったら普段の「少し待って次の建物へ」に戻る。
+    /// </summary>
+    private System.Collections.IEnumerator RunActivities(Building building) {
+        var orders = new System.Collections.Generic.SortedSet<int>();
+        foreach (var s in building.ActivitySpots) if (s != null) orders.Add(s.Order);
+
+        foreach (int order in orders) {
+            ActivitySpot spot = PickFreeSpot(building, order);
+            if (spot == null) continue;
+            _reservedSpot = spot;
+
+            // 歩いて行く
+            character.StartRouteTo(spot.Position);
+            SetViewState(CharaState.Walk);
+            yield return null;
+            while (character.IsFollowingRoute || character.IsPaused) yield return null;
+
+            // 座る位置に合わせる(足元の基準は歩く時と同じ)
+            Vector3 seat = spot.Position;
+            seat.y += character.RouteFeetOffsetY;
+            seat += (Vector3)spot.SeatOffset;
+            seat.z = transform.position.z;
+            transform.position = seat;
+            _lastPos = seat;
+            if (view != null && spot.FaceTo != ActivitySpot.Facing.Keep) view.SetFacing(spot.FaceTo == ActivitySpot.Facing.Right);
+
+            // モーションを順番に再生する
+            foreach (var step in spot.Steps) {
+                SetViewState(step.state);
+                float t = step.seconds;
+                while (t > 0f) {
+                    if (!character.IsPaused) t -= Time.deltaTime;
+                    yield return null;
+                }
+            }
+
+            spot.Release(character);
+            _reservedSpot = null;
+        }
+
+        _activity = null;
+        // ここで Update が「到着済み・活動済み」と判断して、少し待ってから次の建物へ向かう
+        SetViewState(CharaState.Idle);
+    }
+
+    private ActivitySpot PickFreeSpot(Building building, int order) {
+        var free = new System.Collections.Generic.List<ActivitySpot>();
+        foreach (var s in building.ActivitySpots)
+            if (s != null && s.Order == order && s.IsFree) free.Add(s);
+        if (free.Count == 0) return null;
+
+        var picked = free[Random.Range(0, free.Count)];
+        return picked.TryReserve(character) ? picked : null;
+    }
+
+    private void AbortActivity() {
+        if (_activity != null) { StopCoroutine(_activity); _activity = null; }
+        if (_reservedSpot != null) { _reservedSpot.Release(character); _reservedSpot = null; }
+    }
+
+    void OnDisable() {
+        AbortActivity();
     }
 
     // 実際の移動量から向きを決める（経路の曲がりにも自然に追従する）

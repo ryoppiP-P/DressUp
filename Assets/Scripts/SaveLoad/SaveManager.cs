@@ -163,7 +163,12 @@ public class SaveManager : MonoBehaviour {
     public bool IsItemOwned(GameItem item) {
         if (item == null) return false;
         if (item.ownedByDefault) return true;
-        return IsItemOwned(item.itemId);
+        if (IsItemOwned(item.itemId)) return true;
+        // Set items (one-piece + choker): owning any part of the set counts as owning the set
+        if (item is DressUpItem d && d.setItems != null)
+            foreach (var part in d.setItems)
+                if (part != null && IsItemOwned(part.itemId)) return true;
+        return false;
     }
 
     /// <summary>アイテムを所持リストに追加する（既に持っていれば何もしない）</summary>

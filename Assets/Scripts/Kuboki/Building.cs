@@ -90,6 +90,11 @@ public class Building : MonoBehaviour
     [Header("同居時の重なり回避(仮、到着済みのキャラを横一列に並べ直す間隔)")]
     [SerializeField] private float occupantSpacing = 0.6f;
 
+    [Header("建物の中で立ち寄る場所(椅子・座布団など)。空なら入口で少し待つだけ")]
+    [SerializeField] private List<ActivitySpot> activitySpots = new List<ActivitySpot>();
+
+    public IReadOnlyList<ActivitySpot> ActivitySpots => activitySpots;
+
     // 現在この建物にいるキャラクターと、それぞれの滞在経過時間
     private readonly Dictionary<CharacterManager, float> _dwellTimers = new Dictionary<CharacterManager, float>();
     // 今回の滞在で既にパラメータ変化を適用済みのキャラクター(再入場したらまた適用できるようリセットする)
@@ -312,6 +317,9 @@ public class Building : MonoBehaviour
     // 到着済みの同居キャラが重ならないよう、建物の位置を中心に横一列に並べ直す
     private void RepositionArrived()
     {
+        // 中で座る場所がある建物は、キャラの位置を ActivitySpot 側で決めるので並べ直さない
+        if (activitySpots.Count > 0) return;
+
         int n = _arrived.Count;
         if (n == 0) return;
 

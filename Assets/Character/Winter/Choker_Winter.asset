@@ -20,6 +20,8 @@ MonoBehaviour:
   ownedByDefault: 0
   category: 12
   previewSprite: {fileID: 21300000, guid: a757b1cd304d07648af51ff89690a50f, type: 3}
+  setItems: []
+  isSetPart: 1
   releaseYear: 2026
   colors: 0600000009000000
   animations:

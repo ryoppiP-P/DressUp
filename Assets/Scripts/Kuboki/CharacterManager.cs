@@ -212,9 +212,17 @@ public class CharacterManager : MonoBehaviour
     public void StartRouteNavigation(Building targetBuilding)
     {
         if (targetBuilding == null) return;
+        StartRouteTo(targetBuilding.DestinationPosition);
+    }
 
+    /// <summary>足元基準でキャラの中心をどれだけ上げているか(座る場所に位置を合わせる時に使う)</summary>
+    public float RouteFeetOffsetY => routeFeetOffsetY;
+
+    // 任意の地点(建物の中の椅子など)まで、WayPointをたどって歩き始める
+    public void StartRouteTo(Vector3 targetPosition)
+    {
         // MapManagerに最短ルートを計算してもらう！
-        currentRoute = MapManager.Instance.CalculateShortestPath(transform.position, targetBuilding.DestinationPosition);
+        currentRoute = MapManager.Instance.CalculateShortestPath(transform.position, targetPosition);
 
         if (currentRoute != null && currentRoute.Count > 0)
         {

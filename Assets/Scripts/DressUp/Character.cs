@@ -9,7 +9,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Character : MonoBehaviour {
+public partial class Character : MonoBehaviour {
     [System.Serializable]
     public class Layer {
         public CategoryType category;
@@ -113,6 +113,7 @@ public class Character : MonoBehaviour {
             if (pair.Value == null) continue;
             AssignToLayers(pair.Key, pair.Value);
         }
+        EnsureSetPartners();
         RefreshSprites();
     }
 
@@ -136,7 +137,18 @@ public class Character : MonoBehaviour {
         return result;
     }
 
+    // Equip the item and the items in its set (one-piece + choker etc.)
     public void Equip(DressUpItem item) {
+        if (item == null) return;
+        EquipOne(item);
+        if (item.setItems != null)
+            foreach (var part in item.setItems)
+                if (part != null && part != item && !IsWearing(part)) EquipOne(part);
+        _dirty = true;
+        RefreshSprites();
+    }
+
+    private void EquipOne(DressUpItem item) {
         if (item == null) return;
 
         // 1. 本体を着る(プレビューのみ。実際に保存されるのはApplyOutfit()が呼ばれた時)
@@ -191,6 +203,7 @@ public class Character : MonoBehaviour {
         if (!worn.Remove(item)) return;
 
         AssignToLayers(item.category, worn);
+        RemoveSetPartners(item);
         _dirty = true;
         RefreshSprites();
     }
@@ -212,8 +225,47 @@ public class Character : MonoBehaviour {
 
     // そのカテゴリのレイヤーを全部空にする
     private void ClearCategory(CategoryType category) {
-        foreach (var layer in layers)
-            if (layer.category == category) layer.item = null;
+        var removed = new List<DressUpItem>();
+        foreach (var layer in layers) {
+            if (layer.category != category) continue;
+            if (layer.item != null) removed.Add(layer.item);
+            layer.item = null;
+        }
+        foreach (var item in removed) RemoveSetPartners(item);
+    }
+
+    // Remove the items that form a set with 'removed' (both directions, one level only)
+    private void RemoveSetPartners(DressUpItem removed) {
+        if (removed == null) return;
+        var partners = new List<DressUpItem>();
+        foreach (var layer in layers) {
+            var other = layer.item;
+            if (other == null || other == removed || partners.Contains(other)) continue;
+            bool linked = (removed.setItems != null && removed.setItems.Contains(other))
+                       || (other.setItems != null && other.setItems.Contains(removed));
+            if (linked) partners.Add(other);
+        }
+        foreach (var p in partners) {
+            if (IsAlwaysOn(p.category)) continue;
+            var worn = CollectWorn(p.category);
+            worn.Remove(p);
+            AssignToLayers(p.category, worn);
+        }
+    }
+
+    // Old saves may have the set's main item without its partner; put the partner on too
+    private void EnsureSetPartners() {
+        var current = new List<DressUpItem>();
+        foreach (var layer in layers) if (layer.item != null && !current.Contains(layer.item)) current.Add(layer.item);
+        foreach (var item in current) {
+            if (item.setItems == null) continue;
+            foreach (var part in item.setItems) {
+                if (part == null || IsWearing(part)) continue;
+                var worn = CollectWorn(part.category);
+                worn.Add(part);
+                AssignToLayers(part.category, worn);
+            }
+        }
     }
 
     public void UnequipAll() {
@@ -314,6 +366,12 @@ public class Character : MonoBehaviour {
         CharaState state = animate ? _state : freezeState;
         int frameIndex = animate ? _frame : freezeFrame;
 
+        // Posed states (Study etc.) and their fallback are handled in Character.Posed.cs
+        RefreshSpritesPosed(state, frameIndex);
+    }
+
+    // Legacy per-layer refresh (kept for reference; no longer called)
+    private void RefreshSpritesLegacy(CharaState state, int frameIndex) {
         foreach (var layer in layers) {
             if (layer.renderer == null) continue;
 

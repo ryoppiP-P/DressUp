@@ -106,6 +106,7 @@ public class ItemListPanel : MonoBehaviour {
 
         var items = GetItemsForTab(_current)
             .Where(i => i != null)          // 欠損参照はスキップ(クラッシュ防止)
+            .Where(i => !(i is DressUpItem d && d.isSetPart)) // セットの一部(チョーカー等)は本体と一緒に表示する
             .Where(IsVisible)
             .ToList();
 
